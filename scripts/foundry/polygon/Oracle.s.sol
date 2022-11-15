@@ -4,7 +4,6 @@ pragma solidity 0.8.17;
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 import "../../../contracts/interfaces/IOracle.sol";
-import "../../../contracts/treasury/Treasury.sol";
 import { OracleAaveUSDBPEUR } from "../../../contracts/oracle/implementations/polygon/OracleAaveUSDBPEUR.sol";
 import "./PolygonConstants.s.sol";
 

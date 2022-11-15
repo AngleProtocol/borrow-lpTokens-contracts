@@ -5,14 +5,13 @@ import { stdStorage, StdStorage } from "forge-std/Test.sol";
 import "../BaseTest.test.sol";
 import { VaultManagerListing } from "../../../contracts/vaultManager/VaultManagerListing.sol";
 import { ActionType } from "../../../contracts/interfaces/IVaultManager.sol";
-import "../../../contracts/treasury/Treasury.sol";
+import "../../../contracts/mock/MockTreasury.sol";
 import { MockBorrowStaker, MockBorrowStakerReset, BorrowStakerStorage } from "../../../contracts/mock/MockBorrowStaker.sol";
-import "../../../contracts/mock/MockStableMaster.sol";
 import "../../../contracts/mock/MockOracle.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
-import "../../../contracts/coreBorrow/CoreBorrow.sol";
-import { AgToken } from "../../../contracts/agToken/AgToken.sol";
-import "../../../contracts/ui-helpers/AngleHelpers.sol";
+import "../../../contracts/mock/MockCoreBorrow.sol";
+import { MockAgToken } from "../../../contracts/mock/MockAgToken.sol";
+import { AngleBorrowHelpers } from "../../../contracts/ui-helpers/AngleBorrowHelpers.sol";
 
 /// @notice Data stored to track someone's loan (or equivalently called position)
 struct VaultList {
@@ -26,12 +25,13 @@ contract VaultManagerListingTest is BaseTest {
     using stdStorage for StdStorage;
 
     address internal _hacker = address(uint160(uint256(keccak256(abi.encodePacked("hacker")))));
+    address internal _contractStableMaster =
+        address(uint160(uint256(keccak256(abi.encodePacked("_contractStableMaster")))));
 
-    MockStableMaster internal _contractStableMaster;
     VaultManagerListing internal _contractVaultManager;
-    CoreBorrow internal _contractCoreBorrow;
-    Treasury internal _contractTreasury;
-    AgToken internal _contractAgToken;
+    MockCoreBorrow internal _contractCoreBorrow;
+    MockTreasury internal _contractTreasury;
+    MockAgToken internal _contractAgToken;
     MockBorrowStakerReset public stakerImplementation;
     MockBorrowStakerReset public staker;
     AngleBorrowHelpers public helperImplementation;
@@ -60,19 +60,16 @@ contract VaultManagerListingTest is BaseTest {
         delete ownerListVaults[_charlie];
         delete ownerListVaults[_dylan];
 
-        _contractStableMaster = new MockStableMaster();
-
-        _contractAgToken = new AgToken();
+        _contractAgToken = new MockAgToken();
         vm.store(address(_contractAgToken), bytes32(uint256(0)), bytes32(uint256(0)));
         _contractAgToken.initialize("agEUR", "agEUR", address(_contractStableMaster));
 
-        _contractCoreBorrow = new CoreBorrow();
+        _contractCoreBorrow = new MockCoreBorrow();
         vm.store(address(_contractCoreBorrow), bytes32(uint256(0)), bytes32(uint256(0)));
-        _contractCoreBorrow.initialize(_GOVERNOR, _GUARDIAN);
+        _contractCoreBorrow.toggleGovernor(_GOVERNOR);
+        _contractCoreBorrow.toggleGuardian(_GUARDIAN);
 
-        _contractTreasury = new Treasury();
-        vm.store(address(_contractTreasury), bytes32(uint256(0)), bytes32(uint256(0)));
-        _contractTreasury.initialize(_contractCoreBorrow, _contractAgToken);
+        _contractTreasury = new MockTreasury(_contractCoreBorrow, _contractAgToken);
 
         _oracle = new MockOracle(ORACLE_VALUE, _contractTreasury);
 
@@ -88,7 +85,7 @@ contract VaultManagerListingTest is BaseTest {
         );
         staker.initialize(coreBorrow);
 
-        _contractVaultManager = new VaultManagerListing(0, 0);
+        _contractVaultManager = new VaultManagerListing();
         vm.store(address(_contractVaultManager), bytes32(uint256(0)), bytes32(uint256(0)));
 
         // No protocol revenue for easier computation

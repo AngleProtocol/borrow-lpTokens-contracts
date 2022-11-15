@@ -291,9 +291,11 @@ contract CoreBorrowStakerTest is BaseTest {
     function testDepositNoFunds(uint256 amount, address to) public {
         vm.assume(to != address(0));
         amount = bound(amount, 1, type(uint256).max);
-        vm.prank(_alice);
+        vm.startPrank(_alice);
+        asset.approve(address(staker), amount);
         vm.expectRevert(bytes("ERC20: transfer amount exceeds balance"));
         staker.deposit(amount, to);
+        vm.stopPrank();
     }
 
     /// @dev This test will go through the totalSupply = 0 branches
@@ -438,7 +440,7 @@ contract CoreBorrowStakerTest is BaseTest {
         uint256 allowance,
         address to
     ) public {
-        vm.assume(to != address(0) && to != _alice);
+        vm.assume(to != address(0) && to != _alice && to != address(proxyAdmin));
         amount = bound(amount, 1, maxTokenAmount);
         allowance = bound(allowance, 0, 10**9 - 1);
         deal(address(asset), address(_alice), amount);

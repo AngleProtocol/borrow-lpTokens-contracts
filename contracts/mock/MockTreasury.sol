@@ -5,61 +5,76 @@ pragma solidity 0.8.17;
 import "../interfaces/ITreasury.sol";
 import "../interfaces/IFlashAngle.sol";
 import "../interfaces/IVaultManager.sol";
+import "../interfaces/ICoreBorrow.sol";
 
 contract MockTreasury is ITreasury {
     IAgToken public override stablecoin;
-    address public governor;
-    address public guardian;
-    address public vaultManager1;
-    address public vaultManager2;
-    address public flashLoanModule;
+    ICoreBorrow public core;
+    /// @notice List of the accepted `VaultManager` of the protocol
+    address[] public vaultManagerList;
+    /// @notice Maps an address to 1 if it was initialized as a `VaultManager` contract
+    mapping(address => uint256) public vaultManagerMap;
 
-    constructor(
-        IAgToken _stablecoin,
-        address _governor,
-        address _guardian,
-        address _vaultManager1,
-        address _vaultManager2,
-        address _flashLoanModule
-    ) {
+    error AlreadyVaultManager();
+    error NotVaultManager();
+    error InvalidTreasury();
+
+    constructor(ICoreBorrow _core, IAgToken _stablecoin) {
         stablecoin = _stablecoin;
-        governor = _governor;
-        guardian = _guardian;
-        vaultManager1 = _vaultManager1;
-        vaultManager2 = _vaultManager2;
-        flashLoanModule = _flashLoanModule;
+        core = _core;
     }
 
-    function isGovernor(address admin) external view override returns (bool) {
-        return (admin == governor);
+    /// @inheritdoc ITreasury
+    function isGovernor(address admin) external view returns (bool) {
+        return core.isGovernor(admin);
     }
 
-    function isGovernorOrGuardian(address admin) external view override returns (bool) {
-        return (admin == governor || admin == guardian);
+    /// @inheritdoc ITreasury
+    function isGovernorOrGuardian(address admin) external view returns (bool) {
+        return core.isGovernorOrGuardian(admin);
     }
 
-    function isVaultManager(address _vaultManager) external view override returns (bool) {
-        return (_vaultManager == vaultManager1 || _vaultManager == vaultManager2);
+    /// @inheritdoc ITreasury
+    function isVaultManager(address _vaultManager) external view returns (bool) {
+        return vaultManagerMap[_vaultManager] == 1;
     }
 
     function setStablecoin(IAgToken _stablecoin) external {
         stablecoin = _stablecoin;
     }
 
-    function setFlashLoanModule(address _flashLoanModule) external override {
-        flashLoanModule = _flashLoanModule;
+    function setFlashLoanModule(address _flashLoanModule) external {}
+
+    /// @notice Adds a new `VaultManager`
+    /// @param vaultManager `VaultManager` contract to add
+    /// @dev This contract should have already been initialized with a correct treasury address
+    /// @dev It's this function that gives the minter right to the `VaultManager`
+    function addVaultManager(address vaultManager) external {
+        if (vaultManagerMap[vaultManager] == 1) revert AlreadyVaultManager();
+        if (address(IVaultManager(vaultManager).treasury()) != address(this)) revert InvalidTreasury();
+        vaultManagerMap[vaultManager] = 1;
+        vaultManagerList.push(vaultManager);
+        stablecoin.addMinter(vaultManager);
     }
 
-    function setGovernor(address _governor) external {
-        governor = _governor;
-    }
-
-    function setVaultManager(address _vaultManager) external {
-        vaultManager1 = _vaultManager;
-    }
-
-    function setVaultManager2(address _vaultManager) external {
-        vaultManager2 = _vaultManager;
+    /// @notice Removes a `VaultManager`
+    /// @param vaultManager `VaultManager` contract to remove
+    /// @dev A removed `VaultManager` loses its minter right on the stablecoin
+    function removeVaultManager(address vaultManager) external {
+        if (vaultManagerMap[vaultManager] != 1) revert NotVaultManager();
+        delete vaultManagerMap[vaultManager];
+        // deletion from `vaultManagerList` loop
+        uint256 vaultManagerListLength = vaultManagerList.length;
+        for (uint256 i = 0; i < vaultManagerListLength - 1; i++) {
+            if (vaultManagerList[i] == vaultManager) {
+                // replace the `VaultManager` to remove with the last of the list
+                vaultManagerList[i] = vaultManagerList[vaultManagerListLength - 1];
+                break;
+            }
+        }
+        // remove last element in array
+        vaultManagerList.pop();
+        stablecoin.removeMinter(vaultManager);
     }
 
     function setTreasury(address _agTokenOrVaultManager, address _treasury) external {

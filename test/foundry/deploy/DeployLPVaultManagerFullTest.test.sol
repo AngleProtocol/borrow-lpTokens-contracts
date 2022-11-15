@@ -4,8 +4,8 @@ pragma solidity 0.8.17;
 import { Test } from "forge-std/Test.sol";
 import { console } from "forge-std/console.sol";
 import "../../../contracts/interfaces/IOracle.sol";
-import "../../../contracts/treasury/Treasury.sol";
-import { VaultManagerListing } from "../../../contracts/vaultManager/VaultManagerListing.sol";
+import "../../../contracts/interfaces/ITreasury.sol";
+import { VaultManagerListing, VaultParameters, IERC20 } from "../../../contracts/vaultManager/VaultManagerListing.sol";
 import { OracleAaveUSDBPEUR } from "../../../contracts/oracle/implementations/polygon/OracleAaveUSDBPEUR.sol";
 import { IAngleRouterSidechain } from "../../../contracts/interfaces/IAngleRouterSidechain.sol";
 import { IUniswapV3Router } from "../../../contracts/interfaces/external/uniswap/IUniswapRouter.sol";
@@ -58,7 +58,7 @@ contract DeployLPVaultManagerFullTest is Test, PolygonConstants {
 
         console.log("Successfully deployed Oracle Curve AaveBP at the address: ", address(oracle));
 
-        vaultManagerImplementation = new VaultManagerListing(0, 0);
+        vaultManagerImplementation = new VaultManagerListing();
 
         console.log(
             "Successfully deployed vaultManagerImplementation at the address: ",
@@ -113,7 +113,7 @@ contract DeployLPVaultManagerFullTest is Test, PolygonConstants {
 
         vm.startPrank(GOVERNOR);
         vaultManager.togglePause();
-        Treasury(AGEUR_TREASURY).addVaultManager(address(vaultManager));
+        ITreasury(AGEUR_TREASURY).addVaultManager(address(vaultManager));
         vm.stopPrank();
 
         assertEq(staker.name(), "Angle Curve.fi amDAI/amUSDC/amUSDT Staker");

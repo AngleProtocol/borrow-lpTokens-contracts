@@ -12,7 +12,7 @@ contract DeployVaultManagerImplementation is Script, PolygonConstants {
         uint256 deployerPrivateKey = vm.deriveKey(vm.envString("MNEMONIC_POLYGON"), 2);
         vm.startBroadcast(deployerPrivateKey);
 
-        vaultManagerImplementation = new VaultManagerListing(0, 0);
+        vaultManagerImplementation = new VaultManagerListing();
 
         console.log(
             "Successfully deployed vaultManagerImplementation at the address: ",
