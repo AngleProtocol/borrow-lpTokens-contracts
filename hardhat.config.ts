@@ -183,10 +183,6 @@ const config: HardhatUserConfig = {
     currency: 'USD',
     outputFile: argv.ci ? 'gas-report.txt' : undefined,
   },
-  spdxLicenseIdentifier: {
-    overwrite: true,
-    runOnCompile: true,
-  },
   abiExporter: {
     path: './export/abi',
     clear: true,
