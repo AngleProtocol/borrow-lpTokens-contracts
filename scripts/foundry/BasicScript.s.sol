@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.12;
+pragma solidity 0.8.17;
 
 import "forge-std/Script.sol";
-import "../../contracts/example/MockAgEUR.sol";
+import "../../contracts/mock/MockToken.sol";
 import { console } from "forge-std/console.sol";
 
 contract MyScript is Script {
-    function test() external {
+    function run() external {
         vm.startBroadcast();
 
-        MockAgEUR token = new MockAgEUR();
+        MockToken token = new MockToken("Name", "SYM", 18);
         address _sender = address(uint160(uint256(keccak256(abi.encodePacked("sender")))));
         address _receiver = address(uint160(uint256(keccak256(abi.encodePacked("receiver")))));
 
