@@ -44,7 +44,7 @@ const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: '0.8.12',
+        version: '0.8.17',
         settings: {
           optimizer: {
             enabled: true,
@@ -182,10 +182,6 @@ const config: HardhatUserConfig = {
   gasReporter: {
     currency: 'USD',
     outputFile: argv.ci ? 'gas-report.txt' : undefined,
-  },
-  spdxLicenseIdentifier: {
-    overwrite: true,
-    runOnCompile: true,
   },
   abiExporter: {
     path: './export/abi',
