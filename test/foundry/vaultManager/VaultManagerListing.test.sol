@@ -121,6 +121,7 @@ contract VaultManagerListingTest is BaseTest {
 
     function testVaultListAndCollateralAmounts(
         uint256[TRANSFER_LENGTH] memory accounts,
+        uint256[TRANSFER_LENGTH] memory initiators,
         uint256[TRANSFER_LENGTH] memory tos,
         uint256[TRANSFER_LENGTH] memory actionTypes,
         uint256[TRANSFER_LENGTH] memory amounts
@@ -135,6 +136,7 @@ contract VaultManagerListingTest is BaseTest {
 
         for (uint256 i = 1; i < amounts.length; i++) {
             (uint256 randomIndex, address account) = _getAccountByIndex(accounts[i]);
+            (, address initiator) = _getAccountByIndex(initiators[i]);
             uint256 action = bound(actionTypes[i], 0, 8);
             if (ownerListVaults[account].length == 0) action = 0;
 
@@ -167,10 +169,11 @@ contract VaultManagerListingTest is BaseTest {
             } else if (action == 3) {
                 uint256[] storage vaultIDs = ownerListVaults[account];
                 amounts[i] = bound(amounts[i], 0, vaultIDs.length - 1);
+                (uint256 randomIndexTo, address to) = _getAccountByIndex(tos[i]);
                 uint256 vaultID = vaultIDs[amounts[i]];
-                uint256 collateralAmount = _closeVault(account, vaultID);
+                uint256 collateralAmount = _closeVault(account, initiator, to, vaultID);
                 collateralVaultAmounts[randomIndex] -= collateralAmount;
-                collateralIdleAmounts[randomIndex] += collateralAmount;
+                collateralIdleAmounts[randomIndexTo] += collateralAmount;
                 _removeVaultFromList(vaultIDs, vaultID);
             } else if (action == 4) {
                 uint256[] storage vaultIDs = ownerListVaults[account];
@@ -196,15 +199,16 @@ contract VaultManagerListingTest is BaseTest {
                 amounts[i] = bound(amounts[i], 1, maxTokenAmount);
                 tos[i] = bound(tos[i], 0, vaultIDs.length - 1);
                 uint256 vaultID = vaultIDs[tos[i]];
-                _addToVault(account, vaultID, amounts[i]);
+                _addToVault(account, initiator, vaultID, amounts[i]);
                 collateralVaultAmounts[randomIndex] += amounts[i];
             } else if (action == 6) {
                 uint256[] storage vaultIDs = ownerListVaults[account];
                 tos[i] = bound(tos[i], 0, vaultIDs.length - 1);
                 uint256 vaultID = vaultIDs[tos[i]];
-                uint256 collateralAmount = _removeFromVault(account, vaultID, amounts[i]);
+                (uint256 randomIndexInitiator, ) = _getAccountByIndex(initiators[i]);
+                uint256 collateralAmount = _removeFromVault(account, initiator, vaultID, amounts[i]);
                 collateralVaultAmounts[randomIndex] -= collateralAmount;
-                collateralIdleAmounts[randomIndex] += collateralAmount;
+                collateralIdleAmounts[randomIndexInitiator] += collateralAmount;
             } else if (action == 7) {
                 uint256[] storage vaultIDs = ownerListVaults[account];
                 amounts[i] = bound(amounts[i], 0, vaultIDs.length - 1);
@@ -249,6 +253,7 @@ contract VaultManagerListingTest is BaseTest {
 
     function testBorrowStakerWithVaultManager(
         uint256[REWARDS_LENGTH] memory accounts,
+        uint256[TRANSFER_LENGTH] memory initiators,
         uint256[REWARDS_LENGTH] memory tos,
         uint256[REWARDS_LENGTH] memory actionTypes,
         uint256[REWARDS_LENGTH] memory amounts
@@ -259,7 +264,7 @@ contract VaultManagerListingTest is BaseTest {
             vm.warp(block.number + 1);
             vm.roll(block.timestamp + 10);
 
-            _simulateVaultInteraction(accounts[i], tos[i], actionTypes[i], amounts[i]);
+            _simulateVaultInteraction(accounts[i], initiators[i], tos[i], actionTypes[i], amounts[i]);
 
             {
                 uint256 totSupply = staker.totalSupply();
@@ -333,11 +338,13 @@ contract VaultManagerListingTest is BaseTest {
 
     function _simulateVaultInteraction(
         uint256 accountInt,
+        uint256 initiatorInt,
         uint256 to,
         uint256 actionType,
         uint256 amount
     ) internal {
         (, address account) = _getAccountByIndex(accountInt);
+        (, address initiator) = _getAccountByIndex(initiatorInt);
         uint256 action = bound(actionType, 0, 9);
 
         (uint256[] memory vaultIDs, uint256 count) = helper.getControlledVaults(
@@ -381,28 +388,45 @@ contract VaultManagerListingTest is BaseTest {
         } else if (action == 4) {
             amount = bound(amount, 0, count - 1);
             uint256 vaultID = vaultIDs[amount];
-            _closeVault(account, vaultID);
+            (, address sentTo) = _getAccountByIndex(to);
+            _closeVault(account, initiator, sentTo, vaultID);
         } else if (action == 5) {
             (, address sentTo) = _getAccountByIndex(to);
             amount = bound(amount, 0, count - 1);
             uint256 vaultID = vaultIDs[amount];
             uint256 vaultDebt = _contractVaultManager.getVaultDebt(vaultID);
-            vm.startPrank(account);
+
+            // to allow to interact with someone else vault
+            if (account != initiator) {
+                vm.startPrank(account);
+                _contractVaultManager.setApprovalForAll(initiator, true);
+                vm.stopPrank();
+            }
+
+            vm.prank(initiator);
             _contractVaultManager.transferFrom(account, sentTo, vaultID);
+
+            vm.startPrank(account);
             // so that if the other one close it he has enough
             // this doesn't work if the debt increased, we would need to increase
             // artificially the owner balance too
             _contractAgToken.transfer(sentTo, vaultDebt);
             vm.stopPrank();
+
+            if (account != initiator) {
+                vm.startPrank(account);
+                _contractVaultManager.setApprovalForAll(initiator, false);
+                vm.stopPrank();
+            }
         } else if (action == 6) {
             amount = bound(amount, 1, maxTokenAmount);
             to = bound(to, 0, count - 1);
             uint256 vaultID = vaultIDs[to];
-            _addToVault(account, vaultID, amount);
+            _addToVault(account, initiator, vaultID, amount);
         } else if (action == 7) {
             to = bound(to, 0, count - 1);
             uint256 vaultID = vaultIDs[to];
-            uint256 removed = _removeFromVault(account, vaultID, amount);
+            uint256 removed = _removeFromVault(account, initiator, vaultID, amount);
             if (removed == 0) staker.checkpoint(address(0));
         } else if (action == 8) {
             amount = bound(amount, 0, count - 1);
@@ -461,7 +485,12 @@ contract VaultManagerListingTest is BaseTest {
         }
     }
 
-    function _closeVault(address owner, uint256 vaultID) internal returns (uint256 collateralAmount) {
+    function _closeVault(
+        address owner,
+        address initiator,
+        address to,
+        uint256 vaultID
+    ) internal returns (uint256 collateralAmount) {
         (collateralAmount, ) = _contractVaultManager.vaultData(vaultID);
 
         uint256 numberActions = 1;
@@ -471,13 +500,33 @@ contract VaultManagerListingTest is BaseTest {
         bytes[] memory datas = new bytes[](numberActions);
         datas[0] = abi.encode(vaultID);
 
-        vm.startPrank(owner);
-        _contractVaultManager.angle(actions, datas, owner, owner);
+        // to allow to interact with someone else vault
+        if (owner != initiator) {
+            vm.startPrank(owner);
+            _contractVaultManager.setApprovalForAll(initiator, true);
+            vm.stopPrank();
+        }
+
+        vm.prank(owner);
+        _contractAgToken.approve(initiator, type(uint256).max);
+
+        vm.startPrank(initiator);
+        _contractVaultManager.angle(actions, datas, owner, to);
         vm.stopPrank();
+
+        vm.prank(owner);
+        _contractAgToken.approve(initiator, 0);
+
+        if (owner != initiator) {
+            vm.startPrank(owner);
+            _contractVaultManager.setApprovalForAll(initiator, false);
+            vm.stopPrank();
+        }
     }
 
     function _addToVault(
         address owner,
+        address initiator,
         uint256 vaultID,
         uint256 amount
     ) internal {
@@ -488,19 +537,33 @@ contract VaultManagerListingTest is BaseTest {
         bytes[] memory datas = new bytes[](numberActions);
         datas[0] = abi.encode(vaultID, amount);
 
-        deal(address(_collateral), owner, amount);
-        vm.startPrank(owner);
+        // to allow to interact with someone else vault
+        if (owner != initiator) {
+            vm.startPrank(owner);
+            _contractVaultManager.setApprovalForAll(initiator, true);
+            vm.stopPrank();
+        }
+
+        deal(address(_collateral), initiator, amount);
+        vm.startPrank(initiator);
         // first get the true collateral
         _collateral.approve(address(staker), amount);
-        staker.deposit(amount, owner);
+        staker.deposit(amount, initiator);
         // then open the vault
         staker.approve(address(_contractVaultManager), amount);
-        _contractVaultManager.angle(actions, datas, owner, owner);
+        _contractVaultManager.angle(actions, datas, initiator, owner);
         vm.stopPrank();
+
+        if (owner != initiator) {
+            vm.startPrank(owner);
+            _contractVaultManager.setApprovalForAll(initiator, false);
+            vm.stopPrank();
+        }
     }
 
     function _removeFromVault(
         address owner,
+        address initiator,
         uint256 vaultID,
         uint256 amount
     ) internal returns (uint256 collateralAmount) {
@@ -519,9 +582,23 @@ contract VaultManagerListingTest is BaseTest {
         bytes[] memory datas = new bytes[](numberActions);
         datas[0] = abi.encode(vaultID, amount);
 
-        vm.startPrank(owner);
-        _contractVaultManager.angle(actions, datas, owner, owner);
+        // to allow to interact with someone else vault
+        if (owner != initiator) {
+            vm.startPrank(owner);
+            _contractVaultManager.setApprovalForAll(initiator, true);
+            vm.stopPrank();
+        }
+
+        vm.startPrank(initiator);
+        _contractVaultManager.angle(actions, datas, initiator, initiator);
         vm.stopPrank();
+
+        if (owner != initiator) {
+            vm.startPrank(owner);
+            _contractVaultManager.setApprovalForAll(initiator, false);
+            vm.stopPrank();
+        }
+
         return amount;
     }
 
@@ -561,7 +638,6 @@ contract VaultManagerListingTest is BaseTest {
 
     function _internalLiquidateVault(address liquidator, uint256 vaultID) internal {
         LiquidationOpportunity memory liqOpp = _contractVaultManager.checkLiquidation(vaultID, liquidator);
-        console.log("liqOpp ", liqOpp.thresholdRepayAmount);
         uint256 amountToReimburse = liqOpp.maxStablecoinAmountToRepay;
 
         uint256 numberActions = 1;

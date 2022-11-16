@@ -3,7 +3,6 @@
 pragma solidity 0.8.17;
 
 import "./BorrowStakerStorage.sol";
-import "hardhat/console.sol";
 
 /// @title BorrowStaker
 /// @author Angle Labs, Inc.
@@ -195,7 +194,6 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20Upgradeable {
         // Cautious with this line, we need to be sure that rewards are not distributed in one time without
         // linear vesting otherwise reward can be sent to the wrong owners.
         // This should not be a hard requirement as this kind of distribution seems disastrous and front runnable
-        console.log("updated rewards ", _lastRewardsClaimed != block.timestamp);
         if (_lastRewardsClaimed != block.timestamp) {
             _claimRewards();
             _lastRewardsClaimed = uint32(block.timestamp);
@@ -215,7 +213,6 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20Upgradeable {
         IERC20[] memory rewardTokens = _getRewards();
         rewardAmounts = new uint256[](rewardTokens.length);
         uint256 userBalance = totalBalanceOf(from);
-        console.log(from, ": ", userBalance);
         for (uint256 i = 0; i < rewardTokens.length; ++i) {
             uint256 newClaimable = (userBalance * (integral[rewardTokens[i]] - integralOf[rewardTokens[i]][from])) /
                 BASE_PARAMS;
@@ -237,8 +234,6 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20Upgradeable {
     function _updateRewards(IERC20 rewardToken, uint256 amount) internal {
         uint256 _totalSupply = totalSupply();
         if (_totalSupply > 0) integral[rewardToken] += (amount * BASE_PARAMS) / _totalSupply;
-        console.log("rewards claimed ", amount);
-        console.log("new integral ", integral[rewardToken]);
     }
 
     /// @notice Changes allowance of this contract for a given token
