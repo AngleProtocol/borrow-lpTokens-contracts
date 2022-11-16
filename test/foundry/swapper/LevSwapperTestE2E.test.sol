@@ -80,22 +80,6 @@ contract LevSwapperTestE2E is BaseTest {
 
         staker.setRewardToken(rewardToken);
 
-        vm.startPrank(_GOVERNOR);
-        IERC20[] memory tokens = new IERC20[](3);
-        address[] memory spenders = new address[](3);
-        uint256[] memory amounts = new uint256[](3);
-        tokens[0] = _USDC;
-        tokens[1] = _USDT;
-        tokens[2] = _FRAX;
-        spenders[0] = _ONE_INCH;
-        spenders[1] = _ONE_INCH;
-        spenders[2] = _ONE_INCH;
-        amounts[0] = type(uint256).max;
-        amounts[1] = type(uint256).max;
-        amounts[2] = type(uint256).max;
-        swapper.changeAllowance(tokens, spenders, amounts);
-        vm.stopPrank();
-
         address[4] memory allAccounts = [_alice, _bob, _charlie, _dylan];
         for (uint256 k = 0; k < allAccounts.length; k++) {
             vm.startPrank(allAccounts[k]);

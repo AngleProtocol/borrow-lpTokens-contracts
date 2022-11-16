@@ -71,24 +71,15 @@ contract SanTokenLevSwapperTest is BaseTest {
         );
 
         vm.startPrank(_GOVERNOR);
-        IERC20[] memory tokens = new IERC20[](5);
-        address[] memory spenders = new address[](5);
-        uint256[] memory amounts = new uint256[](5);
+        IERC20[] memory tokens = new IERC20[](2);
+        address[] memory spenders = new address[](2);
+        uint256[] memory amounts = new uint256[](2);
         tokens[0] = _USDC;
-        tokens[1] = _USDT;
-        tokens[2] = _FRAX;
-        tokens[3] = _USDC;
-        tokens[4] = asset;
-        spenders[0] = _ONE_INCH;
-        spenders[1] = _ONE_INCH;
-        spenders[2] = _ONE_INCH;
-        spenders[3] = address(_STABLE_MASTER);
-        spenders[4] = address(staker);
+        tokens[1] = asset;
+        spenders[0] = address(_STABLE_MASTER);
+        spenders[1] = address(staker);
         amounts[0] = type(uint256).max;
         amounts[1] = type(uint256).max;
-        amounts[2] = type(uint256).max;
-        amounts[3] = type(uint256).max;
-        amounts[4] = type(uint256).max;
         swapper.changeAllowance(tokens, spenders, amounts);
         vm.stopPrank();
 

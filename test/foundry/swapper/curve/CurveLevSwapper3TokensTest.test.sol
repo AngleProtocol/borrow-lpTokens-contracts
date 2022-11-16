@@ -62,10 +62,10 @@ contract CurveLevSwapper3TokensTest is BaseTest {
     uint256 public maxTokenAmount = 10**15 * 10**decimalToken;
     uint256 public SLIPPAGE_BPS = 9800;
 
-    uint256 public constant DEPOSIT_LENGTH = 2;
-    uint256 public constant WITHDRAW_LENGTH = 2;
-    uint256 public constant CLAIMABLE_LENGTH = 2;
-    uint256 public constant CLAIM_LENGTH = 2;
+    uint256 public constant DEPOSIT_LENGTH = 20;
+    uint256 public constant WITHDRAW_LENGTH = 20;
+    uint256 public constant CLAIMABLE_LENGTH = 20;
+    uint256 public constant CLAIM_LENGTH = 20;
 
     function setUp() public override {
         super.setUp();
@@ -97,30 +97,21 @@ contract CurveLevSwapper3TokensTest is BaseTest {
         assertEq(staker.decimals(), 18);
 
         vm.startPrank(_GOVERNOR);
-        IERC20[] memory tokens = new IERC20[](7);
-        address[] memory spenders = new address[](7);
-        uint256[] memory amounts = new uint256[](7);
-        tokens[0] = _USDC;
-        tokens[1] = _USDT;
-        tokens[2] = _DAI;
-        tokens[3] = _amUSDC;
-        tokens[4] = _amDAI;
-        tokens[5] = _amUSDT;
-        tokens[6] = asset;
-        spenders[0] = _ONE_INCH;
-        spenders[1] = _ONE_INCH;
-        spenders[2] = _ONE_INCH;
-        spenders[3] = address(_METAPOOL);
-        spenders[4] = address(_METAPOOL);
-        spenders[5] = address(_METAPOOL);
-        spenders[6] = address(staker);
+        IERC20[] memory tokens = new IERC20[](4);
+        address[] memory spenders = new address[](4);
+        uint256[] memory amounts = new uint256[](4);
+        tokens[0] = _amUSDC;
+        tokens[1] = _amDAI;
+        tokens[2] = _amUSDT;
+        tokens[3] = asset;
+        spenders[0] = address(_METAPOOL);
+        spenders[1] = address(_METAPOOL);
+        spenders[2] = address(_METAPOOL);
+        spenders[3] = address(staker);
         amounts[0] = type(uint256).max;
         amounts[1] = type(uint256).max;
         amounts[2] = type(uint256).max;
         amounts[3] = type(uint256).max;
-        amounts[4] = type(uint256).max;
-        amounts[5] = type(uint256).max;
-        amounts[6] = type(uint256).max;
         swapper.changeAllowance(tokens, spenders, amounts);
         vm.stopPrank();
 
