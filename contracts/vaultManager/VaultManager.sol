@@ -264,6 +264,13 @@ contract VaultManager is VaultManagerPermit, IVaultManagerFunctions {
                 }
             }
         }
+        // Before each `collateral` transfer of `staker` type contract there is a checkpoint for the `sender` and `receiver`
+        // as it is before the send, `totalBalanceOf(`sender`)` will not be accurate.
+        // For instance when adding collateral for itself we first increase the vault manager total balance of the `sender`
+        // before sending the tokens --> double counts the actual balance. In this particular case it is not a problem as
+        // the `sender` already checkpointed in the `_addCollateral`.
+        // But can a malicious agent increase it's manipulate vault manager collateral balances without tirggering a checkpoint
+        // for some users leading to bad behaviour when transferring the token?
     }
 
     /// @inheritdoc IVaultManagerFunctions

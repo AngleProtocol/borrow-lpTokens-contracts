@@ -40,6 +40,7 @@ contract VaultManagerListing is VaultManager {
         address to,
         uint256 vaultID
     ) internal override {
+        // Looks like if it is a mint we don't need to checkpoint as it is only usefull when there are deposited funds
         // if this is not a mint remove from the `from` vault list `vaultID`
         if (from != address(0)) {
             _checkpointWrapper(from);
