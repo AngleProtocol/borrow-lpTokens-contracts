@@ -50,8 +50,8 @@ contract BorrowStakerWithVaultTest is BaseTest {
         vaultManagers = new MockVaultManagerListing[](2);
         vaultManagers[0] = new MockVaultManagerListing(_treasury);
         vaultManagers[1] = new MockVaultManagerListing(_treasury);
-        vaultManagers[0].setParams(_GOVERNOR, address(asset), address(otherToken), 1 ether, 0, BASE_PARAMS / 2, 0);
-        vaultManagers[1].setParams(_GOVERNOR, address(asset), address(rewardToken), 1 ether, 0, BASE_PARAMS / 4, 0);
+        vaultManagers[0].setParams(_GOVERNOR, address(staker), address(otherToken), 1 ether, 0, BASE_PARAMS / 2, 0);
+        vaultManagers[1].setParams(_GOVERNOR, address(staker), address(rewardToken), 1 ether, 0, BASE_PARAMS / 4, 0);
         vm.startPrank(_GOVERNOR);
         staker.addVaultManager(IVaultManagerListing(address(vaultManagers[0])));
         staker.addVaultManager(IVaultManagerListing(address(vaultManagers[1])));
