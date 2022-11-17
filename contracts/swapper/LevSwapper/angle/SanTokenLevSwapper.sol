@@ -15,7 +15,11 @@ abstract contract SanTokenLevSwapper is BaseLevSwapper {
         IUniswapV3Router _uniV3Router,
         address _oneInch,
         IAngleRouterSidechain _angleRouter
-    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {}
+    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+        if (address(collateral()) != address(0)) {
+            collateral().safeIncreaseAllowance(address(stableMaster()), type(uint256).max);
+        }
+    }
 
     // =============================== MAIN FUNCTIONS ==============================
 

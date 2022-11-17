@@ -23,7 +23,10 @@ abstract contract BaseLevSwapper is SwapperSidechain {
         IUniswapV3Router _uniV3Router,
         address _oneInch,
         IAngleRouterSidechain _angleRouter
-    ) SwapperSidechain(_core, _uniV3Router, _oneInch, _angleRouter) {}
+    ) SwapperSidechain(_core, _uniV3Router, _oneInch, _angleRouter) {
+        if (address(angleStaker()) != address(0))
+            angleStaker().asset().safeIncreaseAllowance(address(angleStaker()), type(uint256).max);
+    }
 
     // ============================= INTERNAL FUNCTIONS ============================
 

@@ -10,13 +10,15 @@ import "./BorrowStakerStorage.sol";
 /// that can be hassle free on any other protocol without loosing the rewards
 /// @dev If Angle is to accept a Curve LP token accruing CRV rewards, what is to be a collateral on the Borrowing module
 /// is not going to be the LP token in itself, but the token corresponding to this type of contract
-abstract contract BorrowStaker is BorrowStakerStorage, ERC20Upgradeable {
+abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     using SafeERC20 for IERC20;
 
     /// @notice Initializes the `BorrowStaker`
     function initialize(ICoreBorrow _coreBorrow) external initializer {
+        string memory name_ = IERC20Metadata(address(asset())).name();
+        __ERC20Permit_init(name_);
         __ERC20_init_unchained(
-            string(abi.encodePacked("Angle ", IERC20Metadata(address(asset())).name(), " Staker")),
+            string(abi.encodePacked("Angle ", name_, " Staker")),
             string(abi.encodePacked("agstk-", IERC20Metadata(address(asset())).symbol()))
         );
         coreBorrow = _coreBorrow;

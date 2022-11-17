@@ -86,27 +86,18 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         assertEq(staker.decimals(), 18);
 
         vm.startPrank(_GOVERNOR);
-        IERC20[] memory tokens = new IERC20[](6);
-        address[] memory spenders = new address[](6);
-        uint256[] memory amounts = new uint256[](6);
+        IERC20[] memory tokens = new IERC20[](3);
+        address[] memory spenders = new address[](3);
+        uint256[] memory amounts = new uint256[](3);
         tokens[0] = _USDC;
-        tokens[1] = _USDT;
-        tokens[2] = _FRAX;
-        tokens[3] = _USDC;
-        tokens[4] = _FRAX;
-        tokens[5] = asset;
-        spenders[0] = _ONE_INCH;
-        spenders[1] = _ONE_INCH;
-        spenders[2] = _ONE_INCH;
-        spenders[3] = address(_METAPOOL);
-        spenders[4] = address(_METAPOOL);
-        spenders[5] = address(staker);
+        tokens[1] = _FRAX;
+        tokens[2] = asset;
+        spenders[0] = address(_METAPOOL);
+        spenders[1] = address(_METAPOOL);
+        spenders[2] = address(staker);
         amounts[0] = type(uint256).max;
         amounts[1] = type(uint256).max;
         amounts[2] = type(uint256).max;
-        amounts[3] = type(uint256).max;
-        amounts[4] = type(uint256).max;
-        amounts[5] = type(uint256).max;
         swapper.changeAllowance(tokens, spenders, amounts);
         vm.stopPrank();
 

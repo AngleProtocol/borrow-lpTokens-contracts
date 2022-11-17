@@ -28,7 +28,16 @@ abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
         IUniswapV3Router _uniV3Router,
         address _oneInch,
         IAngleRouterSidechain _angleRouter
-    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {}
+    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+        if (address(metapool()) != address(0)) {
+            tokens()[0].safeIncreaseAllowance(address(metapool()), type(uint256).max);
+            tokens()[1].safeIncreaseAllowance(address(metapool()), type(uint256).max);
+            tokens()[2].safeIncreaseAllowance(address(metapool()), type(uint256).max);
+            tokensBP()[0].safeIncreaseAllowance(address(basepool()), type(uint256).max);
+            tokensBP()[1].safeIncreaseAllowance(address(basepool()), type(uint256).max);
+            tokensBP()[2].safeIncreaseAllowance(address(basepool()), type(uint256).max);
+        }
+    }
 
     // =============================== MAIN FUNCTIONS ==============================
 
