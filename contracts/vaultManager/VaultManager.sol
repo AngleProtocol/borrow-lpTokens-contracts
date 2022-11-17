@@ -264,6 +264,19 @@ contract VaultManager is VaultManagerPermit, IVaultManagerFunctions {
                 }
             }
         }
+        // Before each `collateral` transfer of `staker` type contract there is a checkpoint for the `sender` and `receiver`
+        // as it is before the send, `totalBalanceOf(`sender`)` will not be accurate.
+        // For instance when adding collateral for itself we first increase the vault manager total balance of the `sender`
+        // before sending the tokens --> double counts the actual balance. In this particular case it is not a problem as
+        // the `sender` already checkpointed in the `_addCollateral`.
+        // When someone `burn`or `removeCollateral` from its vault, there is a first checkpoint with the correct balances,
+        // and then a second one when the vault transfer the `collateral` with a deflated balance in this case.
+        // Conclusion the logic is working as expected as long as no rewards are distributed within a same tx from the staking contract
+        // Most protocol will follow this hypothesis but those who doesn't, this vault implementation doesn't work
+        // Note that it is a weaker assumption than what is done in the `staker` contract which suppose that no rewards can be distributed
+        // to the same address within a block
+        // But can a malicious agent manipulate vault manager collateral balances without tirggering a checkpoint
+        // for some users leading to bad behaviour when transferring the `staker` token?
     }
 
     /// @inheritdoc IVaultManagerFunctions

@@ -252,8 +252,8 @@ contract CoreBorrowStakerTest is BaseTest {
         MockVaultManager vaultManager2 = new MockVaultManagerListing(_treasury);
         MockVaultManager vaultManagerWrong = new MockVaultManagerListing(_treasury);
 
-        vaultManager1.setParams(_GOVERNOR, address(asset), address(otherToken), 1 ether, 0, BASE_STAKER / 2, 0);
-        vaultManager2.setParams(_GOVERNOR, address(asset), address(rewardToken), 1 ether, 0, BASE_STAKER / 4, 0);
+        vaultManager1.setParams(_GOVERNOR, address(staker), address(otherToken), 1 ether, 0, BASE_STAKER / 2, 0);
+        vaultManager2.setParams(_GOVERNOR, address(staker), address(rewardToken), 1 ether, 0, BASE_STAKER / 4, 0);
         vaultManagerWrong.setParams(
             _GOVERNOR,
             address(rewardToken),

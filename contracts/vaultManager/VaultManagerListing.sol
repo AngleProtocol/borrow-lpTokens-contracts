@@ -46,7 +46,9 @@ contract VaultManagerListing is VaultManager {
             _removeVaultFromList(from, vaultID);
         }
         if (to != address(0)) {
-            _checkpointWrapper(to);
+            // If it is a mint we don't need to checkpoint as it is only useful when funds are deposited
+            // But when we transfer the vault we should definitely checkpoint
+            if (from != address(0)) _checkpointWrapper(to);
             _ownerListVaults[to].push(vaultID);
         }
     }
