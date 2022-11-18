@@ -121,7 +121,7 @@ contract SanTokenStakerTest is BaseTest {
             for (uint256 j = 0; j < allAccounts.length; j++) {
                 uint256 prevRewardTokenBalance = rewardToken.balanceOf(allAccounts[j]);
                 uint256 functionClaimableRewards = staker.claimableRewards(allAccounts[j], rewardToken);
-                uint256[] memory claimedRewards = staker.claimRewards(allAccounts[j]);
+                uint256[] memory claimedRewards = staker.claim_rewards(allAccounts[j]);
                 assertEq(functionClaimableRewards, claimedRewards[0]);
                 assertEq(rewardToken.balanceOf(allAccounts[j]) - prevRewardTokenBalance, functionClaimableRewards);
                 // Otherwise it has already been taken into account when deposit/withdraw

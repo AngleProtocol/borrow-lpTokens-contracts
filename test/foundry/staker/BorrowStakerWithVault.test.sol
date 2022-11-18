@@ -277,11 +277,11 @@ contract BorrowStakerWithVaultTest is BaseTest {
                 uint256 prevRewardTokenBalance = rewardToken.balanceOf(account);
                 staker.deposit(amount, account);
                 vm.stopPrank();
-                // to disable new rewards when calling `claimableRewards` and `claimRewards`
+                // to disable new rewards when calling `claimableRewards` and `claim_rewards`
                 staker.setRewardAmount(0);
                 {
                     uint256 functionClaimableRewards = staker.claimableRewards(account, rewardToken);
-                    uint256[] memory claimedRewards = staker.claimRewards(account);
+                    uint256[] memory claimedRewards = staker.claim_rewards(account);
                     assertEq(functionClaimableRewards, claimedRewards[0]);
                     assertEq(rewardToken.balanceOf(account) - prevRewardTokenBalance, functionClaimableRewards);
                 }
@@ -295,13 +295,13 @@ contract BorrowStakerWithVaultTest is BaseTest {
                 uint256 withdrawnDirectly = (amount * staker.balanceOf(account)) / BASE_PARAMS;
                 staker.withdraw(withdrawnDirectly, account, account);
                 vm.stopPrank();
-                // to disable new rewards when calling `claimableRewards` and `claimRewards`
+                // to disable new rewards when calling `claimableRewards` and `claim_rewards`
                 staker.setRewardAmount(0);
                 {
                     uint256 prevRewardTokenBalance = rewardToken.balanceOf(account);
                     uint256 functionClaimableRewards = staker.claimableRewards(account, rewardToken);
                     {
-                        uint256[] memory claimedRewards = staker.claimRewards(account);
+                        uint256[] memory claimedRewards = staker.claim_rewards(account);
                         assertEq(functionClaimableRewards, claimedRewards[0]);
                     }
                     assertEq(rewardToken.balanceOf(account) - prevRewardTokenBalance, functionClaimableRewards);

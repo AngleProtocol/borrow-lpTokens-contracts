@@ -751,7 +751,7 @@ contract CoreBorrowStakerTest is BaseTest {
 
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
-                // to disable new rewards when calling `claimableRewards` and `claimRewards`
+                // to disable new rewards when calling `claimableRewards` and `claim_rewards`
                 staker.setRewardAmount(0);
                 uint256 functionClaimableRewards = staker.claimableRewards(account, rewardToken);
                 staker.checkpoint(account);
@@ -762,7 +762,7 @@ contract CoreBorrowStakerTest is BaseTest {
 
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
-                // to disable new rewards when calling `claimableRewards` and `claimRewards`
+                // to disable new rewards when calling `claimableRewards` and `claim_rewards`
                 staker.setRewardAmount(0);
                 uint256 functionClaimableRewards = staker.claimableRewards(account, rewardToken);
                 staker.checkpoint(account);
@@ -834,10 +834,10 @@ contract CoreBorrowStakerTest is BaseTest {
 
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
-                // to disable new rewards when calling `claimableRewards` and `claimRewards`
+                // to disable new rewards when calling `claimableRewards` and `claim_rewards`
                 staker.setRewardAmount(0);
                 uint256 functionClaimableRewards = staker.claimableRewards(account, rewardToken);
-                uint256[] memory claimedRewards = staker.claimRewards(account);
+                uint256[] memory claimedRewards = staker.claim_rewards(account);
                 assertEq(functionClaimableRewards, claimedRewards[0]);
                 assertEq(rewardToken.balanceOf(account) - prevRewardTokenBalance, functionClaimableRewards);
             } else {
@@ -846,11 +846,11 @@ contract CoreBorrowStakerTest is BaseTest {
 
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
-                // to disable new rewards when calling `claimableRewards` and `claimRewards`
+                // to disable new rewards when calling `claimableRewards` and `claim_rewards`
                 staker.setRewardAmount(0);
                 uint256 prevRewardTokenBalance = rewardToken.balanceOf(account);
                 uint256 functionClaimableRewards = staker.claimableRewards(account, rewardToken);
-                uint256[] memory claimedRewards = staker.claimRewards(account);
+                uint256[] memory claimedRewards = staker.claim_rewards(account);
                 assertEq(functionClaimableRewards, claimedRewards[0]);
                 assertEq(rewardToken.balanceOf(account) - prevRewardTokenBalance, functionClaimableRewards);
             }
@@ -918,16 +918,16 @@ contract CoreBorrowStakerTest is BaseTest {
 
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
-                // to disable new rewards when calling `claimableRewards` and `claimRewards`
+                // to disable new rewards when calling `claimableRewards` and `claim_rewards`
                 staker.setRewardAmount(0);
                 uint256 functionClaimableRewards = staker.claimableRewards(account, rewardToken);
-                uint256[] memory claimedRewards = staker.claimRewards(account);
+                uint256[] memory claimedRewards = staker.claim_rewards(account);
                 assertEq(functionClaimableRewards, claimedRewards[0]);
                 assertEq(rewardToken.balanceOf(account) - prevRewardTokenBalance, functionClaimableRewards);
                 // double claim without new rewards
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
-                staker.claimRewards(account);
+                staker.claim_rewards(account);
                 assertEq(rewardToken.balanceOf(account) - prevRewardTokenBalance, functionClaimableRewards);
             } else {
                 amount = bound(amounts[i], 1, 10**9);
@@ -935,18 +935,18 @@ contract CoreBorrowStakerTest is BaseTest {
 
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
-                // to disable new rewards when calling `claimableRewards` and `claimRewards`
+                // to disable new rewards when calling `claimableRewards` and `claim_rewards`
                 staker.setRewardAmount(0);
                 uint256 prevRewardTokenBalance = rewardToken.balanceOf(account);
                 uint256 functionClaimableRewards = staker.claimableRewards(account, rewardToken);
-                uint256[] memory claimedRewards = staker.claimRewards(account);
+                uint256[] memory claimedRewards = staker.claim_rewards(account);
                 assertEq(functionClaimableRewards, claimedRewards[0]);
                 assertEq(rewardToken.balanceOf(account) - prevRewardTokenBalance, functionClaimableRewards);
 
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
                 // double claim without new rewards
-                staker.claimRewards(account);
+                staker.claim_rewards(account);
                 assertEq(rewardToken.balanceOf(account) - prevRewardTokenBalance, functionClaimableRewards);
             }
 

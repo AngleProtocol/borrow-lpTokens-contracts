@@ -146,7 +146,7 @@ contract StakeDAOLPTokenStakerTest is BaseTest {
                     prevRewardTokenBalance[j] = rewardToken[j].balanceOf(allAccounts[k]);
                     functionClaimableRewards[j] = staker.claimableRewards(allAccounts[k], rewardToken[j]);
                 }
-                uint256[] memory claimedRewards = staker.claimRewards(allAccounts[k]);
+                uint256[] memory claimedRewards = staker.claim_rewards(allAccounts[k]);
                 for (uint256 j = 0; j < rewardToken.length; j++) {
                     assertEq(functionClaimableRewards[j], claimedRewards[j]);
                     assertEq(

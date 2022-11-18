@@ -91,7 +91,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @notice Claims earned rewards for user `from`
     /// @param from Address to claim for
     /// @return rewardAmounts Amounts of each reward token claimed by the user
-    function claimRewards(address from) external returns (uint256[] memory) {
+    function claim_rewards(address from) external returns (uint256[] memory) {
         address[] memory checkpointUser = new address[](1);
         checkpointUser[0] = address(from);
         return _checkpoint(checkpointUser, true);
@@ -120,7 +120,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         return totalBalance;
     }
 
-    /// @notice Returns the exact amount that will be received if calling `claimRewards(from)` for a specific reward token
+    /// @notice Returns the exact amount that will be received if calling `claim_rewards(from)` for a specific reward token
     /// @param from Address to claim for
     /// @param _rewardToken Token to get rewards for
     function claimableRewards(address from, IERC20 _rewardToken) external view returns (uint256) {
