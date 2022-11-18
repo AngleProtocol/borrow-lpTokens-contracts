@@ -47,7 +47,7 @@ abstract contract CurveLevSwapper5TokensWithBP is BaseLevSwapper {
         uint256 amountToken4 = tokens()[1].balanceOf(address(this));
         uint256 amountToken5 = tokens()[2].balanceOf(address(this));
         // Slippage is checked at the very end of the `swap` function
-        if (amountToken1 > 0 || amountToken2 > 0 || amountToken3 > 0 || amountToken4 > 0 || amountToken5 > 0)
+        if (amountToken1 != 0 || amountToken2 != 0 || amountToken3 != 0 || amountToken4 != 0 || amountToken5 != 0)
             metapool().add_liquidity([amountToken1, amountToken2, amountToken3, amountToken4, amountToken5], 0);
         // Other solution is also to let the user specify how many tokens have been sent + get
         // the return value from `add_liquidity`: it's more gas efficient but adds more verbose

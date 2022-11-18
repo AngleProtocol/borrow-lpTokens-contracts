@@ -41,7 +41,7 @@ contract VaultManagerListing is VaultManager {
     function getUserCollateral(address user) external view returns (uint256 totalCollateral) {
         uint256[] memory vaultList = _ownerListVaults[user];
         uint256 vaultListLength = vaultList.length;
-        for (uint256 k; k < vaultListLength; k++) {
+        for (uint256 k; k < vaultListLength; ++k) {
             totalCollateral += vaultData[vaultList[k]].collateralAmount;
         }
         return totalCollateral;
@@ -84,7 +84,7 @@ contract VaultManagerListing is VaultManager {
     function _removeVaultFromList(address user, uint256 vaultID) internal {
         uint256[] storage vaultList = _ownerListVaults[user];
         uint256 vaultListLength = vaultList.length;
-        for (uint256 i = 0; i < vaultListLength - 1; i++) {
+        for (uint256 i; i < vaultListLength - 1; ++i) {
             if (vaultList[i] == vaultID) {
                 vaultList[i] = vaultList[vaultListLength - 1];
                 break;

@@ -95,7 +95,7 @@ contract MockBorrowStakerImplem is ERC20 {
 
     /// @notice Gets the list of all the `VaultManager` contracts which have this token
     /// as a collateral
-    function getVaultManagers() public view returns (IVaultManagerListing[] memory) {
+    function getVaultManagers() external view returns (IVaultManagerListing[] memory) {
         return _vaultManagers;
     }
 
@@ -166,7 +166,7 @@ contract MockBorrowStakerImplem is ERC20 {
         // If `from` is one of the whitelisted vaults, do not consider the rewards to not double count balances
         IVaultManagerListing[] memory vaultManagerContracts = _vaultManagers;
         totalBalance = balanceOf(from);
-        for (uint256 i; i < vaultManagerContracts.length; i++) {
+        for (uint256 i; i < vaultManagerContracts.length; ++i) {
             totalBalance += vaultManagerContracts[i].getUserCollateral(from);
         }
         return totalBalance;
@@ -252,7 +252,7 @@ contract MockBorrowStakerImplem is ERC20 {
             _claimRewards();
             _lastRewardsClaimed = uint32(block.timestamp);
         }
-        for (uint256 i = 0; i < accounts.length; ++i) {
+        for (uint256 i; i < accounts.length; ++i) {
             if (accounts[i] == address(0) || isCompatibleVaultManager[accounts[i]] == 1) continue;
             if (i == 0) rewardAmounts = _checkpointRewardsUser(accounts[i], _claim);
             else _checkpointRewardsUser(accounts[i], _claim);
@@ -267,7 +267,7 @@ contract MockBorrowStakerImplem is ERC20 {
         IERC20[] memory rewardTokens = _getRewards();
         rewardAmounts = new uint256[](rewardTokens.length);
         uint256 userBalance = totalBalanceOf(from);
-        for (uint256 i = 0; i < rewardTokens.length; ++i) {
+        for (uint256 i; i < rewardTokens.length; ++i) {
             uint256 newClaimable = (userBalance * (integral[rewardTokens[i]] - integralOf[rewardTokens[i]][from])) /
                 BASE_PARAMS;
             uint256 previousClaimable = pendingRewardsOf[rewardTokens[i]][from];
@@ -319,7 +319,7 @@ contract MockBorrowStakerImplem is ERC20 {
     ) external onlyGovernor {
         if (tokens.length != amounts.length || spenders.length != amounts.length || tokens.length == 0)
             revert IncompatibleLengths();
-        for (uint256 i = 0; i < spenders.length; i++) {
+        for (uint256 i; i < spenders.length; ++i) {
             _changeAllowance(tokens[i], spenders[i], amounts[i]);
         }
     }

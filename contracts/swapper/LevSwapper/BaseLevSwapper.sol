@@ -72,7 +72,8 @@ abstract contract BaseLevSwapper is SwapperSidechain {
     /// @notice Allows to do an arbitrary number of swaps using 1inch API
     /// @param data Encoded info to execute the swaps from `_swapOn1Inch`
     function _multiSwap1inch(bytes[] memory data) internal {
-        for (uint256 i = 0; i < data.length; i++) {
+        uint256 dataLength = data.length;
+        for (uint256 i; i < dataLength; ++i) {
             (address inToken, uint256 minAmount, bytes memory payload) = abi.decode(data[i], (address, uint256, bytes));
             uint256 amountOut = _swapOn1Inch(IERC20(inToken), payload);
             // We check the slippage in this case as `swap()` will only check it for the `outToken`
@@ -84,9 +85,10 @@ abstract contract BaseLevSwapper is SwapperSidechain {
     /// @param tokensOut Token to sweep
     /// @param to Address to which tokens should be sent
     function _sweep(IERC20[] memory tokensOut, address to) internal {
-        for (uint256 i = 0; i < tokensOut.length; i++) {
+        uint256 tokensOutLength = tokensOut.length;
+        for (uint256 i; i < tokensOutLength; ++i) {
             uint256 balanceToken = tokensOut[i].balanceOf(address(this));
-            if (balanceToken > 0) {
+            if (balanceToken != 0) {
                 tokensOut[i].safeTransfer(to, balanceToken);
             }
         }

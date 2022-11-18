@@ -43,7 +43,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
 
     /// @notice Gets the list of all the `VaultManager` contracts which have this token
     /// as a collateral
-    function getVaultManagers() public view returns (IVaultManagerListing[] memory) {
+    function getVaultManagers() external view returns (IVaultManagerListing[] memory) {
         return _vaultManagers;
     }
 
@@ -114,7 +114,8 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         // If `from` is one of the whitelisted vaults, do not consider the rewards to not double count balances
         IVaultManagerListing[] memory vaultManagerContracts = _vaultManagers;
         totalBalance = balanceOf(from);
-        for (uint256 i; i < vaultManagerContracts.length; i++) {
+        uint256 vaultManagerContractsLength = vaultManagerContracts.length;
+        for (uint256 i; i < vaultManagerContractsLength; ++i) {
             totalBalance += vaultManagerContracts[i].getUserCollateral(from);
         }
         return totalBalance;
@@ -125,7 +126,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param _rewardToken Token to get rewards for
     function claimableRewards(address from, IERC20 _rewardToken) external view returns (uint256) {
         uint256 _totalSupply = totalSupply();
-        uint256 newIntegral = _totalSupply > 0
+        uint256 newIntegral = _totalSupply != 0
             ? integral[_rewardToken] + (_rewardsToBeClaimed(_rewardToken) * BASE_PARAMS) / _totalSupply
             : integral[_rewardToken];
         uint256 newClaimable = (totalBalanceOf(from) * (newIntegral - integralOf[_rewardToken][from])) / BASE_PARAMS;
@@ -200,7 +201,8 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
             _claimRewards();
             _lastRewardsClaimed = uint32(block.timestamp);
         }
-        for (uint256 i = 0; i < accounts.length; ++i) {
+        uint256 accountsLength = accounts.length;
+        for (uint256 i; i < accountsLength; ++i) {
             if (accounts[i] == address(0) || isCompatibleVaultManager[accounts[i]] == 1) continue;
             if (i == 0) rewardAmounts = _checkpointRewardsUser(accounts[i], _claim);
             else _checkpointRewardsUser(accounts[i], _claim);
@@ -213,16 +215,17 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @return rewardAmounts Amounts of the different reward tokens earned by the user
     function _checkpointRewardsUser(address from, bool _claim) internal returns (uint256[] memory rewardAmounts) {
         IERC20[] memory rewardTokens = _getRewards();
-        rewardAmounts = new uint256[](rewardTokens.length);
+        uint256 rewardTokensLength = rewardTokens.length;
+        rewardAmounts = new uint256[](rewardTokensLength);
         uint256 userBalance = totalBalanceOf(from);
-        for (uint256 i = 0; i < rewardTokens.length; ++i) {
+        for (uint256 i; i < rewardTokensLength; ++i) {
             uint256 newClaimable = (userBalance * (integral[rewardTokens[i]] - integralOf[rewardTokens[i]][from])) /
                 BASE_PARAMS;
             uint256 previousClaimable = pendingRewardsOf[rewardTokens[i]][from];
-            if (_claim && previousClaimable + newClaimable > 0) {
+            if (_claim && previousClaimable + newClaimable != 0) {
                 rewardTokens[i].safeTransfer(from, previousClaimable + newClaimable);
                 pendingRewardsOf[rewardTokens[i]][from] = 0;
-            } else if (newClaimable > 0) {
+            } else if (newClaimable != 0) {
                 pendingRewardsOf[rewardTokens[i]][from] += newClaimable;
             }
             integralOf[rewardTokens[i]][from] = integral[rewardTokens[i]];
@@ -235,7 +238,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param amount Amount to add to the claimable rewards
     function _updateRewards(IERC20 rewardToken, uint256 amount) internal {
         uint256 _totalSupply = totalSupply();
-        if (_totalSupply > 0) integral[rewardToken] += (amount * BASE_PARAMS) / _totalSupply;
+        if (_totalSupply != 0) integral[rewardToken] += (amount * BASE_PARAMS) / _totalSupply;
     }
 
     /// @notice Changes allowance of this contract for a given token

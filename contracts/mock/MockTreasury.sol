@@ -65,7 +65,7 @@ contract MockTreasury is ITreasury {
         delete vaultManagerMap[vaultManager];
         // deletion from `vaultManagerList` loop
         uint256 vaultManagerListLength = vaultManagerList.length;
-        for (uint256 i = 0; i < vaultManagerListLength - 1; i++) {
+        for (uint256 i; i < vaultManagerListLength - 1; ++i) {
             if (vaultManagerList[i] == vaultManager) {
                 // replace the `VaultManager` to remove with the last of the list
                 vaultManagerList[i] = vaultManagerList[vaultManagerListLength - 1];

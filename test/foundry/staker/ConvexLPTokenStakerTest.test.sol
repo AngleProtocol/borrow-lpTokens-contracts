@@ -51,7 +51,7 @@ contract ConvexLPTokenStakerTest is BaseTest {
         maxTokenAmount = 10**15 * 10**decimalToken;
         decimalReward = new uint8[](rewardToken.length);
         rewardAmount = new uint256[](rewardToken.length);
-        for (uint256 i = 0; i < rewardToken.length; i++) {
+        for (uint256 i; i < rewardToken.length; ++i) {
             decimalReward[i] = IERC20Metadata(address(rewardToken[i])).decimals();
             rewardAmount[i] = 10**2 * 10**(decimalReward[i]);
         }
@@ -74,7 +74,7 @@ contract ConvexLPTokenStakerTest is BaseTest {
 
         uint256[NBR_REWARD][5] memory pendingRewards;
 
-        for (uint256 i = 0; i < amounts.length; i++) {
+        for (uint256 i; i < amounts.length; ++i) {
             elapseTimes[i] = bound(elapseTimes[i], 1, 180 days);
             vm.warp(block.timestamp + elapseTimes[i]);
             if (depositWithdrawRewards[i] % 3 == 2) {

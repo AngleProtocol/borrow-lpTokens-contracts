@@ -336,7 +336,7 @@ contract CoreBorrowStakerTest is BaseTest {
         uint256[4] memory pendingRewards;
         balanceOf[0] = amounts[0];
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             uint256 randomIndex = bound(accounts[i], 0, 3);
             address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
@@ -392,7 +392,7 @@ contract CoreBorrowStakerTest is BaseTest {
 
         uint256[4] memory pendingRewards;
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
 
             uint256 randomIndex = bound(accounts[i], 0, 3);
@@ -572,7 +572,7 @@ contract CoreBorrowStakerTest is BaseTest {
 
         uint256[4] memory pendingRewards;
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             uint256 randomIndex = bound(accounts[i], 0, 3);
             address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
                 ? _charlie
@@ -640,7 +640,7 @@ contract CoreBorrowStakerTest is BaseTest {
 
         uint256[4] memory pendingRewards;
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             uint256 randomIndex = bound(accounts[i], 0, 3);
             address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
                 ? _charlie
@@ -726,7 +726,7 @@ contract CoreBorrowStakerTest is BaseTest {
 
         uint256[4] memory pendingRewards;
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             staker.setRewardAmount(rewardAmount);
             uint256 randomIndex = bound(accounts[i], 0, 3);
@@ -808,7 +808,7 @@ contract CoreBorrowStakerTest is BaseTest {
 
         uint256[4] memory pendingRewards;
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             staker.setRewardAmount(rewardAmount);
             uint256 randomIndex = bound(accounts[i], 0, 3);
@@ -892,7 +892,7 @@ contract CoreBorrowStakerTest is BaseTest {
 
         uint256[4] memory pendingRewards;
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             staker.setRewardAmount(rewardAmount);
             uint256 randomIndex = bound(accounts[i], 0, 3);

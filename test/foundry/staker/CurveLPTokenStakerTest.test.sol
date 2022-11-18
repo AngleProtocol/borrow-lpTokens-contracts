@@ -88,7 +88,7 @@ contract CurveLPTokenStakerTest is BaseTest {
 
         uint256[5] memory pendingRewards;
 
-        for (uint256 i = 0; i < amounts.length; i++) {
+        for (uint256 i; i < amounts.length; ++i) {
             elapseTimes[i] = bound(elapseTimes[i], 1, 180 days);
             vm.warp(block.timestamp + elapseTimes[i]);
             if (depositWithdrawRewards[i] % 3 == 2) {

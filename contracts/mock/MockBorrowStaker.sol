@@ -27,7 +27,7 @@ contract MockBorrowStaker is BorrowStaker {
     ) external onlyGovernor {
         if (tokens.length != amounts.length || spenders.length != amounts.length || tokens.length == 0)
             revert IncompatibleLengths();
-        for (uint256 i = 0; i < spenders.length; i++) {
+        for (uint256 i; i < spenders.length; ++i) {
             _changeAllowance(tokens[i], spenders[i], amounts[i]);
         }
     }

@@ -83,7 +83,7 @@ contract BorrowStakerWithVaultTest is BaseTest {
         // directly put it on a vaultManager
         _fakeDepositVault(0, _alice, amounts[0]);
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             uint256 randomIndex = bound(accounts[i], 0, 3);
             address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
                 ? _charlie
@@ -152,7 +152,7 @@ contract BorrowStakerWithVaultTest is BaseTest {
         _fakeDepositVault(0, _alice, amounts[0]);
         vm.warp(block.timestamp + elapseTime[0]);
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
 
             uint256 randomIndex = bound(accounts[i], 0, 3);
@@ -247,7 +247,7 @@ contract BorrowStakerWithVaultTest is BaseTest {
         _fakeDepositVault(0, _alice, amounts[0]);
         vm.warp(block.timestamp + elapseTime[0]);
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             staker.setRewardAmount(rewardAmount);
             uint256 randomIndex = bound(accounts[i], 0, 3);
@@ -367,7 +367,7 @@ contract BorrowStakerWithVaultTest is BaseTest {
         returns (uint256 amountOnVault)
     {
         uint256[] memory vaultIDs = vaultManagers[vaultNum].getUserVaults(owner);
-        for (uint256 i; i < vaultIDs.length; i++) {
+        for (uint256 i; i < vaultIDs.length; ++i) {
             (uint256 currentCollateralAmount, ) = vaultManagers[vaultNum].vaultData(vaultIDs[i]);
             amountOnVault += currentCollateralAmount;
         }
