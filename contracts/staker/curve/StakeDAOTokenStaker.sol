@@ -12,7 +12,7 @@ import "../BorrowStaker.sol";
 /// @dev Borrow staker adapted to Curve LP tokens deposited on Convex
 abstract contract StakeDAOTokenStaker is BorrowStaker {
     IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
-    IERC20 private constant _SDT = IERC20(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
+    IERC20 private constant _SDT = IERC20(0x73968b9a57c6E53d41345FD57a6E6ae27d6CDB2F);
 
     error WithdrawFeeTooLarge();
 

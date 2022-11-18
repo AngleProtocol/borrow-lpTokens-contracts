@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts-upgradeable/interfaces/IERC20MetadataUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-
 import "../../BaseTest.test.sol";
 import "../../../../contracts/interfaces/IBorrowStaker.sol";
 import "../../../../contracts/interfaces/ICoreBorrow.sol";
