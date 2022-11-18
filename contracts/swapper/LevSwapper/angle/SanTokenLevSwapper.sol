@@ -26,7 +26,7 @@ abstract contract SanTokenLevSwapper is BaseLevSwapper {
     /// @inheritdoc BaseLevSwapper
     function _add(bytes memory) internal override returns (uint256 amountOut) {
         uint256 amount = collateral().balanceOf(address(this));
-        if (amount > 0) stableMaster().deposit(amount, address(this), poolManager());
+        if (amount != 0) stableMaster().deposit(amount, address(this), poolManager());
         amountOut = sanToken().balanceOf(address(this));
     }
 

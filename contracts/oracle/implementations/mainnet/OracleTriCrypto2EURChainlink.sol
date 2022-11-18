@@ -34,7 +34,7 @@ contract OracleTriCrypto2EURChainlink is BaseOracleChainlinkMulti {
         AggregatorV3Interface[2] memory _circuitChainlink = circuitChainlink();
         uint8[2] memory circuitChainIsMultiplied = [1, 0];
         uint8[2] memory chainlinkDecimals = [8, 8];
-        for (uint256 i = 0; i < _circuitChainlink.length; i++) {
+        for (uint256 i; i < 2; ++i) {
             quoteAmount = _readChainlinkFeed(
                 quoteAmount,
                 _circuitChainlink[i],

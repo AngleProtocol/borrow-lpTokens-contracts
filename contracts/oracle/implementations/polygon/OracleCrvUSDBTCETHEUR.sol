@@ -95,7 +95,7 @@ contract OracleCrvUSDBTCETHEUR is BaseOracleChainlinkMulti {
         // (for example, when BTC < $0.1 and ETH < $0.1)
         //solhint-disable-next-line
         uint256 D = x / 10**18;
-        for (uint256 i; i < 255; i++) {
+        for (uint256 i; i < 255; ++i) {
             uint256 diff;
             //solhint-disable-next-line
             uint256 DPrev = D;

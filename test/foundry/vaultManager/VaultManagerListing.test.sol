@@ -134,7 +134,7 @@ contract VaultManagerListingTest is BaseTest {
         collateralVaultAmounts[0] += amounts[0];
         ownerListVaults[_alice].push(_contractVaultManager.vaultIDCount());
 
-        for (uint256 i = 1; i < amounts.length; i++) {
+        for (uint256 i = 1; i < amounts.length; ++i) {
             (uint256 randomIndex, address account) = _getAccountByIndex(accounts[i]);
             (, address initiator) = _getAccountByIndex(initiators[i]);
             uint256 action = bound(actionTypes[i], 0, 8);
@@ -260,7 +260,7 @@ contract VaultManagerListingTest is BaseTest {
     ) public {
         uint256[5] memory pendingRewards;
 
-        for (uint256 i = 0; i < amounts.length; i++) {
+        for (uint256 i; i < amounts.length; ++i) {
             vm.warp(block.number + 1);
             vm.roll(block.timestamp + 10);
 
@@ -298,7 +298,7 @@ contract VaultManagerListingTest is BaseTest {
 
     //     uint256[5] memory pendingRewards;
 
-    //     for (uint256 i = 0; i < amounts.length; i++) {
+    //     for (uint256 i; i < amounts.length; ++i) {
     //         vm.warp(block.number + 1);
     //         vm.roll(block.timestamp + 10);
 
@@ -672,7 +672,7 @@ contract VaultManagerListingTest is BaseTest {
     function _removeVaultFromList(uint256[] storage vaultList, uint256 vaultID) internal {
         uint256 vaultListLength = vaultList.length;
         bool indexMet;
-        for (uint256 i = 0; i < vaultListLength; i++) {
+        for (uint256 i; i < vaultListLength; ++i) {
             if (vaultList[i] == vaultID) indexMet = true;
             else if (indexMet) vaultList[i - 1] = vaultList[i];
         }
@@ -685,7 +685,7 @@ contract VaultManagerListingTest is BaseTest {
         uint256 count
     ) internal {
         assertEq(count, expectedVaultList.length);
-        for (uint256 i = 0; i < count; i++) {
+        for (uint256 i; i < count; ++i) {
             assertEq(vaultList[i], expectedVaultList[i]);
         }
     }
@@ -697,7 +697,7 @@ contract VaultManagerListingTest is BaseTest {
     ) internal view returns (uint256[] memory processList, uint256) {
         processList = new uint256[](vaultList.length);
         uint256 newCount;
-        for (uint256 i = 0; i < count; i++) {
+        for (uint256 i; i < count; ++i) {
             (uint256 currentCollat, uint256 debt) = vaultManager.vaultData(vaultList[i]);
             if (currentCollat != 0 && debt != 0) {
                 processList[newCount] = vaultList[i];
@@ -714,7 +714,7 @@ contract VaultManagerListingTest is BaseTest {
     ) internal view {
         console.log("owner: ", owner);
         count = count == type(uint256).max ? list.length : count;
-        for (uint256 i = 0; i < count; i++) {
+        for (uint256 i; i < count; ++i) {
             console.log("owns vaultID: ", list[i]);
         }
     }
