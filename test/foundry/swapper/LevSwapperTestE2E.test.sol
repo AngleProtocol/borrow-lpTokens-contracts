@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts-upgradeable/interfaces/IERC20MetadataUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-
 import "../BaseTest.test.sol";
 import "../../../contracts/interfaces/IBorrowStaker.sol";
 import "../../../contracts/interfaces/ICoreBorrow.sol";
@@ -234,7 +230,7 @@ contract LevSwapperTestE2E is BaseTest {
                     prevRewardTokenBalance[j] = listRewardTokens[j].balanceOf(allAccounts[k]);
                     functionClaimableRewards[j] = staker.claimableRewards(allAccounts[k], listRewardTokens[j]);
                 }
-                uint256[] memory claimedRewards = staker.claimRewards(allAccounts[k]);
+                uint256[] memory claimedRewards = staker.claim_rewards(allAccounts[k]);
                 for (uint256 j = 0; j < listRewardTokens.length; j++) {
                     assertEq(functionClaimableRewards[j], claimedRewards[j]);
                     assertEq(

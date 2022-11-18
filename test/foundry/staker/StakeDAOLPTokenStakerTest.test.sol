@@ -2,32 +2,33 @@
 pragma solidity 0.8.17;
 
 import "../BaseTest.test.sol";
-import "../../../contracts/interfaces/external/convex/IBaseRewardPool.sol";
-import "../../../contracts/interfaces/external/convex/IBooster.sol";
-import "../../../contracts/interfaces/external/convex/IConvexToken.sol";
+import "../../../contracts/interfaces/external/stakeDAO/IStakeCurveVault.sol";
+import "../../../contracts/interfaces/external/stakeDAO/IClaimerRewards.sol";
+import "../../../contracts/interfaces/external/stakeDAO/ILiquidityGauge.sol";
 import "../../../contracts/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
-import { ConvexAgEURvEUROCStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/ConvexAgEURvEUROCStaker.sol";
+import { StakeDAOAgEURvEUROCStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/StakeDAOAgEURvEUROCStaker.sol";
 
-contract ConvexLPTokenStakerTest is BaseTest {
+contract StakeDAOLPTokenStakerTest is BaseTest {
     using stdStorage for StdStorage;
 
     address internal _hacker = address(uint160(uint256(keccak256(abi.encodePacked("hacker")))));
     IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
-    IConvexToken private constant _CVX = IConvexToken(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
+    IERC20 private constant _SDT = IERC20(0x73968b9a57c6E53d41345FD57a6E6ae27d6CDB2F);
     IERC20 public asset = IERC20(0xBa3436Fd341F2C8A928452Db3C5A3670d1d5Cc73);
-    IERC20[] public rewardToken = [_CRV, _CVX];
+    IERC20[] public rewardToken = [_CRV, _SDT];
     uint256 public constant NBR_REWARD = 2;
-    IConvexBooster public convexBooster = IConvexBooster(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
-    IConvexBaseRewardPool public baseRewardPool = IConvexBaseRewardPool(0xA91fccC1ec9d4A2271B7A86a7509Ca05057C1A98);
-    uint256 public constant POOL_ID = 113;
+    IStakeCurveVault internal constant _vault = IStakeCurveVault(0xDe46532a49c88af504594F488822F452b7FBc7BD);
+    ILiquidityGauge internal constant _gauge = ILiquidityGauge(0x63f222079608EEc2DDC7a9acdCD9344a21428Ce7);
+    address public constant sdtDistributor = 0x9C99dffC1De1AfF7E7C1F36fCdD49063A281e18C;
+    address public constant curveStrategy = 0x20F1d4Fed24073a9b9d388AfA2735Ac91f079ED6;
 
-    ConvexAgEURvEUROCStaker public stakerImplementation;
-    ConvexAgEURvEUROCStaker public staker;
+    StakeDAOAgEURvEUROCStaker public stakerImplementation;
+    StakeDAOAgEURvEUROCStaker public staker;
     uint8 public decimalToken;
     uint256 public maxTokenAmount;
-    uint8[] public decimalReward;
-    uint256[] public rewardAmount;
+    uint8[2] public decimalReward;
+    uint256[2] public rewardAmount;
 
     uint256 public constant WITHDRAW_LENGTH = 10;
 
@@ -36,8 +37,8 @@ contract ConvexLPTokenStakerTest is BaseTest {
         vm.selectFork(_ethereum);
 
         super.setUp();
-        stakerImplementation = new ConvexAgEURvEUROCStaker();
-        staker = ConvexAgEURvEUROCStaker(
+        stakerImplementation = new StakeDAOAgEURvEUROCStaker();
+        staker = StakeDAOAgEURvEUROCStaker(
             deployUpgradeable(
                 address(stakerImplementation),
                 abi.encodeWithSelector(staker.initialize.selector, coreBorrow)
@@ -45,9 +46,7 @@ contract ConvexLPTokenStakerTest is BaseTest {
         );
         decimalToken = IERC20Metadata(address(asset)).decimals();
         maxTokenAmount = 10**15 * 10**decimalToken;
-        decimalReward = new uint8[](rewardToken.length);
-        rewardAmount = new uint256[](rewardToken.length);
-        for (uint256 i; i < rewardToken.length; ++i) {
+        for (uint256 i = 0; i < rewardToken.length; i++) {
             decimalReward[i] = IERC20Metadata(address(rewardToken[i])).decimals();
             rewardAmount[i] = 10**2 * 10**(decimalReward[i]);
         }
@@ -59,7 +58,8 @@ contract ConvexLPTokenStakerTest is BaseTest {
         uint256[WITHDRAW_LENGTH] memory amounts,
         uint256[WITHDRAW_LENGTH] memory depositWithdrawRewards,
         uint256[WITHDRAW_LENGTH] memory accounts,
-        uint256[WITHDRAW_LENGTH] memory elapseTimes
+        uint256[WITHDRAW_LENGTH] memory elapseTimes,
+        uint256[WITHDRAW_LENGTH * 2] memory rewardAmounts
     ) public {
         amounts[0] = bound(amounts[0], 1, maxTokenAmount);
         deal(address(asset), _alice, amounts[0]);
@@ -70,11 +70,12 @@ contract ConvexLPTokenStakerTest is BaseTest {
 
         uint256[NBR_REWARD][5] memory pendingRewards;
 
-        for (uint256 i; i < amounts.length; ++i) {
+        for (uint256 i = 0; i < amounts.length; i++) {
             elapseTimes[i] = bound(elapseTimes[i], 1, 180 days);
             vm.warp(block.timestamp + elapseTimes[i]);
             if (depositWithdrawRewards[i] % 3 == 2) {
-                _depositRewards(rewardAmount[0]);
+                uint256[2] memory tmpRewards = [rewardAmounts[i * 2], rewardAmounts[i * 2 + 1]];
+                _depositRewards(tmpRewards);
             } else {
                 uint256 randomIndex = bound(accounts[i], 0, 3);
                 address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
@@ -168,31 +169,25 @@ contract ConvexLPTokenStakerTest is BaseTest {
 
     // ================================== INTERNAL =================================
 
-    function _depositRewards(uint256 amount) internal {
-        amount = bound(amount, 0, 10_000_000 ether);
-        deal(address(_CRV), address(baseRewardPool), type(uint256).max);
-        // fake a non null incentives program on Convex
-        vm.prank(address(convexBooster));
-        baseRewardPool.queueNewRewards(amount);
+    function _depositRewards(uint256[2] memory amounts) internal {
+        amounts[0] = bound(amounts[0], 0, 10_000_000 * 10**(decimalReward[0]));
+        amounts[1] = bound(amounts[1], 0, 10_000_000 * 10**(decimalReward[1]));
+
+        deal(address(_CRV), address(curveStrategy), amounts[0]);
+        deal(address(_SDT), address(sdtDistributor), amounts[1]);
+        // fake a non null incentives program
+        vm.startPrank(address(curveStrategy));
+        _CRV.approve(address(_gauge), amounts[0]);
+        _gauge.deposit_reward_token(address(_CRV), amounts[0]);
+        vm.stopPrank();
+
+        vm.startPrank(address(sdtDistributor));
+        _SDT.approve(address(_gauge), amounts[1]);
+        _gauge.deposit_reward_token(address(_SDT), amounts[1]);
+        vm.stopPrank();
     }
 
     function _rewardsToBeClaimed(IERC20 _rewardToken) internal view returns (uint256 amount) {
-        amount = baseRewardPool.earned(address(staker));
-        if (_rewardToken == IERC20(address(_CVX))) {
-            // Computation made in the Convex token when claiming rewards check
-            // https://etherscan.io/address/0x4e3fbd56cd56c3e72c1403e103b45db9da5b9d2b#code
-            uint256 totalSupply = _CVX.totalSupply();
-            uint256 cliff = totalSupply / _CVX.reductionPerCliff();
-            uint256 totalCliffs = _CVX.totalCliffs();
-            if (cliff < totalCliffs) {
-                uint256 reduction = totalCliffs - cliff;
-                amount = (amount * reduction) / totalCliffs;
-
-                uint256 amtTillMax = _CVX.maxSupply() - totalSupply;
-                if (amount > amtTillMax) {
-                    amount = amtTillMax;
-                }
-            }
-        }
+        amount = _gauge.claimable_reward(address(staker), address(_rewardToken));
     }
 }

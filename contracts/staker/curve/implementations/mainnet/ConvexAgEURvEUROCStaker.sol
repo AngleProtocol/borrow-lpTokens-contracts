@@ -6,7 +6,7 @@ import "../../ConvexTokenStaker.sol";
 /// @title ConvexTokenStaker
 /// @author Angle Labs, Inc.
 /// @dev Implementation of `ConvexTokenStaker` for the agEUR-EUROC pool
-contract ConvexTokenAgEURvEUROCStaker is ConvexTokenStaker {
+contract ConvexAgEURvEUROCStaker is ConvexTokenStaker {
     // ============================= VIRTUAL FUNCTIONS =============================
 
     /// @inheritdoc BorrowStaker

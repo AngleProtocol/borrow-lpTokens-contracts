@@ -15,5 +15,8 @@ interface ILiquidityGauge is IERC20 {
     function claim_rewards_for(address _addr, address _receiver) external;
 
     // solhint-disable-next-line
+    function claimable_reward(address _addr, address _reward_token) external view returns (uint256 amount);
+
+    // solhint-disable-next-line
     function deposit_reward_token(address _reward_token, uint256 _amount) external;
 }

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.17;
 
-import "../swapper/LevSwapper/curve/implementations/mainnet/CurveLevSwapperFRAXBP.sol";
+import "../../../../swapper/LevSwapper/curve/implementations/mainnet/CurveLevSwapperFRAXBP.sol";
 
 /// @title MockCurveLevSwapper2Tokens
 /// @author Angle Labs, Inc.
 /// @notice Implement a leverage swapper to gain/reduce exposure to the FRAXBP Curve LP token
-contract MockCurveLevSwapper2Tokens is CurveLevSwapperFRAXBP {
+contract MockCurveLevSwapperFRAXBP is CurveLevSwapperFRAXBP {
     IBorrowStaker internal _angleStaker;
 
     constructor(
