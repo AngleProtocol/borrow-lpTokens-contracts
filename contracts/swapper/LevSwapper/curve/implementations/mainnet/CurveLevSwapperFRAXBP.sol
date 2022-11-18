@@ -6,7 +6,7 @@ import "../../CurveLevSwapper2Tokens.sol";
 /// @title CurveLevSwapperFRAXBP
 /// @author Angle Lasb, Inc
 /// @notice Implement a leverage swapper to gain/reduce exposure to the FRAXBP Curve LP token
-contract CurveLevSwapperFraxBP is CurveLevSwapper2Tokens {
+contract CurveLevSwapperFRAXBP is CurveLevSwapper2Tokens {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,

@@ -4,7 +4,7 @@ pragma solidity 0.8.17;
 import "../swapper/LevSwapper/curve/CurveLevSwapper5TokensWithBP.sol";
 import "../interfaces/external/curve/ITricrypto3.sol";
 
-/// @title CurveLevSwapperFRAXBP
+/// @title CurveLevSwapperTricrypto3
 /// @author Angle Labs, Inc.
 /// @notice Implement a leverage swapper to gain/reduce exposure to the Polygon tricrypto2 Curve LP token
 contract MockCurveLevSwapper5TokensWithBP is CurveLevSwapper5TokensWithBP {
