@@ -8,6 +8,7 @@ contract PolygonConstants {
     address public constant GOVERNOR = 0xdA2D2f638D6fcbE306236583845e5822554c02EA;
     address public constant GUARDIAN = 0x3b9D32D0822A6351F415BeaB05251c1457FF6f8D;
     address public constant PROXY_ADMIN = 0xBFca293e17e067e8aBdca30A5D35ADDd0cBaE6D6;
+    address public constant PROXY_ADMIN_GUARDIAN = 0x10Be886C0C93615D1d109Be6C9415eeA34Fe8b57;
     address public constant CORE_BORROW = 0x78754109cb73772d70A6560297037657C2AF51b8;
 
     address public constant ANGLE_ROUTER = 0x892bf71463Bd9fa57f3c2266aB74dbe1B96DECEa;
@@ -21,6 +22,6 @@ contract PolygonConstants {
     uint64 public constant BASE_PARAMS = 10**9;
 
     function deployUpgradeable(address implementation, bytes memory data) public returns (address) {
-        return address(new TransparentUpgradeableProxy(implementation, PROXY_ADMIN, data));
+        return address(new TransparentUpgradeableProxy(implementation, PROXY_ADMIN_GUARDIAN, data));
     }
 }

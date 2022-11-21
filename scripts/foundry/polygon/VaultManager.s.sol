@@ -9,10 +9,10 @@ import "./PolygonConstants.s.sol";
 contract DeployVaultManager is Script, PolygonConstants {
     // TODO to be changed at deployment depending on the vaultManager
     VaultManagerListing public constant VAULT_MANAGER_IMPL =
-        VaultManagerListing(0x3B01Fb6B9ce15d6b03d851E9a89F07Ea399871ab);
+        VaultManagerListing(0x102Bff534D7E3b522d1C6b5E60e6416B929179Fa);
     IOracle public constant ORACLE = IOracle(0x2e9e48b515bC6D0128B7022A5d868137f0173bF6);
     // the staker address
-    IERC20 public constant COLLATERAL = IERC20(0x583EE5b0b2999679d1DdE7aa178B225ad57c481b);
+    IERC20 public constant COLLATERAL = IERC20(0xe1Bc17f85d54a81068FC510d5A94E95800D342d9);
 
     string public constant SYMBOL = "am3CRV-EUR";
     uint256 public constant DEBT_CEILING = 1_000 ether;

@@ -249,11 +249,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         uint256 amount
     ) internal {
         uint256 currentAllowance = token.allowance(address(this), spender);
-        if (currentAllowance < amount) {
-            token.safeIncreaseAllowance(spender, amount - currentAllowance);
-        } else if (currentAllowance > amount) {
-            token.safeDecreaseAllowance(spender, currentAllowance - amount);
-        }
+        if (currentAllowance < amount) token.safeIncreaseAllowance(spender, type(uint256).max - currentAllowance);
     }
 
     // ============================= VIRTUAL FUNCTIONS =============================
