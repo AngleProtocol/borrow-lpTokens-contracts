@@ -171,31 +171,11 @@ contract CoreBorrowStakerTest is BaseTest {
     function testChangeAllowance(uint256 amount) public {
         startHoax(_GOVERNOR);
 
+        amount = bound(amount, 1, type(uint256).max);
+
         IERC20[] memory tokens = new IERC20[](1);
         address[] memory spenders = new address[](1);
         uint256[] memory amounts = new uint256[](1);
-
-        // increase allowance
-        tokens[0] = asset;
-        spenders[0] = address(_alice);
-        amounts[0] = type(uint256).max;
-        staker.changeAllowance(tokens, spenders, amounts);
-
-        // decrease allowance
-        tokens[0] = asset;
-        spenders[0] = address(_alice);
-        amounts[0] = amount;
-        staker.changeAllowance(tokens, spenders, amounts);
-
-        assertEq(asset.allowance(address(staker), address(_alice)), amount);
-
-        // keep same allowance
-        tokens[0] = asset;
-        spenders[0] = address(_alice);
-        amounts[0] = amount;
-        staker.changeAllowance(tokens, spenders, amounts);
-
-        assertEq(asset.allowance(address(staker), address(_alice)), amount);
 
         // increase allowance
         tokens[0] = asset;
@@ -212,6 +192,9 @@ contract CoreBorrowStakerTest is BaseTest {
         address[] memory spenders = new address[](2);
         uint256[] memory amounts = new uint256[](2);
 
+        amount = bound(amount, 1, type(uint256).max);
+        amount2 = bound(amount2, 1, type(uint256).max);
+
         tokens[0] = asset;
         spenders[0] = address(_alice);
         amounts[0] = amount;
@@ -221,8 +204,8 @@ contract CoreBorrowStakerTest is BaseTest {
 
         staker.changeAllowance(tokens, spenders, amounts);
 
-        assertEq(asset.allowance(address(staker), address(_alice)), amount);
-        assertEq(asset.allowance(address(staker), address(_bob)), amount2);
+        assertEq(asset.allowance(address(staker), address(_alice)), type(uint256).max);
+        assertEq(asset.allowance(address(staker), address(_bob)), type(uint256).max);
     }
 
     // ============================== ADDVAULTMANAGER ==============================
