@@ -5,7 +5,7 @@ import "../CurveLevSwapperAaveBP.sol";
 
 /// @title CurveLevSwapperAaveUSDBP
 /// @author Angle Labs, Inc.
-/// @notice Implement a leverage swapper to gain/reduce exposure to the Polygon Curve AaveBP LP token
+/// @notice Implements a leverage swapper to gain/reduce exposure to the Polygon Curve AaveBP LP token
 /// with a moke staker
 contract MockCurveLevSwapperAaveBP is CurveLevSwapperAaveBP {
     constructor(

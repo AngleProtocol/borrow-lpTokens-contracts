@@ -5,7 +5,7 @@ import "../../CurveLevSwapper3TokensWithBP.sol";
 
 /// @title CurveLevSwapperFRAXBP
 /// @author Angle Labs, Inc.
-/// @notice Implement a leverage swapper to gain/reduce exposure to the Polygon tricrypto2 Curve LP token
+/// @notice Implements a leverage swapper to gain/reduce exposure to the Polygon tricrypto2 Curve LP token
 contract CurveLevSwapperTricrypto3 is CurveLevSwapper3TokensWithBP {
     constructor(
         ICoreBorrow _core,

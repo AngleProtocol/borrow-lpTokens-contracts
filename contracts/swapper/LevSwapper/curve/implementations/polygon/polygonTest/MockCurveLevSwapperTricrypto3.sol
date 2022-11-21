@@ -5,7 +5,7 @@ import "../CurveLevSwapperTricrypto3.sol";
 
 /// @title CurveLevSwapperTricrypto3
 /// @author Angle Labs, Inc
-/// @notice Implement a leverage swapper to gain/reduce exposure to the Polygon tricrypto2 Curve LP token
+/// @notice Implements a leverage swapper to gain/reduce exposure to the Polygon tricrypto2 Curve LP token
 /// with a moke staker
 contract MockCurveLevSwapperTricrypto3 is CurveLevSwapperTricrypto3 {
     constructor(

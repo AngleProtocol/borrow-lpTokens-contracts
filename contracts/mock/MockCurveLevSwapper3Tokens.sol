@@ -5,7 +5,7 @@ import "../swapper/LevSwapper/curve/implementations/polygon/CurveLevSwapperAaveB
 
 /// @title CurveLevSwapperAavePool
 /// @author Angle Labs, Inc.
-/// @notice Implement a leverage swapper to gain/reduce exposure to the Aave BP (amUSDC - amUSDT - amDAI) Curve LP token
+/// @notice Implements a leverage swapper to gain/reduce exposure to the Aave BP (amUSDC - amUSDT - amDAI) Curve LP token
 contract MockCurveLevSwapper3Tokens is CurveLevSwapperAaveBP {
     IBorrowStaker internal _angleStaker;
 
