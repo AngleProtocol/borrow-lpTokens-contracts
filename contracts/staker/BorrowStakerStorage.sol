@@ -27,6 +27,7 @@ contract BorrowStakerStorage is Initializable {
 
     /// @notice Token decimal
     uint8 internal _decimals;
+    /// @notice Last time rewards were claimed by this contract
     uint32 internal _lastRewardsClaimed;
     /// @notice List of all the vaultManager which have the staker as collateral
     IVaultManagerListing[] internal _vaultManagers;

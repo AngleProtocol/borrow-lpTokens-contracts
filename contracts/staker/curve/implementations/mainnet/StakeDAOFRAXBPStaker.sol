@@ -5,7 +5,7 @@ import "../../StakeDAOTokenStaker.sol";
 
 /// @title StakeDAOFRAXBPStaker
 /// @author Angle Labs, Inc.
-/// @dev Implementation of `StakeDAOTokenStaker` for the FRAX BP pool
+/// @dev Implementation of `StakeDAOTokenStaker` for the FRAXBP pool
 contract StakeDAOFRAXBPStaker is StakeDAOTokenStaker {
     // ============================= VIRTUAL FUNCTIONS =============================
     /// @inheritdoc BorrowStaker

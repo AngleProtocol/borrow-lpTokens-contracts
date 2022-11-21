@@ -5,7 +5,7 @@ import "../swapper/LevSwapper/curve/implementations/polygon/CurveLevSwapperTricr
 
 /// @title CurveLevSwapperTricrypto3
 /// @author Angle Labs, Inc.
-/// @notice Implement a leverage swapper to gain/reduce exposure to the Polygon tricrypto3 Curve LP token
+/// @notice Implements a leverage swapper to gain/reduce exposure to the Polygon tricrypto3 Curve LP token
 contract MockCurveLevSwapper3TokensWithBP is CurveLevSwapperTricrypto3 {
     IBorrowStaker internal _angleStaker;
 

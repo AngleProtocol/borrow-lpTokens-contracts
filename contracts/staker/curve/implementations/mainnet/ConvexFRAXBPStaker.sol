@@ -5,7 +5,7 @@ import "../../ConvexTokenStaker.sol";
 
 /// @title ConvexFRAXBPStaker
 /// @author Angle Labs, Inc.
-/// @dev Implementation of `ConvexTokenStaker` for the FRAX BP pool
+/// @dev Implementation of `ConvexTokenStaker` for the FRAXBP pool
 contract ConvexFRAXBPStaker is ConvexTokenStaker {
     // ============================= VIRTUAL FUNCTIONS =============================
 

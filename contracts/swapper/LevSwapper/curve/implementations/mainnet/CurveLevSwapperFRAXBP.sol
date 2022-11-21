@@ -4,8 +4,8 @@ pragma solidity 0.8.17;
 import "../../CurveLevSwapper2Tokens.sol";
 
 /// @title CurveLevSwapperFRAXBP
-/// @author Angle Lasb, Inc
-/// @notice Implement a leverage swapper to gain/reduce exposure to the FRAXBP Curve LP token
+/// @author Angle Labs, Inc
+/// @notice Implements a leverage swapper to gain/reduce exposure to the FRAXBP Curve LP token
 contract CurveLevSwapperFRAXBP is CurveLevSwapper2Tokens {
     constructor(
         ICoreBorrow _core,

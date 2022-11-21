@@ -5,7 +5,7 @@ import "../../ConvexTokenStaker.sol";
 
 /// @title ConvexTricrypto2Staker
 /// @author Angle Labs, Inc.
-/// @dev Implementation of `ConvexTokenStaker` for the tricrypto2 pool
+/// @dev Implementation of `ConvexTokenStaker` for the Tricrypto2 pool
 contract ConvexTricrypto2Staker is ConvexTokenStaker {
     // ============================= VIRTUAL FUNCTIONS =============================
 

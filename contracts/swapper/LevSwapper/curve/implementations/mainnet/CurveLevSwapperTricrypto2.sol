@@ -4,8 +4,8 @@ pragma solidity 0.8.17;
 import "../../CurveLevSwapper3Tokens.sol";
 
 /// @title CurveLevSwapperTricrypto2
-/// @author Angle Lasb, Inc
-/// @notice Implement a leverage swapper to gain/reduce exposure to the Tricrypto2 Curve LP token
+/// @author Angle Labs, Inc
+/// @notice Implements a leverage swapper to gain/reduce exposure to the Tricrypto2 Curve LP token
 contract CurveLevSwapperTricrypto2 is CurveLevSwapper3Tokens {
     constructor(
         ICoreBorrow _core,

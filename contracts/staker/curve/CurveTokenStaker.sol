@@ -7,7 +7,7 @@ import "../BorrowStaker.sol";
 
 /// @title CurveTokenStaker
 /// @author Angle Labs, Inc.
-/// @dev Borrow staker adapted to curve LP token deposited on the liquidity gauge associated
+/// @dev Borrow staker adapted to Curve LP token deposited on the liquidity gauge associated
 abstract contract CurveTokenStaker is BorrowStaker {
     /// @notice Curve-related constants
     IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);

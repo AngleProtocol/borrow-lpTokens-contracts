@@ -5,7 +5,7 @@ import "../../../../swapper/LevSwapper/curve/implementations/mainnet/CurveLevSwa
 
 /// @title MockCurveLevSwapper2Tokens
 /// @author Angle Labs, Inc.
-/// @notice Implement a leverage swapper to gain/reduce exposure to the FRAXBP Curve LP token
+/// @notice Implements a leverage swapper to gain/reduce exposure to the FRAXBP Curve LP token
 contract MockCurveLevSwapperFRAXBP is CurveLevSwapperFRAXBP {
     IBorrowStaker internal _angleStaker;
 
