@@ -2,14 +2,13 @@
 pragma solidity 0.8.17;
 
 import "../../interfaces/external/stakeDAO/IStakeCurveVault.sol";
-import "../../interfaces/external/stakeDAO/IClaimerRewards.sol";
 import "../../interfaces/external/stakeDAO/ILiquidityGauge.sol";
 
 import "../BorrowStaker.sol";
 
-/// @title ConvexTokenStaker
+/// @title StakeDAOTokenStaker
 /// @author Angle Labs, Inc.
-/// @dev Borrow staker adapted to Curve LP tokens deposited on Convex
+/// @dev Borrow staker adapted to Curve LP tokens deposited on StakeDAO
 abstract contract StakeDAOTokenStaker is BorrowStaker {
     IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
     IERC20 private constant _SDT = IERC20(0x73968b9a57c6E53d41345FD57a6E6ae27d6CDB2F);
@@ -24,7 +23,7 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
         address,
         uint256 amount
     ) internal override {
-        // Stake on Convex if it is a deposit
+        // Stake on StakeDAO if it is a deposit
         if (from == address(0)) {
             // Approve the vault contract for the Curve LP tokens
             _changeAllowance(asset(), address(_vault()), amount);

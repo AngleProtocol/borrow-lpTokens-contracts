@@ -1,10 +1,16 @@
-# <img src="logo.svg" alt="Angle Borrowing Module" height="40px"> Angle Project Boilerplate
+# <img src="logo.svg" alt="Angle Borrowing Module" height="40px"> Angle Borrowing Module - Productive Assets
 
-[![CI](https://github.com/AngleProtocol/boilerplate/workflows/CI/badge.svg)](https://github.com/AngleProtocol/boilerplate/actions?query=workflow%3ACI)
+[![CI](https://github.com/AngleProtocol/borrow-stakedToken/workflows/CI/badge.svg)](https://github.com/AngleProtocol/borrow-stakedToken/actions?query=workflow%3ACI)
 
-This repository proposes a template that mixes hardhat and foundry frameworks. It also provides templates for EVM compatible smart contracts (in `./contracts/examples`), tests and deployment scripts.
+## Documentation
+
+This repository contains the contracts of the Angle Protocol Borrowing module adapted to productive assets (e.g. staked tokens that can receive rewards).
+
+For more details about what Angle or the Borrowing module are, you can check Angle documentation [here](https://docs.angle.money) or the contracts for the Borrowing module of the protocol using vanilla collateral assets [here](https://github.com/AngleProtocol/angle-borrow).
 
 ## Starting
+
+This repo contains the contracts and tests associated to this extension of the Borrowing module. Follow the steps described below if you want to be able to use it by yourself.
 
 ### Install packages
 
@@ -30,11 +36,11 @@ Warning: always keep your confidential information safe.
 
 ## Headers
 
-To automatically create headers, follow: https://github.com/Picodes/headers
+To automatically create headers, follow: <https://github.com/Picodes/headers>
 
 ## Hardhat Command line completion
 
-Follow these instructions to have hardhat command line arguments completion: https://hardhat.org/hardhat-runner/docs/guides/command-line-completion
+Follow these instructions to have hardhat command line arguments completion: <https://hardhat.org/hardhat-runner/docs/guides/command-line-completion>
 
 ## Foundry Installation
 

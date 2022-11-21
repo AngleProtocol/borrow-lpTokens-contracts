@@ -91,6 +91,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @notice Claims earned rewards for user `from`
     /// @param from Address to claim for
     /// @return rewardAmounts Amounts of each reward token claimed by the user
+    //solhint-disable-next-line
     function claim_rewards(address from) external returns (uint256[] memory) {
         address[] memory checkpointUser = new address[](1);
         checkpointUser[0] = address(from);
@@ -151,12 +152,10 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         _vaultManagers.push(vaultManager);
     }
 
-    /// @notice Allows to recover any ERC20 token, including the asset managed by the reactor
+    /// @notice Allows to recover any ERC20 token
     /// @param tokenAddress Address of the token to recover
     /// @param to Address of the contract to send collateral to
     /// @param amountToRecover Amount of collateral to transfer
-    /// @dev Can be used to handle partial liquidation and debt repayment in case it is needed: in this
-    /// case governance can withdraw assets, swap in stablecoins to repay debt
     function recoverERC20(
         address tokenAddress,
         address to,
@@ -186,17 +185,16 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         if (_to == address(0)) _withdrawFromProtocol(amount);
     }
 
-    /// @notice Claims contracts rewards and checkpoints for different `accounts`
+    /// @notice Claims contracts rewards and checkpoints rewards for different `accounts`
     /// @param accounts Array of accounts we should checkpoint rewards for
     /// @param _claim Whether to claim for `accounts` the pending rewards
     /// @return rewardAmounts An array representing the rewards earned by the first address in the `accounts` array
     /// on each of the reward token
     /// @dev `rewardAmounts` is a one dimension array because n-dimensional arrays are only supported by internal functions
     /// The `accounts` array need to be ordered to get the rewards for a specific account
+    /// @dev This function assumes that rewards are not distributed in one time without linear vesting. If not, rewards
+    /// could be sent to the wrong owners
     function _checkpoint(address[] memory accounts, bool _claim) internal returns (uint256[] memory rewardAmounts) {
-        // Cautious with this line, we need to be sure that rewards are not distributed in one time without
-        // linear vesting otherwise reward can be sent to the wrong owners.
-        // This should not be a hard requirement as this kind of distribution seems disastrous and front runnable
         if (_lastRewardsClaimed != block.timestamp) {
             _claimRewards();
             _lastRewardsClaimed = uint32(block.timestamp);

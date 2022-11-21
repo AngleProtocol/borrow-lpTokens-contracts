@@ -104,6 +104,6 @@ abstract contract ConvexTokenStaker is BorrowStaker {
     /// @notice Address of the Convex contract on which to claim rewards
     function baseRewardPool() public pure virtual returns (IConvexBaseRewardPool);
 
-    /// @notice ID of the pool associated to the AMO on Convex
+    /// @notice ID of the pool associated to the LP token on Convex
     function poolPid() public pure virtual returns (uint256);
 }

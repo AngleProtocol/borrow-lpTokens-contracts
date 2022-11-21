@@ -5,7 +5,7 @@ import "../../StakeDAOTokenStaker.sol";
 
 /// @title StakeDAOTricrypto2Staker
 /// @author Angle Labs, Inc.
-/// @dev Implementation of `StakeDAOTokenStaker` for the tricrypto2 pool
+/// @dev Implementation of `StakeDAOTokenStaker` for the Tricrypto2 pool
 contract StakeDAOTricrypto2Staker is StakeDAOTokenStaker {
     // ============================= VIRTUAL FUNCTIONS =============================
     /// @inheritdoc BorrowStaker
