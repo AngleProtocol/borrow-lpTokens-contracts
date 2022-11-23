@@ -29,7 +29,7 @@ contract ConvexLPTokenStakerTest is BaseTest {
     uint8[] public decimalReward;
     uint256[] public rewardAmount;
 
-    uint256 public constant WITHDRAW_LENGTH = 10;
+    uint256 public constant WITHDRAW_LENGTH = 3;
 
     function setUp() public override {
         _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 15775969);

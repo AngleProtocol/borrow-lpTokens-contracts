@@ -22,7 +22,7 @@ contract MockCurveTokenStakerAaveBP is BorrowStaker {
         if (from == address(0)) {
             // Deposit the sanTokens into the liquidity gauge contract
             _changeAllowance(asset(), address(liquidityGauge()), amount);
-            liquidityGauge().deposit(amount, address(this), true);
+            liquidityGauge().deposit(amount, address(this), false);
         }
     }
 
