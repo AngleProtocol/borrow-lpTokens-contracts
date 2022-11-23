@@ -3,6 +3,7 @@
 pragma solidity 0.8.17;
 
 import "./BorrowStakerStorage.sol";
+import "hardhat/console.sol";
 
 /// @title BorrowStaker
 /// @author Angle Labs, Inc.
@@ -36,6 +37,12 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @notice Checks whether the `msg.sender` has the governor role or the guardian role
     modifier onlyGovernorOrGuardian() {
         if (!coreBorrow.isGovernorOrGuardian(msg.sender)) revert NotGovernorOrGuardian();
+        _;
+    }
+
+    /// @notice Checks whether the `msg.sender` has the governor role or the guardian role
+    modifier onlyVaultManagers() {
+        if (isCompatibleVaultManager[msg.sender] == 0) revert NotVaultManager();
         _;
     }
 
@@ -110,16 +117,10 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param from Address to check the full balance of
     /// @dev The returned value takes into account the balance currently held by `from` and the balance held by `VaultManager`
     /// contracts on behalf of `from`
-    function totalBalanceOf(address from) public view returns (uint256 totalBalance) {
+    function totalBalanceOf(address from) public view returns (uint256) {
         if (isCompatibleVaultManager[from] == 1) return 0;
         // If `from` is one of the whitelisted vaults, do not consider the rewards to not double count balances
-        IVaultManagerListing[] memory vaultManagerContracts = _vaultManagers;
-        totalBalance = balanceOf(from);
-        uint256 vaultManagerContractsLength = vaultManagerContracts.length;
-        for (uint256 i; i < vaultManagerContractsLength; ++i) {
-            totalBalance += vaultManagerContracts[i].getUserCollateral(from);
-        }
-        return totalBalance;
+        return balanceOf(from) + delegatedBalanceOf[from];
     }
 
     /// @notice Returns the exact amount that will be received if calling `claim_rewards(from)` for a specific reward token
@@ -166,6 +167,24 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         emit Recovered(tokenAddress, to, amountToRecover);
     }
 
+    // ============================ RESTRICTED FUNCTIONS ===========================
+
+    /// @notice Checkpoints the rewards earned by user `from` and then update its `totalBalance`
+    /// @param from Address to checkpoint for
+    /// @param amount Collateral amount balance increase/decrease for `from`
+    /// @param add Whether the balance should be increased/decreased
+    function checkpointFromVaultManager(
+        address from,
+        uint256 amount,
+        bool add
+    ) external onlyVaultManagers {
+        address[] memory checkpointUser = new address[](1);
+        checkpointUser[0] = address(from);
+        _checkpoint(checkpointUser, false);
+        if (add) delegatedBalanceOf[from] += amount;
+        else delegatedBalanceOf[from] -= amount;
+    }
+
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable
@@ -180,7 +199,9 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         address[] memory checkpointUser = new address[](2);
         checkpointUser[0] = _from;
         checkpointUser[1] = _to;
+        console.log("before the checkpoint");
         _checkpoint(checkpointUser, _claim);
+        console.log("after the checkpoint");
         // If the user is trying to withdraw we need to withdraw from the other protocol
         if (_to == address(0)) _withdrawFromProtocol(amount);
     }
@@ -221,6 +242,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
                 BASE_PARAMS;
             uint256 previousClaimable = pendingRewardsOf[rewardTokens[i]][from];
             if (_claim && previousClaimable + newClaimable != 0) {
+                console.log("new balance staker ", rewardTokens[i].balanceOf(address(this)));
                 rewardTokens[i].safeTransfer(from, previousClaimable + newClaimable);
                 pendingRewardsOf[rewardTokens[i]][from] = 0;
             } else if (newClaimable != 0) {

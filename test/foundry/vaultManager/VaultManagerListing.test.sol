@@ -50,8 +50,8 @@ contract VaultManagerListingTest is BaseTest {
     uint8 public decimalReward = 6;
     uint256 public maxTokenAmount = 10**15 * 10**decimalToken;
     uint256 public rewardAmount = 10**2 * 10**(decimalReward);
-    uint256 public constant TRANSFER_LENGTH = 50;
-    uint256 public constant REWARDS_LENGTH = 50;
+    uint256 public constant TRANSFER_LENGTH = 150;
+    uint256 public constant REWARDS_LENGTH = 150;
 
     function setUp() public override {
         super.setUp();
@@ -233,9 +233,9 @@ contract VaultManagerListingTest is BaseTest {
                     : _hacker;
                 assertEq(
                     collateralVaultAmounts[k] + collateralIdleAmounts[k],
-                    staker.balanceOf(checkedAccount) + _contractVaultManager.getUserCollateral(checkedAccount)
+                    staker.balanceOf(checkedAccount) + staker.delegatedBalanceOf(checkedAccount)
                 );
-                assertEq(collateralVaultAmounts[k], _contractVaultManager.getUserCollateral(checkedAccount));
+                assertEq(collateralVaultAmounts[k], staker.delegatedBalanceOf(checkedAccount));
                 assertEq(collateralIdleAmounts[k], staker.balanceOf(checkedAccount));
                 assertEq(collateralVaultAmounts[k] + collateralIdleAmounts[k], staker.totalBalanceOf(checkedAccount));
 
@@ -253,12 +253,13 @@ contract VaultManagerListingTest is BaseTest {
 
     function testBorrowStakerWithVaultManager(
         uint256[REWARDS_LENGTH] memory accounts,
-        uint256[TRANSFER_LENGTH] memory initiators,
+        uint256[REWARDS_LENGTH] memory initiators,
         uint256[REWARDS_LENGTH] memory tos,
         uint256[REWARDS_LENGTH] memory actionTypes,
         uint256[REWARDS_LENGTH] memory amounts
     ) public {
         uint256[5] memory pendingRewards;
+        // deal(address(rewardToken), address(staker), type(uint256).max);
 
         for (uint256 i; i < amounts.length; ++i) {
             vm.warp(block.number + 1);
