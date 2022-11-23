@@ -3,7 +3,6 @@
 pragma solidity 0.8.17;
 
 import "./BorrowStakerStorage.sol";
-import "hardhat/console.sol";
 
 /// @title BorrowStaker
 /// @author Angle Labs, Inc.
@@ -199,9 +198,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         address[] memory checkpointUser = new address[](2);
         checkpointUser[0] = _from;
         checkpointUser[1] = _to;
-        console.log("before the checkpoint");
         _checkpoint(checkpointUser, _claim);
-        console.log("after the checkpoint");
         // If the user is trying to withdraw we need to withdraw from the other protocol
         if (_to == address(0)) _withdrawFromProtocol(amount);
     }
@@ -242,7 +239,6 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
                 BASE_PARAMS;
             uint256 previousClaimable = pendingRewardsOf[rewardTokens[i]][from];
             if (_claim && previousClaimable + newClaimable != 0) {
-                console.log("new balance staker ", rewardTokens[i].balanceOf(address(this)));
                 rewardTokens[i].safeTransfer(from, previousClaimable + newClaimable);
                 pendingRewardsOf[rewardTokens[i]][from] = 0;
             } else if (newClaimable != 0) {
