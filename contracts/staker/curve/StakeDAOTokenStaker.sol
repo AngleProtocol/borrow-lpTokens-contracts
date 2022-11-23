@@ -28,7 +28,7 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
             // Approve the vault contract for the Curve LP tokens
             _changeAllowance(asset(), address(_vault()), amount);
             // Deposit the Curve LP tokens into the vault contract and stake
-            _vault().deposit(address(this), amount, false);
+            _vault().deposit(address(this), amount, true);
         }
     }
 
