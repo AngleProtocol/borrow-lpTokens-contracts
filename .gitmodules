@@ -4,3 +4,5 @@
 [submodule "lib/borrow-contracts"]
 	path = lib/borrow-contracts
 	url = https://github.com/AngleProtocol/borrow-contracts
+[submodule "/Users/picodes/Documents/Angle/borrow-lpTokens-contracts/lib/borrow-contracts"]
+	branch = main
