@@ -6,3 +6,6 @@
 	url = https://github.com/AngleProtocol/borrow-contracts
 [submodule "/Users/picodes/Documents/Angle/borrow-lpTokens-contracts/lib/borrow-contracts"]
 	branch = main
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
