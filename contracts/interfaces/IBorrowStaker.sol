@@ -18,5 +18,6 @@ interface IBorrowStaker is IBorrowStakerCheckpoint, IERC20 {
         address to
     ) external;
 
+    //solhint-disable-next-line
     function claim_rewards(address user) external returns (uint256[] memory);
 }
