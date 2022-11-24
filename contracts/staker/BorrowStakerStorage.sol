@@ -34,7 +34,7 @@ contract BorrowStakerStorage is Initializable {
     /// @notice Maps an address to whether it is a compatible `VaultManager` that has this contract
     /// as a collateral
     mapping(address => uint256) public isCompatibleVaultManager;
-    /// @notice Maps the owned collateral on any whitelisted `VaultManager` to an address
+    /// @notice Maps an address to the collateral it owns across all whitelisted VaultManager
     mapping(address => uint256) public delegatedBalanceOf;
     /// @notice Maps each reward token to a track record of cumulated rewards
     mapping(IERC20 => uint256) public integral;

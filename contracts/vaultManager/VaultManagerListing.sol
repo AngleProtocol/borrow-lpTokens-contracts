@@ -58,7 +58,7 @@ contract VaultManagerListing is VaultManager {
     }
 
     /// @notice Checkpoint rewards for `user` in the `staker` contract
-    /// @param user Address to look out for the vault list
+    /// @param user Address for which balance should be updated
     /// @dev Whenever there is an internal transfer or a transfer from the `vaultManager`,
     /// we need to update the rewards to correctly track everyone's claim
     function _checkpointWrapper(
