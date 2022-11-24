@@ -2,6 +2,7 @@
 
 pragma solidity 0.8.17;
 
+import { IBorrowStakerCheckpoint } from "../interfaces/IBorrowStaker.sol";
 import "../interfaces/IVaultManager.sol";
 import "../interfaces/ITreasury.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -66,6 +67,9 @@ contract MockVaultManager {
         uint256 collateralAmount,
         uint256 vaultID
     ) external {
+        if (vaultData[vaultID].collateralAmount > collateralAmount)
+            _checkpointWrapper(ownerOf[vaultID], vaultData[vaultID].collateralAmount - collateralAmount, false);
+        else _checkpointWrapper(ownerOf[vaultID], collateralAmount - vaultData[vaultID].collateralAmount, true);
         vaultData[vaultID].normalizedDebt = normalizedDebt;
         vaultData[vaultID].collateralAmount = collateralAmount;
     }
@@ -105,6 +109,18 @@ contract MockVaultManager {
         token;
         return 0;
     }
+
+    /// @notice Checkpoint rewards for `user` in the `staker` contract
+    /// @param user Address for which balance should be updated
+    /// @dev Whenever there is an internal transfer or a transfer from the `vaultManager`,
+    /// we need to update the rewards to correctly track everyone's claim
+    function _checkpointWrapper(
+        address user,
+        uint256 amount,
+        bool add
+    ) internal {
+        IBorrowStakerCheckpoint(address(collateral)).checkpointFromVaultManager(user, amount, add);
+    }
 }
 
 contract MockVaultManagerListing is MockVaultManager {
@@ -127,7 +143,10 @@ contract MockVaultManagerListing is MockVaultManager {
     }
 
     function setOwner(uint256 vaultID, address owner) external override {
+        uint256 collateralAmount = vaultData[vaultID].collateralAmount;
+        _checkpointWrapper(ownerOf[vaultID], collateralAmount, false);
         if (ownerOf[vaultID] != address(0)) _removeVaultFromList(ownerOf[vaultID], vaultID);
+        _checkpointWrapper(owner, collateralAmount, true);
         _ownerListVaults[owner].push(vaultID);
         ownerOf[vaultID] = owner;
     }
