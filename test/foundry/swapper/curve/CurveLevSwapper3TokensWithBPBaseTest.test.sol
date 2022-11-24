@@ -1,5 +1,5 @@
 // // SPDX-License-Identifier: UNLICENSED
-// pragma solidity 0.8.17;
+pragma solidity 0.8.17;
 
 // import "../../BaseTest.test.sol";
 // import { AToken } from "../../../../contracts/interfaces/external/aave/AToken.sol";
@@ -40,14 +40,24 @@
 //     address internal constant _AAVE_LENDING_POOL = 0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf;
 
 //     // payload to swap 100000 USDC for amUSDC on 1inch
-//     bytes internal constant _PAYLOAD_USDC =
-//         hex"7c0252000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000001800000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa841740000000000000000000000001a13f4ca1d028320a707d99520abfefca3998b7f0000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf0000000000000000000000000b7108E278c2E77E4e4f5c93d9E5e9A11AC837FC000000000000000000000000000000000000000000000000000000174876e800000000000000000000000000000000000000000000000000000000170cdc1e00000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011c0000000000000000000000000000000000000000000000000000de0000b051208dff5e27ea6b7ac08ebfdf9eb090f32ee9a30fcf2791bca1f2de4661ed88a30c99a7a9449aa841740024e8eda9df0000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa8417400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000000000000000000000000000000000000000044d80a06c4eca271a13f4ca1d028320a707d99520abfefca3998b7f1111111254fb6c44bac0bed2854e76f90643097d000000000000000000000000000000000000000000000000000000174876e80000000000cfee7c08";
+//     bytes internal constant _PAYLOAD_USDC_PRE =
+//         hex"7c0252000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000001800000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa841740000000000000000000000001a13f4ca1d028320a707d99520abfefca3998b7f0000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000";
+//     bytes internal constant _PAYLOAD_USDC_POST =
+//         hex"000000000000000000000000000000000000000000000000000000174876e800000000000000000000000000000000000000000000000000000000170cdc1e00000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011c0000000000000000000000000000000000000000000000000000de0000b051208dff5e27ea6b7ac08ebfdf9eb090f32ee9a30fcf2791bca1f2de4661ed88a30c99a7a9449aa841740024e8eda9df0000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa8417400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000000000000000000000000000000000000000044d80a06c4eca271a13f4ca1d028320a707d99520abfefca3998b7f1111111254fb6c44bac0bed2854e76f90643097d000000000000000000000000000000000000000000000000000000174876e80000000000cfee7c08";
 //     // payload to swap 100000 DAI for amDAI on 1inch
-//     bytes internal constant _PAYLOAD_DAI =
-//         hex"7c0252000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000001800000000000000000000000008f3cf7ad23cd3cadbd9735aff958023239c6a06300000000000000000000000027f8d03b3a2196956ed754badc28d73be8830a6e0000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf0000000000000000000000000b7108E278c2E77E4e4f5c93d9E5e9A11AC837FC00000000000000000000000000000000000000000000152d02c7e14af68000000000000000000000000000000000000000000000000014f6ccfe338517e00000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011c0000000000000000000000000000000000000000000000000000de0000b051208dff5e27ea6b7ac08ebfdf9eb090f32ee9a30fcf8f3cf7ad23cd3cadbd9735aff958023239c6a0630024e8eda9df0000000000000000000000008f3cf7ad23cd3cadbd9735aff958023239c6a06300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000000000000000000000000000000000000000044d80a06c4eca2727f8d03b3a2196956ed754badc28d73be8830a6e1111111254fb6c44bac0bed2854e76f90643097d00000000000000000000000000000000000000000000152d02c7e14af680000000000000cfee7c08";
+//     bytes internal constant _PAYLOAD_DAI_PRE =
+//         hex"7c0252000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000001800000000000000000000000008f3cf7ad23cd3cadbd9735aff958023239c6a06300000000000000000000000027f8d03b3a2196956ed754badc28d73be8830a6e0000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000";
+//     bytes internal constant _PAYLOAD_DAI_POST =
+//         hex"00000000000000000000000000000000000000000000152d02c7e14af68000000000000000000000000000000000000000000000000014f6ccfe338517e00000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011c0000000000000000000000000000000000000000000000000000de0000b051208dff5e27ea6b7ac08ebfdf9eb090f32ee9a30fcf8f3cf7ad23cd3cadbd9735aff958023239c6a0630024e8eda9df0000000000000000000000008f3cf7ad23cd3cadbd9735aff958023239c6a06300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000000000000000000000000000000000000000044d80a06c4eca2727f8d03b3a2196956ed754badc28d73be8830a6e1111111254fb6c44bac0bed2854e76f90643097d00000000000000000000000000000000000000000000152d02c7e14af680000000000000cfee7c08";
 //     // payload to swap 100000 USDT for amUSDT on 1inch
-//     bytes internal constant _PAYLOAD_USDT =
-//         hex"7c0252000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000180000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f00000000000000000000000060d55f02a771d515e077c9c2403a1ef324885cec0000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf0000000000000000000000000b7108E278c2E77E4e4f5c93d9E5e9A11AC837FC000000000000000000000000000000000000000000000000000000174876e800000000000000000000000000000000000000000000000000000000170cdc1e00000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011c0000000000000000000000000000000000000000000000000000de0000b051208dff5e27ea6b7ac08ebfdf9eb090f32ee9a30fcfc2132d05d31c914a87c6611c10748aeb04b58e8f0024e8eda9df000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000000000000000000000000000000000000000044d80a06c4eca2760d55f02a771d515e077c9c2403a1ef324885cec1111111254fb6c44bac0bed2854e76f90643097d000000000000000000000000000000000000000000000000000000174876e80000000000cfee7c08";
+//     bytes internal constant _PAYLOAD_USDT_PRE =
+//         hex"7c0252000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000180000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f00000000000000000000000060d55f02a771d515e077c9c2403a1ef324885cec0000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000";
+//     bytes internal constant _PAYLOAD_USDT_POST =
+//         hex"000000000000000000000000000000000000000000000000000000174876e800000000000000000000000000000000000000000000000000000000170cdc1e00000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011c0000000000000000000000000000000000000000000000000000de0000b051208dff5e27ea6b7ac08ebfdf9eb090f32ee9a30fcfc2132d05d31c914a87c6611c10748aeb04b58e8f0024e8eda9df000000000000000000000000c2132d05d31c914a87c6611c10748aeb04b58e8f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d15038f8a0362b4ce71d6c879d56bf9fc2884cf000000000000000000000000000000000000000000000000000000000000044d80a06c4eca2760d55f02a771d515e077c9c2403a1ef324885cec1111111254fb6c44bac0bed2854e76f90643097d000000000000000000000000000000000000000000000000000000174876e80000000000cfee7c08";
+
+//     bytes internal _payloadUSDC;
+//     bytes internal _payloadDAI;
+//     bytes internal _payloadUSDT;
 
 //     uint256 internal constant _BPS = 10000;
 //     MockCurveLevSwapper3TokensWithBP public swapper;
@@ -88,6 +98,10 @@
 //             _ANGLE_ROUTER,
 //             IBorrowStaker(address(staker))
 //         );
+
+//         _payloadUSDC = abi.encodePacked(_PAYLOAD_USDC_PRE, address(swapper), _PAYLOAD_USDC_POST);
+//         _payloadDAI = abi.encodePacked(_PAYLOAD_DAI_PRE, address(swapper), _PAYLOAD_DAI_POST);
+//         _payloadUSDT = abi.encodePacked(_PAYLOAD_USDT_PRE, address(swapper), _PAYLOAD_USDT_POST);
 
 //         assertEq(staker.name(), "Angle Curve USD-BTC-ETH Staker");
 //         assertEq(staker.symbol(), "agstk-crvUSDBTCETH");
@@ -346,113 +360,113 @@
 //         assertEq(_USDT.balanceOf(address(staker)), 0);
 //     }
 
-//     function testDeleverageBalance(
-//         uint256 addLiquidityUSDC,
-//         uint256 addLiquidityFRAX,
-//         uint256 swapAmount,
-//         uint256 coinSwap
-//     ) public {
-//         uint256 swappedFRAX = 10000 ether;
-//         uint256 swappedUSDT = 10000 * 10**6;
-//         addLiquidityUSDC = bound(addLiquidityUSDC, 0, 10**15);
-//         addLiquidityFRAX = bound(addLiquidityFRAX, 0, 10**27);
+//     // function testDeleverageBalance(
+//     //     uint256 addLiquidityUSDC,
+//     //     uint256 addLiquidityFRAX,
+//     //     uint256 swapAmount,
+//     //     uint256 coinSwap
+//     // ) public {
+//     //     uint256 swappedFRAX = 10000 ether;
+//     //     uint256 swappedUSDT = 10000 * 10**6;
+//     //     addLiquidityUSDC = bound(addLiquidityUSDC, 0, 10**15);
+//     //     addLiquidityFRAX = bound(addLiquidityFRAX, 0, 10**27);
 
-//         deal(address(_USDC), address(_alice), addLiquidityUSDC);
-//         deal(address(_USDT), address(_alice), swappedUSDT);
-//         deal(address(_DAI), address(_alice), swappedFRAX + addLiquidityFRAX);
-//         vm.startPrank(_alice);
+//     //     deal(address(_USDC), address(_alice), addLiquidityUSDC);
+//     //     deal(address(_USDT), address(_alice), swappedUSDT);
+//     //     deal(address(_DAI), address(_alice), swappedFRAX + addLiquidityFRAX);
+//     //     vm.startPrank(_alice);
 
-//         bytes memory data;
-//         {
-//             // intermediary variables
-//             bytes[] memory oneInchData = new bytes[](2);
-//             // swap 10000 FRAX for USDC
-//             oneInchData[0] = abi.encode(
-//                 address(_DAI),
-//                 0,
-//                 hex"e449022e00000000000000000000000000000000000000000000021e19e0c9bab2400000000000000000000000000000000000000000000000000000000000024dc9bbaa000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000010000000000000000000000009a834b70c07c81a9fcd6f22e842bf002fbffbe4dcfee7c08"
-//             );
-//             // swap 10000 USDT for USDC
-//             oneInchData[1] = abi.encode(
-//                 address(_USDT),
-//                 0,
-//                 hex"e449022e00000000000000000000000000000000000000000000000000000002540be400000000000000000000000000000000000000000000000000000000024e089f88000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000018000000000000000000000003416cf6c708da44db2624d63ea0aaef7113527c6cfee7c08"
-//             );
-//             uint256 minAmountOut;
-//             {
-//                 uint256 lowerBoundSwap = (((addLiquidityUSDC + swappedUSDT + swappedFRAX / _DECIMAL_NORM_USDC) *
-//                     SLIPPAGE_BPS) / _BPS);
-//                 minAmountOut =
-//                     (IMetaPool2(address(_METAPOOL)).calc_token_amount([addLiquidityFRAX, lowerBoundSwap], true) *
-//                         SLIPPAGE_BPS) /
-//                     _BPS;
-//             }
+//     //     bytes memory data;
+//     //     {
+//     //         // intermediary variables
+//     //         bytes[] memory oneInchData = new bytes[](2);
+//     //         // swap 10000 FRAX for USDC
+//     //         oneInchData[0] = abi.encode(
+//     //             address(_DAI),
+//     //             0,
+//     //             hex"e449022e00000000000000000000000000000000000000000000021e19e0c9bab2400000000000000000000000000000000000000000000000000000000000024dc9bbaa000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000010000000000000000000000009a834b70c07c81a9fcd6f22e842bf002fbffbe4dcfee7c08"
+//     //         );
+//     //         // swap 10000 USDT for USDC
+//     //         oneInchData[1] = abi.encode(
+//     //             address(_USDT),
+//     //             0,
+//     //             hex"e449022e00000000000000000000000000000000000000000000000000000002540be400000000000000000000000000000000000000000000000000000000024e089f88000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000018000000000000000000000003416cf6c708da44db2624d63ea0aaef7113527c6cfee7c08"
+//     //         );
+//     //         uint256 minAmountOut;
+//     //         {
+//     //             uint256 lowerBoundSwap = (((addLiquidityUSDC + swappedUSDT + swappedFRAX / _DECIMAL_NORM_USDC) *
+//     //                 SLIPPAGE_BPS) / _BPS);
+//     //             minAmountOut =
+//     //                 (IMetaPool2(address(_METAPOOL)).calc_token_amount([addLiquidityFRAX, lowerBoundSwap], true) *
+//     //                     SLIPPAGE_BPS) /
+//     //                 _BPS;
+//     //         }
 
-//             bytes memory addData;
-//             bytes memory swapData = abi.encode(oneInchData, addData);
-//             bytes memory leverageData = abi.encode(true, _alice, swapData);
-//             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
-//         }
-//         // we first need to send the tokens before hand, you should always use the swapper
-//         // in another tx to not losse your funds by front running
-//         _USDC.transfer(address(swapper), addLiquidityUSDC);
-//         _DAI.transfer(address(swapper), swappedFRAX + addLiquidityFRAX);
-//         _USDT.safeTransfer(address(swapper), swappedUSDT);
-//         swapper.swap(IERC20(address(_USDC)), IERC20(address(staker)), _alice, 0, addLiquidityUSDC, data);
+//     //         bytes memory addData;
+//     //         bytes memory swapData = abi.encode(oneInchData, addData);
+//     //         bytes memory leverageData = abi.encode(true, _alice, swapData);
+//     //         data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
+//     //     }
+//     //     // we first need to send the tokens before hand, you should always use the swapper
+//     //     // in another tx to not losse your funds by front running
+//     //     _USDC.transfer(address(swapper), addLiquidityUSDC);
+//     //     _DAI.transfer(address(swapper), swappedFRAX + addLiquidityFRAX);
+//     //     _USDT.safeTransfer(address(swapper), swappedUSDT);
+//     //     swapper.swap(IERC20(address(_USDC)), IERC20(address(staker)), _alice, 0, addLiquidityUSDC, data);
 
-//         vm.stopPrank();
-//         vm.startPrank(_dylan);
-//         // do a swap to change the pool state and withdraw womething different than what has been deposited
-//         coinSwap = coinSwap % 2;
-//         if (coinSwap == 0) {
-//             swapAmount = bound(swapAmount, 10**18, 10**26);
-//             deal(address(_DAI), address(_dylan), swapAmount);
-//             _DAI.approve(address(_METAPOOL), type(uint256).max);
-//         } else {
-//             swapAmount = bound(swapAmount, 10**6, 10**14);
-//             deal(address(_USDC), address(_dylan), swapAmount);
-//             _USDC.approve(address(_METAPOOL), type(uint256).max);
-//         }
-//         _METAPOOL.exchange(int128(uint128(coinSwap)), int128(1 - uint128(coinSwap)), swapAmount, 0);
+//     //     vm.stopPrank();
+//     //     vm.startPrank(_dylan);
+//     //     // do a swap to change the pool state and withdraw womething different than what has been deposited
+//     //     coinSwap = coinSwap % 2;
+//     //     if (coinSwap == 0) {
+//     //         swapAmount = bound(swapAmount, 10**18, 10**26);
+//     //         deal(address(_DAI), address(_dylan), swapAmount);
+//     //         _DAI.approve(address(_METAPOOL), type(uint256).max);
+//     //     } else {
+//     //         swapAmount = bound(swapAmount, 10**6, 10**14);
+//     //         deal(address(_USDC), address(_dylan), swapAmount);
+//     //         _USDC.approve(address(_METAPOOL), type(uint256).max);
+//     //     }
+//     //     _METAPOOL.exchange(int128(uint128(coinSwap)), int128(1 - uint128(coinSwap)), swapAmount, 0);
 
-//         vm.stopPrank();
-//         vm.startPrank(_alice);
-//         // deleverage
-//         uint256 amount = staker.balanceOf(_alice);
-//         uint256[2] memory minAmounts;
-//         {
-//             bytes[] memory oneInchData = new bytes[](0);
-//             IERC20[] memory sweepTokens = new IERC20[](1);
-//             sweepTokens[0] = _USDC;
-//             minAmounts = [
-//                 (_METAPOOL.balances(0) * amount * SLIPPAGE_BPS) / (_BPS * asset.totalSupply()),
-//                 (_METAPOOL.balances(1) * amount * SLIPPAGE_BPS) / (_BPS * asset.totalSupply())
-//             ];
-//             bytes memory removeData = abi.encode(CurveRemovalType.balance, abi.encode(minAmounts));
-//             bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
-//             bytes memory leverageData = abi.encode(false, _alice, swapData);
-//             data = abi.encode(address(0), minAmounts[0], SwapType.Leverage, leverageData);
-//         }
-//         staker.transfer(address(swapper), amount);
-//         swapper.swap(IERC20(address(staker)), IERC20(address(_DAI)), _alice, 0, amount, data);
+//     //     vm.stopPrank();
+//     //     vm.startPrank(_alice);
+//     //     // deleverage
+//     //     uint256 amount = staker.balanceOf(_alice);
+//     //     uint256[2] memory minAmounts;
+//     //     {
+//     //         bytes[] memory oneInchData = new bytes[](0);
+//     //         IERC20[] memory sweepTokens = new IERC20[](1);
+//     //         sweepTokens[0] = _USDC;
+//     //         minAmounts = [
+//     //             (_METAPOOL.balances(0) * amount * SLIPPAGE_BPS) / (_BPS * asset.totalSupply()),
+//     //             (_METAPOOL.balances(1) * amount * SLIPPAGE_BPS) / (_BPS * asset.totalSupply())
+//     //         ];
+//     //         bytes memory removeData = abi.encode(CurveRemovalType.balance, abi.encode(minAmounts));
+//     //         bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+//     //         bytes memory leverageData = abi.encode(false, _alice, swapData);
+//     //         data = abi.encode(address(0), minAmounts[0], SwapType.Leverage, leverageData);
+//     //     }
+//     //     staker.transfer(address(swapper), amount);
+//     //     swapper.swap(IERC20(address(staker)), IERC20(address(_DAI)), _alice, 0, amount, data);
 
-//         vm.stopPrank();
+//     //     vm.stopPrank();
 
-//         assertGe(_USDC.balanceOf(_alice), minAmounts[1]);
-//         assertGe(_DAI.balanceOf(_alice), minAmounts[0]);
-//         assertEq(staker.balanceOf(address(swapper)), 0);
-//         assertEq(staker.balanceOf(_alice), 0);
-//         assertEq(asset.balanceOf(address(_alice)), 0);
-//         assertEq(asset.balanceOf(address(swapper)), 0);
-//         assertEq(asset.balanceOf(address(staker)), 0);
-//         assertEq(_USDT.balanceOf(_alice), 0);
-//         assertEq(_USDC.balanceOf(address(swapper)), 0);
-//         assertEq(_DAI.balanceOf(address(swapper)), 0);
-//         assertEq(_USDT.balanceOf(address(swapper)), 0);
-//         assertEq(_USDC.balanceOf(address(staker)), 0);
-//         assertEq(_DAI.balanceOf(address(staker)), 0);
-//         assertEq(_USDT.balanceOf(address(staker)), 0);
-//     }
+//     //     assertGe(_USDC.balanceOf(_alice), minAmounts[1]);
+//     //     assertGe(_DAI.balanceOf(_alice), minAmounts[0]);
+//     //     assertEq(staker.balanceOf(address(swapper)), 0);
+//     //     assertEq(staker.balanceOf(_alice), 0);
+//     //     assertEq(asset.balanceOf(address(_alice)), 0);
+//     //     assertEq(asset.balanceOf(address(swapper)), 0);
+//     //     assertEq(asset.balanceOf(address(staker)), 0);
+//     //     assertEq(_USDT.balanceOf(_alice), 0);
+//     //     assertEq(_USDC.balanceOf(address(swapper)), 0);
+//     //     assertEq(_DAI.balanceOf(address(swapper)), 0);
+//     //     assertEq(_USDT.balanceOf(address(swapper)), 0);
+//     //     assertEq(_USDC.balanceOf(address(staker)), 0);
+//     //     assertEq(_DAI.balanceOf(address(staker)), 0);
+//     //     assertEq(_USDT.balanceOf(address(staker)), 0);
+//     // }
 
 //     // // remove_liquidity_imbalance doesn't exist on this pool just let it here for future 3 tokens with BP pools
 //     // function testNoDepositDeleverageImbalance(
@@ -592,11 +606,11 @@
 //         if (doSwaps) {
 //             oneInchData = new bytes[](3);
 //             // // swap 100000 DAI for amDAI
-//             oneInchData[0] = abi.encode(address(_DAI), 0, _PAYLOAD_DAI);
+//             oneInchData[0] = abi.encode(address(_DAI), 0, _payloadDAI);
 //             // swap 100000 USDT for amUSDT
-//             oneInchData[1] = abi.encode(address(_USDT), 0, _PAYLOAD_USDT);
+//             oneInchData[1] = abi.encode(address(_USDT), 0, _payloadUSDT);
 //             // swap 100000 USDC for amUSDC
-//             oneInchData[2] = abi.encode(address(_USDC), 0, _PAYLOAD_USDC);
+//             oneInchData[2] = abi.encode(address(_USDC), 0, _payloadUSDC);
 //         } else oneInchData = new bytes[](0);
 
 //         {

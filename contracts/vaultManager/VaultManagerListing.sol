@@ -28,25 +28,6 @@ contract VaultManagerListing is VaultManager {
     using SafeERC20 for IERC20;
     using Address for address;
 
-    // ================================== STORAGE ==================================
-
-    // @notice Mapping from owner address to all his vaults
-    mapping(address => uint256[]) internal _ownerListVaults;
-
-    uint256[49] private __gapListing;
-
-    // =============================== VIEW FUNCTIONS ==============================
-
-    /// @notice Get the collateral owned by the user in the contract
-    function getUserCollateral(address user) external view returns (uint256 totalCollateral) {
-        uint256[] memory vaultList = _ownerListVaults[user];
-        uint256 vaultListLength = vaultList.length;
-        for (uint256 k; k < vaultListLength; ++k) {
-            totalCollateral += vaultData[vaultList[k]].collateralAmount;
-        }
-        return totalCollateral;
-    }
-
     // ================= INTERNAL UTILITY STATE-MODIFYING FUNCTIONS ================
 
     /// @inheritdoc VaultManagerERC721
@@ -55,49 +36,36 @@ contract VaultManagerListing is VaultManager {
         address to,
         uint256 vaultID
     ) internal override {
-        // if this is not a mint remove from the `from` vault list `vaultID`
+        // if transfer between 2 addresses we need to checkpoint both of them
+        // if burn we also need to checkpoint as the burn didn't trigger yet a change in collateral amount
         if (from != address(0)) {
-            _checkpointWrapper(from);
-            _removeVaultFromList(from, vaultID);
-        }
-        if (to != address(0)) {
-            // If it is a mint we don't need to checkpoint as it is only useful when funds are deposited
-            // But when we transfer the vault we should definitely checkpoint
-            if (from != address(0)) _checkpointWrapper(to);
-            _ownerListVaults[to].push(vaultID);
+            uint256 collateralAmount = vaultData[vaultID].collateralAmount;
+            _checkpointWrapper(from, collateralAmount, false);
+            if (to != address(0)) _checkpointWrapper(to, collateralAmount, true);
         }
     }
 
     /// @inheritdoc VaultManager
     /// @dev Checkpoints the staker associated to the `collateral` of the contract after an update of the
     /// `collateralAmount` of vaultID
-    function _checkpointCollateral(uint256 vaultID, bool burn) internal override {
+    function _checkpointCollateral(
+        uint256 vaultID,
+        uint256 amount,
+        bool add
+    ) internal override {
         address owner = _ownerOf(vaultID);
-        _checkpointWrapper(owner);
-        if (burn) _removeVaultFromList(owner, vaultID);
-    }
-
-    /// @notice Remove `vaultID` from `user` stroed vault list
-    /// @param user Address to look out for the vault list
-    /// @param vaultID VaultId to remove from the list
-    /// @dev The vault is necessarily in the list
-    function _removeVaultFromList(address user, uint256 vaultID) internal {
-        uint256[] storage vaultList = _ownerListVaults[user];
-        uint256 vaultListLength = vaultList.length;
-        for (uint256 i; i < vaultListLength - 1; ++i) {
-            if (vaultList[i] == vaultID) {
-                vaultList[i] = vaultList[vaultListLength - 1];
-                break;
-            }
-        }
-        vaultList.pop();
+        _checkpointWrapper(owner, amount, add);
     }
 
     /// @notice Checkpoint rewards for `user` in the `staker` contract
-    /// @param user Address to look out for the vault list
+    /// @param user Address for which balance should be updated
     /// @dev Whenever there is an internal transfer or a transfer from the `vaultManager`,
     /// we need to update the rewards to correctly track everyone's claim
-    function _checkpointWrapper(address user) internal {
-        IBorrowStakerCheckpoint(address(collateral)).checkpoint(user);
+    function _checkpointWrapper(
+        address user,
+        uint256 amount,
+        bool add
+    ) internal {
+        IBorrowStakerCheckpoint(address(collateral)).checkpointFromVaultManager(user, amount, add);
     }
 }

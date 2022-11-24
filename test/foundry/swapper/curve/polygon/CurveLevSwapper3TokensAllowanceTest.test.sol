@@ -28,14 +28,14 @@ contract CurveLevSwapper3TokensAllowanceTest is BaseTest {
 
     IMetaPool3 internal constant _METAPOOL = IMetaPool3(0x445FE580eF8d70FF569aB36e80c647af338db351);
     ILendingPool internal constant _AAVE_LENDING_POOL = ILendingPool(0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf);
-    IBorrowStaker internal constant _STAKER = IBorrowStaker(0x583EE5b0b2999679d1DdE7aa178B225ad57c481b);
+    IBorrowStaker internal constant _STAKER = IBorrowStaker(0xe1Bc17f85d54a81068FC510d5A94E95800D342d9);
 
     MockCurveLevSwapperAaveBP public swapper;
 
     function setUp() public override {
         super.setUp();
 
-        _polygon = vm.createFork(vm.envString("ETH_NODE_URI_POLYGON"), 35723095);
+        _polygon = vm.createFork(vm.envString("ETH_NODE_URI_POLYGON"), 36004278);
         vm.selectFork(_polygon);
 
         // reset coreBorrow because the `makePersistent()` doens't work on my end

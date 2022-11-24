@@ -34,6 +34,8 @@ contract BorrowStakerStorage is Initializable {
     /// @notice Maps an address to whether it is a compatible `VaultManager` that has this contract
     /// as a collateral
     mapping(address => uint256) public isCompatibleVaultManager;
+    /// @notice Maps an address to the collateral it owns across all whitelisted VaultManager
+    mapping(address => uint256) public delegatedBalanceOf;
     /// @notice Maps each reward token to a track record of cumulated rewards
     mapping(IERC20 => uint256) public integral;
     /// @notice Maps pairs of `(token,user)` to the currently pending claimable rewards
@@ -54,6 +56,7 @@ contract BorrowStakerStorage is Initializable {
     error InvalidToken();
     error NotGovernor();
     error NotGovernorOrGuardian();
+    error NotVaultManager();
     error TransferAmountExceedsAllowance();
     error ZeroAddress();
     error InvalidVaultManager();

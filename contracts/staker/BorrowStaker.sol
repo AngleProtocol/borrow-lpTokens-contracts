@@ -39,6 +39,12 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         _;
     }
 
+    /// @notice Checks whether the `msg.sender` has the governor role or the guardian role
+    modifier onlyVaultManagers() {
+        if (isCompatibleVaultManager[msg.sender] == 0) revert NotVaultManager();
+        _;
+    }
+
     // =============================== VIEW FUNCTIONS ==============================
 
     /// @notice Gets the list of all the `VaultManager` contracts which have this token
@@ -110,16 +116,10 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param from Address to check the full balance of
     /// @dev The returned value takes into account the balance currently held by `from` and the balance held by `VaultManager`
     /// contracts on behalf of `from`
-    function totalBalanceOf(address from) public view returns (uint256 totalBalance) {
+    function totalBalanceOf(address from) public view returns (uint256) {
         if (isCompatibleVaultManager[from] == 1) return 0;
         // If `from` is one of the whitelisted vaults, do not consider the rewards to not double count balances
-        IVaultManagerListing[] memory vaultManagerContracts = _vaultManagers;
-        totalBalance = balanceOf(from);
-        uint256 vaultManagerContractsLength = vaultManagerContracts.length;
-        for (uint256 i; i < vaultManagerContractsLength; ++i) {
-            totalBalance += vaultManagerContracts[i].getUserCollateral(from);
-        }
-        return totalBalance;
+        return balanceOf(from) + delegatedBalanceOf[from];
     }
 
     /// @notice Returns the exact amount that will be received if calling `claim_rewards(from)` for a specific reward token
@@ -164,6 +164,24 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         if (tokenAddress == address(asset())) revert InvalidToken();
         IERC20(tokenAddress).safeTransfer(to, amountToRecover);
         emit Recovered(tokenAddress, to, amountToRecover);
+    }
+
+    // ============================ RESTRICTED FUNCTIONS ===========================
+
+    /// @notice Checkpoints the rewards earned by user `from` and then update its `totalBalance`
+    /// @param from Address to checkpoint for
+    /// @param amount Collateral amount balance increase/decrease for `from`
+    /// @param add Whether the balance should be increased/decreased
+    function checkpointFromVaultManager(
+        address from,
+        uint256 amount,
+        bool add
+    ) external onlyVaultManagers {
+        address[] memory checkpointUser = new address[](1);
+        checkpointUser[0] = address(from);
+        _checkpoint(checkpointUser, false);
+        if (add) delegatedBalanceOf[from] += amount;
+        else delegatedBalanceOf[from] -= amount;
     }
 
     // ============================= INTERNAL FUNCTIONS ============================

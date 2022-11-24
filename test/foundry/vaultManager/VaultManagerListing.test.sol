@@ -216,7 +216,6 @@ contract VaultManagerListingTest is BaseTest {
                 (bool liquidated, uint256 collateralAmount) = _liquidateVault(_hacker, vaultID);
                 collateralVaultAmounts[randomIndex] -= collateralAmount;
                 collateralIdleAmounts[4] += collateralAmount;
-                if (liquidated) _removeVaultFromList(vaultIDs, vaultID);
             } else if (action == 8) {
                 // partial liquidation
                 uint256[] storage vaultIDs = ownerListVaults[account];
@@ -225,7 +224,6 @@ contract VaultManagerListingTest is BaseTest {
                 (bool fullLiquidation, uint256 collateralAmount) = _partialLiquidationVault(_hacker, vaultID);
                 collateralVaultAmounts[randomIndex] -= collateralAmount;
                 collateralIdleAmounts[4] += collateralAmount;
-                if (fullLiquidation) _removeVaultFromList(vaultIDs, vaultID);
             }
             for (uint256 k = 0; k < 5; k++) {
                 address checkedAccount = k == 0 ? _alice : k == 1 ? _bob : k == 2 ? _charlie : k == 3
@@ -233,9 +231,9 @@ contract VaultManagerListingTest is BaseTest {
                     : _hacker;
                 assertEq(
                     collateralVaultAmounts[k] + collateralIdleAmounts[k],
-                    staker.balanceOf(checkedAccount) + _contractVaultManager.getUserCollateral(checkedAccount)
+                    staker.balanceOf(checkedAccount) + staker.delegatedBalanceOf(checkedAccount)
                 );
-                assertEq(collateralVaultAmounts[k], _contractVaultManager.getUserCollateral(checkedAccount));
+                assertEq(collateralVaultAmounts[k], staker.delegatedBalanceOf(checkedAccount));
                 assertEq(collateralIdleAmounts[k], staker.balanceOf(checkedAccount));
                 assertEq(collateralVaultAmounts[k] + collateralIdleAmounts[k], staker.totalBalanceOf(checkedAccount));
 
@@ -244,7 +242,6 @@ contract VaultManagerListingTest is BaseTest {
                     IVaultManager(address(_contractVaultManager)),
                     checkedAccount
                 );
-                (helperVaultIDs, count) = _removeBurntVaultLists(_contractVaultManager, helperVaultIDs, count);
                 _compareLists(vaultIDs, helperVaultIDs, count);
                 if (checkedAccount == _hacker) assertEq(vaultIDs.length, 0);
             }
@@ -253,12 +250,13 @@ contract VaultManagerListingTest is BaseTest {
 
     function testBorrowStakerWithVaultManager(
         uint256[REWARDS_LENGTH] memory accounts,
-        uint256[TRANSFER_LENGTH] memory initiators,
+        uint256[REWARDS_LENGTH] memory initiators,
         uint256[REWARDS_LENGTH] memory tos,
         uint256[REWARDS_LENGTH] memory actionTypes,
         uint256[REWARDS_LENGTH] memory amounts
     ) public {
         uint256[5] memory pendingRewards;
+        // deal(address(rewardToken), address(staker), type(uint256).max);
 
         for (uint256 i; i < amounts.length; ++i) {
             vm.warp(block.number + 1);
@@ -351,8 +349,6 @@ contract VaultManagerListingTest is BaseTest {
             IVaultManager(address(_contractVaultManager)),
             account
         );
-        // some vaults may have been liquidate and therefore not removed from the helper contract
-        (vaultIDs, count) = _removeBurntVaultLists(_contractVaultManager, vaultIDs, count);
         if (count == 0) action = 3;
 
         if (action == 0) {
@@ -622,7 +618,7 @@ contract VaultManagerListingTest is BaseTest {
         // to be able to liquidate it fully
         uint256 vaultDebt = _contractVaultManager.getVaultDebt(vaultID);
         (uint256 currentCollat, ) = _contractVaultManager.vaultData(vaultID);
-
+        if (currentCollat == 0) return (false, 0);
         {
             uint256 newOracleValue = (((vaultDebt * BASE_PARAMS) / CF) * 10**decimalToken) / currentCollat;
             if (newOracleValue < 2) return (false, 0);
@@ -688,23 +684,6 @@ contract VaultManagerListingTest is BaseTest {
         for (uint256 i; i < count; ++i) {
             assertEq(vaultList[i], expectedVaultList[i]);
         }
-    }
-
-    function _removeBurntVaultLists(
-        VaultManagerListing vaultManager,
-        uint256[] memory vaultList,
-        uint256 count
-    ) internal view returns (uint256[] memory processList, uint256) {
-        processList = new uint256[](vaultList.length);
-        uint256 newCount;
-        for (uint256 i; i < count; ++i) {
-            (uint256 currentCollat, uint256 debt) = vaultManager.vaultData(vaultList[i]);
-            if (currentCollat != 0 && debt != 0) {
-                processList[newCount] = vaultList[i];
-                newCount += 1;
-            }
-        }
-        return (processList, newCount);
     }
 
     function _logArray(
