@@ -670,7 +670,7 @@ contract VaultManager is VaultManagerPermit, IVaultManagerFunctions {
             // Makes sure not to leave a dusty amount in the vault by either not liquidating too much
             // or everything
             if (
-                (liqOpp.thresholdRepayAmount != 0 && amounts[i] > liqOpp.thresholdRepayAmount) ||
+                (liqOpp.thresholdRepayAmount != 0 && amounts[i] >= liqOpp.thresholdRepayAmount) ||
                 amounts[i] > liqOpp.maxStablecoinAmountToRepay
             ) amounts[i] = liqOpp.maxStablecoinAmountToRepay;
 
@@ -735,7 +735,7 @@ contract VaultManager is VaultManagerPermit, IVaultManagerFunctions {
         uint256 liquidationDiscount = (_computeLiquidationBoost(liquidator) * (BASE_PARAMS - healthFactor)) /
             BASE_PARAMS;
         // In fact `liquidationDiscount` is stored here as 1 minus discount to save some computation costs
-        // This value is necessarily!= 0 as `maxLiquidationDiscount < BASE_PARAMS`
+        // This value is necessarily != 0 as `maxLiquidationDiscount < BASE_PARAMS`
         liquidationDiscount = liquidationDiscount >= maxLiquidationDiscount
             ? BASE_PARAMS - maxLiquidationDiscount
             : BASE_PARAMS - liquidationDiscount;
@@ -895,10 +895,12 @@ contract VaultManager is VaultManagerPermit, IVaultManagerFunctions {
     }
 
     /// @notice Sets the dust variables
-    /// @dev These variables are not taken into account in all circumstances as the actual dust variables
-    function setDusts(uint256 newDust, uint256 newDustCollateral) external onlyGovernor {
-        dust = newDust;
-        _dustCollateral = newDustCollateral;
+    /// @param _dust New minimum debt allowed
+    /// @param dustCollateral_ New minimum collateral allowed in a vault after a liquidation
+    /// @dev dustCollateral_ is in stable value
+    function setDusts(uint256 _dust, uint256 dustCollateral_) external onlyGovernor {
+        dust = _dust;
+        _dustCollateral = dustCollateral_;
     }
 
     /// @inheritdoc IVaultManagerFunctions
