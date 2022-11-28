@@ -268,17 +268,19 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         rewardAmounts = new uint256[](rewardTokensLength);
         uint256 userBalance = totalBalanceOf(from);
         for (uint256 i; i < rewardTokensLength; ++i) {
-            uint256 newClaimable = (userBalance * (integral[rewardTokens[i]] - integralOf[rewardTokens[i]][from])) /
-                BASE_PARAMS;
-            uint256 previousClaimable = pendingRewardsOf[rewardTokens[i]][from];
-            if (_claim && previousClaimable + newClaimable != 0) {
-                rewardTokens[i].safeTransfer(from, previousClaimable + newClaimable);
-                pendingRewardsOf[rewardTokens[i]][from] = 0;
-            } else if (newClaimable != 0) {
-                pendingRewardsOf[rewardTokens[i]][from] += newClaimable;
+            uint256 totalClaimable = (userBalance * (integral[rewardTokens[i]] - integralOf[rewardTokens[i]][from])) /
+                BASE_PARAMS +
+                pendingRewardsOf[rewardTokens[i]][from];
+            if (totalClaimable != 0) {
+                if (_claim) {
+                    pendingRewardsOf[rewardTokens[i]][from] = 0;
+                    rewardTokens[i].safeTransfer(from, totalClaimable);
+                } else {
+                    pendingRewardsOf[rewardTokens[i]][from] = totalClaimable;
+                }
+                rewardAmounts[i] = totalClaimable;
             }
             integralOf[rewardTokens[i]][from] = integral[rewardTokens[i]];
-            rewardAmounts[i] = previousClaimable + newClaimable;
         }
     }
 
