@@ -139,7 +139,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         return withdraw(amount, msg.sender, msg.sender);
     }
 
-    /// @notice Claims earned rewards for user `from`
+    /// @notice Claims earned rewards for `from`
     /// @param from Address to claim for
     /// @return rewardAmounts Amounts of each reward token claimed by the user
     //solhint-disable-next-line
@@ -155,7 +155,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         return claim_rewards(from);
     }
 
-    /// @notice Checkpoints the rewards earned by user `from`
+    /// @notice Checkpoints the rewards earned by `from`
     /// @param from Address to checkpoint for
     function checkpoint(address from) external {
         address[] memory checkpointUser = new address[](1);
