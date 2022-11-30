@@ -309,6 +309,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         if (_totalSupply != 0) integral[rewardToken] += (amount * BASE_PARAMS) / _totalSupply;
     }
 
+    /** @gnervo we could add an unchecked here  */
     /// @notice Changes allowance of this contract for a given token
     /// @param token Address of the token for which allowance should be changed
     /// @param spender Address to approve
