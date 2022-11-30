@@ -13,7 +13,6 @@ import "../BorrowStaker.sol";
 /// @author Angle Labs, Inc.
 /// @dev Borrow staker adapted to Curve LP tokens deposited on Convex
 abstract contract ConvexTokenStaker is BorrowStaker {
-    /** @gnervo the address below should be hardcoded in the mainnet implem */
     /// @notice Convex-related constants
     IConvexBooster private constant _CONVEX_BOOSTER = IConvexBooster(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
     IConvexClaimZap private constant _CONVEX_CLAIM_ZAP = IConvexClaimZap(0xDd49A93FDcae579AE50B4b9923325e9e335ec82B);
@@ -71,7 +70,6 @@ abstract contract ConvexTokenStaker is BorrowStaker {
         _updateRewards(_CVX, cvxRewards);
     }
 
-    /** @gnervo why not using the syntax ->  IERC20[2] memory rewards = [_CRV, _CVX] */
     /// @inheritdoc BorrowStaker
     function _getRewards() internal pure override returns (IERC20[] memory rewards) {
         rewards = new IERC20[](2);

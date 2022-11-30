@@ -55,7 +55,6 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
         _updateRewards(_SDT, sdtRewards);
     }
 
-    /** @gnervo why not using the syntax ->  IERC20[2] memory rewards = [_CRV, _SDT] */
     /// @inheritdoc BorrowStaker
     function _getRewards() internal pure override returns (IERC20[] memory rewards) {
         rewards = new IERC20[](2);

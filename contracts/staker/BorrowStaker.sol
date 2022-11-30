@@ -309,7 +309,6 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         if (_totalSupply != 0) integral[rewardToken] += (amount * BASE_PARAMS) / _totalSupply;
     }
 
-    /** @gnervo we could add an unchecked here  */
     /// @notice Changes allowance of this contract for a given token
     /// @param token Address of the token for which allowance should be changed
     /// @param spender Address to approve
@@ -320,7 +319,11 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         uint256 amount
     ) internal {
         uint256 currentAllowance = token.allowance(address(this), spender);
-        if (currentAllowance < amount) token.safeIncreaseAllowance(spender, type(uint256).max - currentAllowance);
+        if (currentAllowance < amount) {
+            unchecked {
+                token.safeIncreaseAllowance(spender, type(uint256).max - currentAllowance);
+            }
+        }
     }
 
     // ============================= VIRTUAL FUNCTIONS =============================
