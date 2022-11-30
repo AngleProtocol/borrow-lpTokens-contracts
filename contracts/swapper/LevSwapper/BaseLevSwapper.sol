@@ -17,7 +17,6 @@ import "../SwapperSidechain.sol";
 abstract contract BaseLevSwapper is SwapperSidechain {
     using SafeERC20 for IERC20;
 
-    /// @notice Constructor of the contract
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
@@ -48,7 +47,9 @@ abstract contract BaseLevSwapper is SwapperSidechain {
             // before providing liquidity
             // These swaps are easy to anticipate as you know how many tokens have been sent when querying the 1inch API
             _multiSwap1inch(oneInchPayloads);
+            // Hook to add liquidity to the underlying protocol
             amountOut = _add(data);
+            // Deposit into the AngleStaker
             angleStaker().deposit(amountOut, to);
         } else {
             uint256 toUnstake;
