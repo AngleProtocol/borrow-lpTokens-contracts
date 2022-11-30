@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "../BaseLevSwapper.sol";
 import { ITricrypto3 } from "../../../interfaces/external/curve/ITricrypto3.sol";

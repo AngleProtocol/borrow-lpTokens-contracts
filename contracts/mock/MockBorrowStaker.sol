@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "../staker/BorrowStaker.sol";
 
@@ -46,7 +46,7 @@ contract MockBorrowStaker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by the implementation if there are more rewards
-    function _claimRewards() internal virtual override {
+    function _claimContractRewards() internal virtual override {
         _updateRewards(rewardToken, rewardAmount);
     }
 
@@ -76,7 +76,7 @@ contract MockBorrowStaker is BorrowStaker {
 contract MockBorrowStakerReset is MockBorrowStaker {
     /// @inheritdoc BorrowStaker
     /// @dev Reset to 0 when rewards are claimed
-    function _claimRewards() internal virtual override {
+    function _claimContractRewards() internal virtual override {
         _updateRewards(rewardToken, rewardAmount);
         rewardAmount = 0;
     }

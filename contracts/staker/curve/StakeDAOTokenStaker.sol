@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "../../interfaces/external/stakeDAO/IStakeCurveVault.sol";
 import "../../interfaces/external/stakeDAO/ILiquidityGauge.sol";
@@ -41,7 +41,7 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by implementation if there are more rewards
-    function _claimRewards() internal override {
+    function _claimContractRewards() internal override {
         uint256 prevBalanceCRV = _CRV.balanceOf(address(this));
         uint256 prevBalanceSDT = _SDT.balanceOf(address(this));
 

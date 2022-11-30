@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "../../../../../interfaces/ILiquidityGauge.sol";
 import "../../../../BorrowStaker.sol";
@@ -34,7 +34,7 @@ contract MockCurveTokenTricrypto3Staker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by the implementation if there are more rewards
-    function _claimRewards() internal virtual override {
+    function _claimContractRewards() internal virtual override {
         uint256 prevBalanceCRV = _FAKE_REWARD.balanceOf(address(this));
         liquidityGauge().claim_rewards(address(this), address(0));
         uint256 crvRewards = _FAKE_REWARD.balanceOf(address(this)) - prevBalanceCRV;

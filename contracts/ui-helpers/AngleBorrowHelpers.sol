@@ -36,7 +36,7 @@
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "../interfaces/IVaultManager.sol";
 
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 /// @title AngleBorrowHelpers
 /// @author Angle Labs, Inc.

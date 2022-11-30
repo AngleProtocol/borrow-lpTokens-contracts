@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "../../../BaseTest.test.sol";
 import { ILendingPool } from "../../../../../contracts/interfaces/external/aave/ILendingPool.sol";

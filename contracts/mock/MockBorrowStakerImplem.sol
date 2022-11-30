@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -249,7 +249,7 @@ contract MockBorrowStakerImplem is ERC20 {
         // linear vesting otherwise reward can be sent to the wrong owners.
         // This should not be a hard requirement as this kind of distribution seems disastrous and front runnable
         if (_lastRewardsClaimed != block.timestamp) {
-            _claimRewards();
+            _claimContractRewards();
             _lastRewardsClaimed = uint32(block.timestamp);
         }
         for (uint256 i; i < accounts.length; ++i) {
@@ -327,7 +327,7 @@ contract MockBorrowStakerImplem is ERC20 {
     function _withdrawFromProtocol(uint256 amount) internal {}
 
     /// @dev Should be overriden by the implementation if there are more rewards
-    function _claimRewards() internal virtual {
+    function _claimContractRewards() internal virtual {
         _updateRewards(rewardToken, rewardAmount);
     }
 
