@@ -8,7 +8,7 @@ import "../../../../contracts/interfaces/external/curve/IMetaPool2.sol";
 import "../../../../contracts/interfaces/coreModule/IStableMaster.sol";
 import "../../../../contracts/interfaces/coreModule/IPoolManager.sol";
 import "../../../../contracts/mock/MockTokenPermit.sol";
-import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper2Tokens, SwapperSidechain, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockCurveLevSwapper2Tokens.sol";
+import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper2Tokens, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockCurveLevSwapper2Tokens.sol";
 import { MockBorrowStaker } from "../../../../contracts/mock/MockBorrowStaker.sol";
 
 contract CurveLevSwapper2Tokens1InchTest is BaseTest {
@@ -191,7 +191,7 @@ contract CurveLevSwapper2Tokens1InchTest is BaseTest {
         }
         staker.transfer(address(swapper), amount);
         _USDC.transfer(address(swapper), 19000 ether / _DECIMAL_NORM_USDC);
-        vm.expectRevert(SwapperSidechain.TooSmallAmountOut.selector);
+        vm.expectRevert(Swapper.TooSmallAmountOut.selector);
         swapper.swap(IERC20(address(staker)), IERC20(address(_USDC)), _alice, 0, amount, data);
 
         vm.stopPrank();

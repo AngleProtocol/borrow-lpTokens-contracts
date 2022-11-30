@@ -6,7 +6,7 @@ import { ILendingPool } from "../../../../../contracts/interfaces/external/aave/
 import "../../../../../contracts/interfaces/IBorrowStaker.sol";
 import "../../../../../contracts/interfaces/ICoreBorrow.sol";
 import "../../../../../contracts/interfaces/external/curve/IMetaPool3.sol";
-import { MockCurveLevSwapperAaveBP, SwapperSidechain, IUniswapV3Router, IAngleRouterSidechain } from "../../../../../contracts/swapper/LevSwapper/curve/implementations/polygon/polygonTest/MockCurveLevSwapperAaveBP.sol";
+import { MockCurveLevSwapperAaveBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../../contracts/swapper/LevSwapper/curve/implementations/polygon/polygonTest/MockCurveLevSwapperAaveBP.sol";
 
 // @dev Testing on Polygon
 contract CurveLevSwapper3TokensAllowanceTest is BaseTest {

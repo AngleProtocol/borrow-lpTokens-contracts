@@ -10,7 +10,7 @@ import "../../../../contracts/interfaces/external/curve/IMetaPool3.sol";
 import "../../../../contracts/interfaces/coreModule/IStableMaster.sol";
 import "../../../../contracts/interfaces/coreModule/IPoolManager.sol";
 import "../../../../contracts/mock/MockTokenPermit.sol";
-import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper3Tokens, SwapperSidechain, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockCurveLevSwapper3Tokens.sol";
+import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper3Tokens, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockCurveLevSwapper3Tokens.sol";
 import { MockBorrowStaker } from "../../../../contracts/mock/MockBorrowStaker.sol";
 
 // @dev Testing on Polygon

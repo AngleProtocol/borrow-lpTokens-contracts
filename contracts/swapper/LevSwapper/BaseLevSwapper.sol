@@ -9,12 +9,15 @@ import "../../interfaces/ICoreBorrow.sol";
 import "../../interfaces/IBorrowStaker.sol";
 import "../../interfaces/external/uniswap/IUniswapRouter.sol";
 
-import "../SwapperSidechain.sol";
+import "../Swapper.sol";
 
 /// @title BaseLevSwapper
 /// @author Angle Labs, Inc.
-/// @notice Swapper contract facilitating interactions with a `VaultManager` - liquidation, leverage, wrapping and unwrapping
-abstract contract BaseLevSwapper is SwapperSidechain {
+/// @notice Swapper contract facilitating interactions with Angle VaultManager contracts, notably
+/// liquidation and leverage transactions
+/// @dev This base implementation is for tokens like LP tokens which are not natively supported by 1Inch
+/// and need some wrapping/unwrapping
+abstract contract BaseLevSwapper is Swapper {
     using SafeERC20 for IERC20;
 
     /// @notice Constructor of the contract
@@ -23,14 +26,14 @@ abstract contract BaseLevSwapper is SwapperSidechain {
         IUniswapV3Router _uniV3Router,
         address _oneInch,
         IAngleRouterSidechain _angleRouter
-    ) SwapperSidechain(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) Swapper(_core, _uniV3Router, _oneInch, _angleRouter) {
         if (address(angleStaker()) != address(0))
             angleStaker().asset().safeIncreaseAllowance(address(angleStaker()), type(uint256).max);
     }
 
     // ============================= INTERNAL FUNCTIONS ============================
 
-    /// @notice inheritdoc SwapperSidechain
+    /// @inheritdoc Swapper
     /// @param data Encoded data giving specific instruction to the bundle tx
     /// @dev The amountOut is unused so left as 0 in the case of a deleverage transaction
     /// @dev All token transfers must have been done beforehand

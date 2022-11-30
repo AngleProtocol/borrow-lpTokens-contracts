@@ -6,7 +6,7 @@ import "../../../interfaces/external/curve/IMetaPool3.sol";
 
 /// @author Angle Labs, Inc.
 /// @notice Template leverage swapper on Curve LP tokens
-/// @dev This implementation is for Curve pools with 2 tokens
+/// @dev This implementation is for Curve pools with 3 tokens
 contract CurveLevSwapper3TokensWithBPTemplate is CurveLevSwapper3TokensWithBP {
     constructor(
         ICoreBorrow _core,

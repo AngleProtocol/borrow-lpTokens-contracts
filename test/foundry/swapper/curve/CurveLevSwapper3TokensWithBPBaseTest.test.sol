@@ -9,7 +9,7 @@ pragma solidity 0.8.17;
 // import "../../../../contracts/interfaces/coreModule/IStableMaster.sol";
 // import "../../../../contracts/interfaces/coreModule/IPoolManager.sol";
 // import "../../../../contracts/mock/MockTokenPermit.sol";
-// import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper3TokensWithBP, SwapperSidechain, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockCurveLevSwapper3TokensWithBP.sol";
+// import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper3TokensWithBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockCurveLevSwapper3TokensWithBP.sol";
 // import { MockBorrowStaker } from "../../../../contracts/mock/MockBorrowStaker.sol";
 
 // // @dev Testing on Polygon
