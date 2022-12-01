@@ -4,12 +4,12 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import "../../interfaces/IAngleRouterSidechain.sol";
-import "../../interfaces/ICoreBorrow.sol";
+import "borrow/interfaces/IAngleRouterSidechain.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
 import "../../interfaces/IBorrowStaker.sol";
-import "../../interfaces/external/uniswap/IUniswapRouter.sol";
+import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
 
-import "../Swapper.sol";
+import "borrow/swapper/Swapper.sol";
 
 /// @title BaseLevSwapper
 /// @author Angle Labs, Inc.

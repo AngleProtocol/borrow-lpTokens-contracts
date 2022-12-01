@@ -4,14 +4,14 @@ pragma solidity ^0.8.17;
 import { stdStorage, StdStorage } from "forge-std/Test.sol";
 import "../BaseTest.test.sol";
 import { VaultManagerListing } from "../../../contracts/vaultManager/VaultManagerListing.sol";
-import { ActionType } from "../../../contracts/interfaces/IVaultManager.sol";
+import { ActionType } from "borrow/interfaces/IVaultManager.sol";
 import "../../../contracts/mock/MockTreasury.sol";
 import { MockBorrowStaker, MockBorrowStakerReset, BorrowStakerStorage } from "../../../contracts/mock/MockBorrowStaker.sol";
 import "../../../contracts/mock/MockOracle.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
 import "../../../contracts/mock/MockCoreBorrow.sol";
 import { MockAgToken } from "../../../contracts/mock/MockAgToken.sol";
-import { AngleBorrowHelpers } from "../../../contracts/ui-helpers/AngleBorrowHelpers.sol";
+import { AngleBorrowHelpers } from "borrow/ui-helpers/AngleBorrowHelpers.sol";
 
 /// @notice Data stored to track someone's loan (or equivalently called position)
 struct VaultList {

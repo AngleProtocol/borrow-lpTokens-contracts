@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.17;
 
-import "../swapper/Swapper.sol";
+import "borrow/swapper/Swapper.sol";
 
 /// @title MockSwapper
 /// @author Angle Labs, Inc.

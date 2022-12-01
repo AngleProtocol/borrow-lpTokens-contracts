@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 import "../../../contracts/interfaces/ICoreBorrow.sol";
-import "../../../contracts/interfaces/IAngleRouterSidechain.sol";
+import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "../../../contracts/interfaces/external/uniswap/IUniswapRouter.sol";
 import { MockCurveLevSwapperAaveBP } from "../../../contracts/swapper/LevSwapper/curve/implementations/polygon/polygonTest/MockCurveLevSwapperAaveBP.sol";
 import "./PolygonConstants.s.sol";

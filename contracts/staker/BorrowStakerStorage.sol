@@ -6,8 +6,8 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20Pe
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
-import "../interfaces/ICoreBorrow.sol";
-import { IVaultManagerListing } from "../interfaces/IVaultManager.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
+import { IVaultManagerListing } from "borrow/interfaces/IVaultManager.sol";
 
 /// @title BaseStorage
 /// @author Angle Labs, Inc.

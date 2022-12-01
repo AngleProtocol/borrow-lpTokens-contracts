@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.7;
 
-import "../interfaces/IOracle.sol";
+import "borrow/interfaces/IOracle.sol";
 
 contract MockOracle is IOracle {
     event Update(uint256 _peg);

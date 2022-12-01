@@ -2,10 +2,10 @@
 
 pragma solidity ^0.8.17;
 
-import "../interfaces/ITreasury.sol";
-import "../interfaces/IFlashAngle.sol";
-import "../interfaces/IVaultManager.sol";
-import "../interfaces/ICoreBorrow.sol";
+import "borrow/interfaces/ITreasury.sol";
+import "borrow/interfaces/IFlashAngle.sol";
+import "borrow/interfaces/IVaultManager.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
 
 contract MockTreasury is ITreasury {
     IAgToken public override stablecoin;
