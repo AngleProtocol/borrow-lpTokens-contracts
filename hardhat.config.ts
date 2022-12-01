@@ -50,6 +50,7 @@ const config: HardhatUserConfig = {
             enabled: true,
             runs: 1000000,
           },
+          remappings: ['borrow/=lib/borrow-contracts/contracts/'],
         },
       },
     ],
