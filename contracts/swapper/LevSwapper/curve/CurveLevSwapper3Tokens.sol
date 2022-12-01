@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "../BaseLevSwapper.sol";
 import { IMetaPool3 } from "../../../interfaces/external/curve/IMetaPool3.sol";
@@ -15,7 +15,7 @@ enum CurveRemovalType {
 /// @title CurveLevSwapper2Tokens
 /// @author Angle Labs, Inc.
 /// @dev Leverage swapper on Curve LP tokens
-/// @dev This implementation is for Curve pools with 2 tokens
+/// @dev This implementation is for Curve pools with 3 tokens
 abstract contract CurveLevSwapper3Tokens is BaseLevSwapper {
     using SafeERC20 for IERC20;
 

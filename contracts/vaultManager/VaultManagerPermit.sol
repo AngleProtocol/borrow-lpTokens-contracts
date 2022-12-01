@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "./VaultManagerERC721.sol";
 import "../interfaces/external/IERC1271.sol";

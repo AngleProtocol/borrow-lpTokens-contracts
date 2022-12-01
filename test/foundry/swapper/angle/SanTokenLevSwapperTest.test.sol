@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
 import "../../../../contracts/interfaces/IBorrowStaker.sol";
@@ -7,7 +7,7 @@ import "../../../../contracts/interfaces/ICoreBorrow.sol";
 import "../../../../contracts/interfaces/coreModule/IStableMaster.sol";
 import "../../../../contracts/interfaces/coreModule/IPoolManager.sol";
 import "../../../../contracts/mock/MockTokenPermit.sol";
-import { SwapType, BaseLevSwapper, MockSanTokenLevSwapper, SwapperSidechain, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockSanTokenLevSwapper.sol";
+import { SwapType, BaseLevSwapper, MockSanTokenLevSwapper, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockSanTokenLevSwapper.sol";
 import { MockBorrowStaker } from "../../../../contracts/mock/MockBorrowStaker.sol";
 
 contract SanTokenLevSwapperTest is BaseTest {
@@ -264,7 +264,7 @@ contract SanTokenLevSwapperTest is BaseTest {
             data = abi.encode(address(0), swapMinAmountOut, SwapType.Leverage, leverageData);
         }
         staker.transfer(address(swapper), amount);
-        vm.expectRevert(SwapperSidechain.TooSmallAmountOut.selector);
+        vm.expectRevert(Swapper.TooSmallAmountOut.selector);
         swapper.swap(IERC20(address(staker)), IERC20(address(_FRAX)), _alice, 0, amount, data);
         vm.stopPrank();
     }

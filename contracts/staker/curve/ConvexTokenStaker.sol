@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "../../interfaces/external/convex/IBooster.sol";
 import "../../interfaces/external/convex/IBaseRewardPool.sol";
@@ -42,7 +42,7 @@ abstract contract ConvexTokenStaker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by implementation if there are more rewards
-    function _claimRewards() internal override {
+    function _claimContractRewards() internal override {
         // Claim on Convex
         address[] memory rewardContracts = new address[](1);
         rewardContracts[0] = address(baseRewardPool());

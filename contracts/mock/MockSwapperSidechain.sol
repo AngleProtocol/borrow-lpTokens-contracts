@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
-import "../swapper/SwapperSidechain.sol";
+import "../swapper/Swapper.sol";
 
-/// @title MockSwapperSidechain
+/// @title MockSwapper
 /// @author Angle Labs, Inc.
-contract MockSwapperSidechain is SwapperSidechain {
+contract MockSwapper is Swapper {
     error NotImplemented();
 
     /// @notice Constructor of the contract
@@ -19,7 +19,7 @@ contract MockSwapperSidechain is SwapperSidechain {
         IUniswapV3Router _uniV3Router,
         address _oneInch,
         IAngleRouterSidechain _angleRouter
-    ) SwapperSidechain(_core, _uniV3Router, _oneInch, _angleRouter) {}
+    ) Swapper(_core, _uniV3Router, _oneInch, _angleRouter) {}
 
     function _swapLeverage(bytes memory) internal pure override returns (uint256) {
         revert NotImplemented();

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
 import "../../../../contracts/interfaces/IBorrowStaker.sol";
@@ -10,7 +10,7 @@ import "../../../../contracts/interfaces/coreModule/IStableMaster.sol";
 import "../../../../contracts/interfaces/coreModule/IPoolManager.sol";
 import "../../../../contracts/mock/MockTokenPermit.sol";
 
-import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapperFRAXBP, SwapperSidechain, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/implementations/swapper/mainnet/MockCurveLevSwapperFRAXBP.sol";
+import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapperFRAXBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/implementations/swapper/mainnet/MockCurveLevSwapperFRAXBP.sol";
 import { ConvexFRAXBPStaker } from "../../../../contracts/staker/curve/implementations/mainnet/ConvexFRAXBPStaker.sol";
 
 contract ConvexFRAXBPTest is BaseTest {

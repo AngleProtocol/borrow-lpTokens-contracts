@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 // Credits to Foundry team: https://book.getfoundry.sh/tutorials/testing-eip712?highlight=permit#diving-in
 struct Permit {
