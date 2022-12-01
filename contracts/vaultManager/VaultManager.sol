@@ -942,15 +942,15 @@ contract VaultManager is VaultManagerPermit, IVaultManagerFunctions {
 
     /// @inheritdoc IVaultManagerFunctions
     function setTreasury(address _treasury) external onlyTreasury {
+        /// This function makes sure to propagate the change to the associated contract
+        /// even though a single oracle contract could be used in different places
         treasury = ITreasury(_treasury);
-        // This function makes sure to propagate the change to the associated contract
-        // even though a single oracle contract could be used in different places
         oracle.setTreasury(_treasury);
     }
 
     // ============================= VIRTUAL FUNCTIONS =============================
 
-    /// @notice Computes the liquidation boost of a given address, that is the slope of the discount function
+    /// @notice Returns the liquidation boost of a given address, that is the slope of the discount function
     /// @return The slope of the discount function
     function _computeLiquidationBoost(address) internal view virtual returns (uint256) {
         return yLiquidationBoost[0];
