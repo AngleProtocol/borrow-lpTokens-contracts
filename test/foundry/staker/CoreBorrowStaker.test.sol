@@ -292,7 +292,7 @@ contract CoreBorrowStakerTest is BaseTest {
         assertEq(staker.integralOf(rewardToken, to), 0);
     }
 
-    function testFirstDepositSuccessWrapper(uint256 amount) public {
+    function testFirstDepositWrapperSuccess(uint256 amount) public {
         deal(address(asset), address(_alice), amount);
 
         startHoax(_alice);
@@ -367,7 +367,7 @@ contract CoreBorrowStakerTest is BaseTest {
         }
     }
 
-    function testMultiDepositsSuccessWrapper(
+    function testMultiDepositsWrapperSuccess(
         uint256[10] memory amounts,
         uint256[10] memory accounts,
         uint64[10] memory elapseTime
@@ -539,7 +539,7 @@ contract CoreBorrowStakerTest is BaseTest {
         assertApproxEqAbs(rewardToken.balanceOf(_alice), amount > 0 ? rewardAmount : 0, 10**(decimalReward - 4));
     }
 
-    function testFirstWithdrawSuccessWrapper(uint256 amount, uint64 elapseTime) public {
+    function testFirstWithdrawWrapperSuccess(uint256 amount, uint64 elapseTime) public {
         amount = bound(amount, 0, maxTokenAmount);
         deal(address(asset), address(_alice), amount);
         deal(address(rewardToken), address(staker), rewardAmount);
