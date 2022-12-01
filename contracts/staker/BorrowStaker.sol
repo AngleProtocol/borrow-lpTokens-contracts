@@ -41,8 +41,7 @@ import "./BorrowStakerStorage.sol";
 /// @author Angle Labs, Inc.
 /// @dev Staking contract keeping track of user rewards and minting a wrapper token
 /// that can be hassle free on any other protocol without loosing the rewards
-/// @dev If Angle is to accept a Curve LP token accruing CRV rewards, what is to be a collateral on the Borrowing module
-/// is not going to be the LP token in itself, but the token corresponding to this type of contract
+/// @dev Used to transform any exotic token giving rewards into a suitable collateral for a `VaultManager`
 abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     using SafeERC20 for IERC20;
 
@@ -94,8 +93,8 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         return _decimals;
     }
 
-    /// @notice Deposits the token to get the wrapped version
-    /// @param amount Amount of token to be staked
+    /// @notice Deposits this contract's underlying asset to get this token
+    /// @param amount Amount of token to be deposited
     /// @param to Address for which the token is deposited
     function deposit(uint256 amount, address to) public returns (uint256) {
         // Need to transfer before minting or ERC777s could reenter.
@@ -110,8 +109,8 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         return deposit(amount, msg.sender);
     }
 
-    /// @notice Withdraws the token from the same amount of wrapped token
-    /// @param amount Amount of token to be unstaked
+    /// @notice Withdraws an amount of this token to get the underlying asset
+    /// @param amount Amount of token to be withdrawn
     /// @param from Address from which the token will be withdrawn
     /// @param to Address which will receive the token
     function withdraw(
@@ -178,9 +177,9 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     function claimableRewards(address from, IERC20 _rewardToken) external view returns (uint256) {
         uint256 _totalSupply = totalSupply();
         uint256 newIntegral = _totalSupply != 0
-            ? integral[_rewardToken] + (_rewardsToBeClaimed(_rewardToken) * BASE_PARAMS) / _totalSupply
+            ? integral[_rewardToken] + (_rewardsToBeClaimed(_rewardToken) * BASE_36) / _totalSupply
             : integral[_rewardToken];
-        uint256 newClaimable = (totalBalanceOf(from) * (newIntegral - integralOf[_rewardToken][from])) / BASE_PARAMS;
+        uint256 newClaimable = (totalBalanceOf(from) * (newIntegral - integralOf[_rewardToken][from])) / BASE_36;
         return pendingRewardsOf[_rewardToken][from] + newClaimable;
     }
 
@@ -190,7 +189,9 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param _coreBorrow Address of the new core borrow contract
     function setCoreBorrow(ICoreBorrow _coreBorrow) external onlyGovernor {
         if (!_coreBorrow.isGovernor(msg.sender)) revert NotGovernor();
+        address oldCoreBorrow = address(coreBorrow);
         coreBorrow = _coreBorrow;
+        emit CoreBorrowUpdated(oldCoreBorrow, address(_coreBorrow));
     }
 
     /// @notice Adds to the tracking list a `vaultManager` which has as collateral the `asset`
@@ -200,6 +201,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
             revert InvalidVaultManager();
         isCompatibleVaultManager[address(vaultManager)] = 1;
         _vaultManagers.push(vaultManager);
+        emit AddVaultManager(address(vaultManager));
     }
 
     /// @notice Allows to recover any ERC20 token
@@ -286,7 +288,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         uint256 userBalance = totalBalanceOf(from);
         for (uint256 i; i < rewardTokensLength; ++i) {
             uint256 totalClaimable = (userBalance * (integral[rewardTokens[i]] - integralOf[rewardTokens[i]][from])) /
-                BASE_PARAMS +
+                BASE_36 +
                 pendingRewardsOf[rewardTokens[i]][from];
             if (totalClaimable != 0) {
                 if (_claim) {
@@ -306,7 +308,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param amount Amount to add to the claimable rewards
     function _updateRewards(IERC20 rewardToken, uint256 amount) internal {
         uint256 _totalSupply = totalSupply();
-        if (_totalSupply != 0) integral[rewardToken] += (amount * BASE_PARAMS) / _totalSupply;
+        if (_totalSupply != 0) integral[rewardToken] += (amount * BASE_36) / _totalSupply;
     }
 
     /// @notice Changes allowance of this contract for a given token

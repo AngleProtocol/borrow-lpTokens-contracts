@@ -9,8 +9,8 @@ import "./VaultManager.sol";
 /// @author Angle Labs, Inc.
 /// @notice Provides an additional viewer to `VaultManager` to get the full collateral deposited
 /// by an owner
-/// @dev This implementation is built to interact with `collateral` that are in fact `staker` contracts wrapping
-/// another collateral asset.
+/// @dev Implementation built for the case where the `collateral` is a `staker` contracts wrapping
+/// the actual collateral, and earning rewards.
 /// @dev Some things are worth noting regarding transfers and updates in the `totalBalanceOf` for such `collateral`.
 /// When adding or removing collateral to/from a vault, the `totalBalanceOf` of an address is updated, even if the asset
 /// has not been transferred yet, meaning there can be two checkpoints for in fact a single transfer.
@@ -36,8 +36,8 @@ contract VaultManagerListing is VaultManager {
         address to,
         uint256 vaultID
     ) internal override {
-        // if transfer between 2 addresses we need to checkpoint both of them
-        // if burn we also need to checkpoint as the burn didn't trigger yet a change in collateral amount
+        // If the transfer is between 2 addresses we need to checkpoint both of them.
+        // If it is a burn we also need to checkpoint as the burn didn't trigger yet a change in collateral amount
         if (from != address(0)) {
             uint256 collateralAmount = vaultData[vaultID].collateralAmount;
             _checkpointWrapper(from, collateralAmount, false);
@@ -46,19 +46,19 @@ contract VaultManagerListing is VaultManager {
     }
 
     /// @inheritdoc VaultManager
-    /// @dev Checkpoints the staker associated to the `collateral` of the contract after an update of the
-    /// `collateralAmount` of vaultID
+    /// @dev Checkpoints the `collateral` of the contract after an update of the `collateralAmount` of vaultID
     function _checkpointCollateral(
         uint256 vaultID,
         uint256 amount,
         bool add
     ) internal override {
-        address owner = _ownerOf(vaultID);
-        _checkpointWrapper(owner, amount, add);
+        _checkpointWrapper(_ownerOf(vaultID), amount, add);
     }
 
     /// @notice Checkpoint rewards for `user` in the `staker` contract
-    /// @param user Address for which balance should be updated
+    /// @param user Address for which the balance should be updated
+    /// @param amount Amount of collateral added / removed from the vault
+    /// @param add Whether the collateral was added or removed from the vault
     /// @dev Whenever there is an internal transfer or a transfer from the `vaultManager`,
     /// we need to update the rewards to correctly track everyone's claim
     function _checkpointWrapper(
