@@ -124,11 +124,11 @@ contract Swapper is ISwapper {
         address to;
         // For slippage protection, it is checked at the end of the call
         uint256 minAmountOut;
-        // Type of the swap to execute: if `swapType == 3`, then it is optional to swap
-        uint128 swapType;
+        // Type of the swap to execute: if `swapType == 4`, then it is optional to swap
+        uint256 swapType;
         // We're reusing the `data` variable (it can be `path` on UniswapV3, a payload for 1inch or like encoded actions
         // for a router call)
-        (to, minAmountOut, swapType, data) = abi.decode(data, (address, uint256, uint128, bytes));
+        (to, minAmountOut, swapType, data) = abi.decode(data, (address, uint256, uint256, bytes));
 
         to = (to == address(0)) ? outTokenRecipient : to;
 
