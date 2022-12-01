@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
+import "../../interfaces/IBorrowStaker.sol";
 
 import "borrow/swapper/Swapper.sol";
 

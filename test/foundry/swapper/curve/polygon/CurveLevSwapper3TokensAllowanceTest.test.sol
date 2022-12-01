@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "../../../BaseTest.test.sol";
-import { ILendingPool } from "../../../../../contracts/interfaces/external/aave/ILendingPool.sol";
+import { ILendingPool } from "borrow/interfaces/external/aave/ILendingPool.sol";
 import "../../../../../contracts/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../../../contracts/interfaces/external/curve/IMetaPool3.sol";
