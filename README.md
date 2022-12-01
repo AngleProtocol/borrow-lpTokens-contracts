@@ -38,10 +38,6 @@ Warning: always keep your confidential information safe.
 
 To automatically create headers, follow: <https://github.com/Picodes/headers>
 
-## Hardhat Command line completion
-
-Follow these instructions to have hardhat command line arguments completion: <https://hardhat.org/hardhat-runner/docs/guides/command-line-completion>
-
 ## Foundry Installation
 
 ```bash
@@ -120,7 +116,6 @@ yarn foundry:deploy scripts/foundry/DeployMockAgEUR.s.sol --rpc-url goerli
 We recommend the use of this [vscode extension](ryanluker.vscode-coverage-gutters).
 
 ```bash
-yarn hardhat:coverage
 yarn foundry:coverage
 ```
 
