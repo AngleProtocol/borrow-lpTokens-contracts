@@ -14,9 +14,9 @@ import { IVaultManagerListing } from "../interfaces/IVaultManager.sol";
 /// @dev Variables, references, parameters and events needed in the `BorrowStaker` contract
 contract BorrowStakerStorage is Initializable {
     /// @notice Base used for parameter computation
-    /// @dev Large base because when `(amount * BASE_PARAMS) / totalSupply()` if `amount << totalSupply`
-    /// rounding can be terrible. Setting the base higher limits the maximum decimals a reward can have - overflows.
-    uint256 public constant BASE_PARAMS = 10**36;
+    /// @dev Large base because when `(amount * BASE_36) / totalSupply()` if `amount << totalSupply`
+    /// rounding can be terrible. Setting the base higher increases the maximum decimals a reward can have.
+    uint256 public constant BASE_36 = 10**36;
 
     // ================================= REFERENCES ================================
 
@@ -43,15 +43,17 @@ contract BorrowStakerStorage is Initializable {
     /// @notice Maps pairs of `(token,user)` to a track record of cumulated personal rewards
     mapping(IERC20 => mapping(address => uint256)) public integralOf;
 
-    uint256[44] private __gap;
+    uint256[41] private __gap;
 
     // =================================== EVENTS ==================================
 
+    event AddVaultManager(address indexed vaultManager);
+    event CoreBorrowUpdated(address indexed oldCoreBorrow, address indexed newCoreBorrow);
     event Deposit(address indexed from, address indexed to, uint256 amount);
     event Withdraw(address indexed from, address indexed to, uint256 amount);
     event Recovered(address indexed token, address indexed to, uint256 amount);
 
-    // =================================== ERRROS ==================================
+    // =================================== ERRORS ==================================
 
     error InvalidToken();
     error NotGovernor();
