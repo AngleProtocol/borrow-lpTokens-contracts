@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "./CurveLevSwapper3TokensWithBP.sol";
 import "../../../interfaces/external/curve/IMetaPool3.sol";
 
 /// @author Angle Labs, Inc.
 /// @notice Template leverage swapper on Curve LP tokens
-/// @dev This implementation is for Curve pools with 2 tokens
+/// @dev This implementation is for Curve pools with 3 tokens
 contract CurveLevSwapper3TokensWithBPTemplate is CurveLevSwapper3TokensWithBP {
     constructor(
         ICoreBorrow _core,

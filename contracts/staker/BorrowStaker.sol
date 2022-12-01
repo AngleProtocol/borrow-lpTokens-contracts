@@ -33,7 +33,7 @@
           ▓▓▓        ▓▓      ▓▓▓    ▓▓▓       ▓▓▓▓▓▓▓▓▓▓        ▓▓▓▓▓▓▓▓▓▓       ▓▓▓▓▓▓▓▓▓▓          
 */
 
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
 import "./BorrowStakerStorage.sol";
 
@@ -88,6 +88,8 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
 
     // ============================= EXTERNAL FUNCTIONS ============================
 
+    /// @notice Amount of decimals of the token corresponding to this contract
+    /// @dev It is the amount of decimals of the underlying asset
     function decimals() public view override returns (uint8) {
         return _decimals;
     }
@@ -95,12 +97,17 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @notice Deposits the token to get the wrapped version
     /// @param amount Amount of token to be staked
     /// @param to Address for which the token is deposited
-    function deposit(uint256 amount, address to) external returns (uint256) {
+    function deposit(uint256 amount, address to) public returns (uint256) {
         // Need to transfer before minting or ERC777s could reenter.
         asset().safeTransferFrom(msg.sender, address(this), amount);
         _mint(to, amount);
         emit Deposit(msg.sender, to, amount);
         return amount;
+    }
+
+    /// @notice Wrapper for the `deposit` function above
+    function deposit(uint256 amount) external returns (uint256) {
+        return deposit(amount, msg.sender);
     }
 
     /// @notice Withdraws the token from the same amount of wrapped token
@@ -111,7 +118,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         uint256 amount,
         address from,
         address to
-    ) external returns (uint256) {
+    ) public returns (uint256) {
         if (msg.sender != from) {
             uint256 currentAllowance = allowance(from, msg.sender);
             if (currentAllowance < amount) revert TransferAmountExceedsAllowance();
@@ -127,14 +134,24 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         return amount;
     }
 
+    /// @notice Wrapper for the `withdraw` function above
+    function withdraw(uint256 amount) external returns (uint256) {
+        return withdraw(amount, msg.sender, msg.sender);
+    }
+
     /// @notice Claims earned rewards for user `from`
     /// @param from Address to claim for
     /// @return rewardAmounts Amounts of each reward token claimed by the user
     //solhint-disable-next-line
-    function claim_rewards(address from) external returns (uint256[] memory) {
+    function claim_rewards(address from) public returns (uint256[] memory) {
         address[] memory checkpointUser = new address[](1);
         checkpointUser[0] = address(from);
         return _checkpoint(checkpointUser, true);
+    }
+
+    /// @notice Same as the `claim_rewards` function above
+    function claimRewards(address from) external returns (uint256[] memory) {
+        return claim_rewards(from);
     }
 
     /// @notice Checkpoints the rewards earned by user `from`
@@ -247,7 +264,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// could be sent to the wrong owners
     function _checkpoint(address[] memory accounts, bool _claim) internal returns (uint256[] memory rewardAmounts) {
         if (_lastRewardsClaimed != block.timestamp) {
-            _claimRewards();
+            _claimContractRewards();
             _lastRewardsClaimed = uint32(block.timestamp);
         }
         uint256 accountsLength = accounts.length;
@@ -310,8 +327,9 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @notice Underlying token to be staked
     function asset() public virtual returns (IERC20);
 
-    /// @notice Claims all available rewards and increases the associated integral
-    function _claimRewards() internal virtual;
+    /// @notice Claims all rewards accumulated by this contract and increases the integral associated
+    /// to each reward token
+    function _claimContractRewards() internal virtual;
 
     /// @notice Returns a list of all reward tokens supported by this contract
     function _getRewards() internal view virtual returns (IERC20[] memory reward);
@@ -319,7 +337,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @notice Withdraws the staking token from the protocol rewards contract
     function _withdrawFromProtocol(uint256 amount) internal virtual;
 
-    /// @notice Checks all unclaimed rewards in `rewardToken`
+    /// @notice Checks all unclaimed rewards by this contract in `rewardToken`
     /// @dev For some `rewardToken` this may not be precise (i.e lower bound) on what can be claimed
     function _rewardsToBeClaimed(IERC20 rewardToken) internal view virtual returns (uint256 amount);
 }
