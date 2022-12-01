@@ -15,7 +15,7 @@ import "../Swapper.sol";
 /// @author Angle Labs, Inc.
 /// @notice Swapper contract facilitating interactions with Angle VaultManager contracts, notably
 /// liquidation and leverage transactions
-/// @dev This base implementation is for tokens like LP tokens which are not natively supported by 1Inch
+/// @dev This base implementation is for tokens like LP tokens which are not natively supported by 1inch
 /// and need some wrapping/unwrapping
 abstract contract BaseLevSwapper is Swapper {
     using SafeERC20 for IERC20;
@@ -74,12 +74,12 @@ abstract contract BaseLevSwapper is Swapper {
     }
 
     /// @notice Allows to do an arbitrary number of swaps using 1inch API
-    /// @param data Encoded info to execute the swaps from `_swapOn1Inch`
+    /// @param data Encoded info to execute the swaps from `_swapOn1inch`
     function _multiSwap1inch(bytes[] memory data) internal {
         uint256 dataLength = data.length;
         for (uint256 i; i < dataLength; ++i) {
             (address inToken, uint256 minAmount, bytes memory payload) = abi.decode(data[i], (address, uint256, bytes));
-            uint256 amountOut = _swapOn1Inch(IERC20(inToken), payload);
+            uint256 amountOut = _swapOn1inch(IERC20(inToken), payload);
             // We check the slippage in this case as `swap()` will only check it for the `outToken`
             if (amountOut < minAmount) revert TooSmallAmountOut();
         }
