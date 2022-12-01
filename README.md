@@ -12,6 +12,8 @@ For more details about what Angle or the Borrowing module are, you can check Ang
 
 This repo contains the contracts and tests associated to this extension of the Borrowing module. Follow the steps described below if you want to be able to use it by yourself.
 
+It only works with Foundry.
+
 ### Install packages
 
 You can install all dependencies by running
@@ -19,6 +21,15 @@ You can install all dependencies by running
 ```bash
 yarn
 forge i
+```
+
+### Install submodules
+
+Before being able to compile the contracts of the repo, you need to install the corresponding submodules.
+
+```bash
+git submodule init
+git submodule update --remote
 ```
 
 ### Create `.env` file
