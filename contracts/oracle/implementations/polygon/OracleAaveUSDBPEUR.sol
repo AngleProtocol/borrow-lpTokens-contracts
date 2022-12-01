@@ -2,9 +2,7 @@
 
 pragma solidity ^0.8.17;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-
-import "../../BaseOracleChainlinkMulti.sol";
+import "borrow/oracle/BaseOracleChainlinkMulti.sol";
 import "../../../interfaces/external/curve/ICurveCryptoSwapPool.sol";
 
 /// @title OracleAaveUSDBPEUR

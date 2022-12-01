@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import "../../../BaseTest.test.sol";
 import { ILendingPool } from "../../../../../contracts/interfaces/external/aave/ILendingPool.sol";
 import "../../../../../contracts/interfaces/IBorrowStaker.sol";
-import "../../../../../contracts/interfaces/ICoreBorrow.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../../../contracts/interfaces/external/curve/IMetaPool3.sol";
 import { MockCurveLevSwapperAaveBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../../contracts/swapper/LevSwapper/curve/implementations/polygon/polygonTest/MockCurveLevSwapperAaveBP.sol";
 

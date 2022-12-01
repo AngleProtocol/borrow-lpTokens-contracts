@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
-import "../../../contracts/interfaces/ICoreBorrow.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
 import { SanTokenUSDCvAgEURStaker, BorrowStakerStorage, ILiquidityGauge } from "../../../contracts/staker/angle/implementations/mainnet/SanTokenUSDCvAgEURStaker.sol";
 

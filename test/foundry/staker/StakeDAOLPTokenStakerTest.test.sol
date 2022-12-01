@@ -5,7 +5,7 @@ import "../BaseTest.test.sol";
 import "../../../contracts/interfaces/external/stakeDAO/IStakeCurveVault.sol";
 import "../../../contracts/interfaces/external/stakeDAO/IClaimerRewards.sol";
 import "../../../contracts/interfaces/external/stakeDAO/ILiquidityGauge.sol";
-import "../../../contracts/interfaces/ICoreBorrow.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
 import { StakeDAOAgEURvEUROCStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/StakeDAOAgEURvEUROCStaker.sol";
 

@@ -3,10 +3,10 @@ pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
 import "../../../../contracts/interfaces/IBorrowStaker.sol";
-import "../../../../contracts/interfaces/ICoreBorrow.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../../contracts/interfaces/external/curve/IMetaPool2.sol";
-import "../../../../contracts/interfaces/coreModule/IStableMaster.sol";
-import "../../../../contracts/interfaces/coreModule/IPoolManager.sol";
+import "borrow/interfaces/coreModule/IStableMaster.sol";
+import "borrow/interfaces/coreModule/IPoolManager.sol";
 import "../../../../contracts/mock/MockTokenPermit.sol";
 import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper2Tokens, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockCurveLevSwapper2Tokens.sol";
 import { MockBorrowStaker } from "../../../../contracts/mock/MockBorrowStaker.sol";
