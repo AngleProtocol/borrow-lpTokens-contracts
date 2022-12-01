@@ -78,7 +78,7 @@ abstract contract BaseLevSwapper is Swapper {
         uint256 dataLength = data.length;
         for (uint256 i; i < dataLength; ++i) {
             (address inToken, uint256 minAmount, bytes memory payload) = abi.decode(data[i], (address, uint256, bytes));
-            uint256 amountOut = _swapOn1Inch(IERC20(inToken), payload);
+            uint256 amountOut = _swapOn1inch(IERC20(inToken), payload);
             // We check the slippage in this case as `swap()` will only check it for the `outToken`
             if (amountOut < minAmount) revert TooSmallAmountOut();
         }
