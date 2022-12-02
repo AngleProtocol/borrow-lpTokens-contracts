@@ -9,20 +9,25 @@ import "./VaultManager.sol";
 /// @author Angle Labs, Inc.
 /// @notice Provides an additional viewer to `VaultManager` to get the full collateral deposited
 /// by an owner
-/// @dev Implementation built for the case where the `collateral` is a `staker` contracts wrapping
-/// the actual collateral, and earning rewards.
+/// @dev This implementation is built to interact with `collateral` that are in fact `staker` contracts wrapping
+/// another collateral asset.
+///
 /// @dev Some things are worth noting regarding transfers and updates in the `totalBalanceOf` for such `collateral`.
 /// When adding or removing collateral to/from a vault, the `totalBalanceOf` of an address is updated, even if the asset
 /// has not been transferred yet, meaning there can be two checkpoints for in fact a single transfer.
-/// Adding collateral to a vault increases the total balance of the `sender`. But after the vault collateral increase,
+///
+/// @dev Adding collateral to a vault increases the total balance of the `sender`. But after the vault collateral increase,
 /// since the `sender` still owns the `collateral`, there is a double count in the total balance. This is not a
 /// problem as the `sender` was already checkpointed in the `_addCollateral`.
-/// In the case of a `burn` or `removeCollateral` action, there is a first checkpoint with the correct balances,
+///
+/// @dev In the case of a `burn` or `removeCollateral` action, there is a first checkpoint with the correct balances,
 /// and then a second one when the vault transfers the `collateral` with a deflated balance in this case.
-/// Conclusion is that the logic on which this contract is built is working as expected as long as no rewards
+///
+/// @dev Conclusion is that the logic on which this contract is built is working as expected as long as no rewards
 /// are distributed within a same tx from the staking contract. Most protocols already follow this hypothesis,
 /// but for those who don't, this vault implementation doesn't work
-/// Note that it is a weaker assumption than what is done in the `staker` contract which supposes that no rewards
+///
+/// @dev Note that it is a weaker assumption than what is done in the `staker` contract which supposes that no rewards
 /// can be distributed to the same address within a block
 contract VaultManagerListing is VaultManager {
     using SafeERC20 for IERC20;
