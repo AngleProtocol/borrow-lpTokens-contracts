@@ -3,11 +3,11 @@ pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
 import "../../../../contracts/interfaces/IBorrowStaker.sol";
-import "../../../../contracts/interfaces/ICoreBorrow.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../../contracts/interfaces/external/stakeDAO/IStakeCurveVault.sol";
 import "../../../../contracts/interfaces/external/curve/IMetaPool2.sol";
-import "../../../../contracts/interfaces/coreModule/IStableMaster.sol";
-import "../../../../contracts/interfaces/coreModule/IPoolManager.sol";
+import "borrow/interfaces/coreModule/IStableMaster.sol";
+import "borrow/interfaces/coreModule/IPoolManager.sol";
 import "../../../../contracts/mock/MockTokenPermit.sol";
 
 import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapperFRAXBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/implementations/swapper/mainnet/MockCurveLevSwapperFRAXBP.sol";
@@ -169,7 +169,7 @@ contract StakeDAOFRAXBPTest is BaseTest {
         _depositLiquidity(amounts);
         _swapToImbalance(coinSwapFrom, coinSwapTo, swapAmount);
 
-        proportionWithdrawToken = bound(proportionWithdrawToken, 0, 10**9);
+        proportionWithdrawToken = bound(proportionWithdrawToken, 1, 10**9);
 
         (uint256[2] memory amountOut, uint256 keptLPToken) = _deleverageImbalance(proportionWithdrawToken);
 

@@ -5,9 +5,9 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "../interfaces/IAngleRouter.sol";
-import "../interfaces/external/uniswap/IUniswapRouter.sol";
-import "../interfaces/external/lido/IWStETH.sol";
+import "borrow/interfaces/IAngleRouter.sol";
+import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
+import "borrow/interfaces/external/lido/IWStETH.sol";
 
 contract MockRouter is IUniswapV3Router, IWStETH {
     using SafeERC20 for IERC20;

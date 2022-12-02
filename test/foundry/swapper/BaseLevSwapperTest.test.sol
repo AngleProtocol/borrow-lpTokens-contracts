@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
 import "../../../contracts/interfaces/IBorrowStaker.sol";
-import "../../../contracts/interfaces/ICoreBorrow.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
 import { SwapType, BaseLevSwapper, MockBaseLevSwapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../contracts/mock/MockBaseLevSwapper.sol";
 import { MockBorrowStaker } from "../../../contracts/mock/MockBorrowStaker.sol";

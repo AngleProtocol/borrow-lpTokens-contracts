@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
-import "../../../contracts/interfaces/IOracle.sol";
+import "borrow/interfaces/IOracle.sol";
 import { IERC20, VaultParameters, VaultManagerListing } from "../../../contracts/vaultManager/VaultManagerListing.sol";
 import "./PolygonConstants.s.sol";
 

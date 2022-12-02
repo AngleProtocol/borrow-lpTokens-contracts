@@ -3,9 +3,9 @@
 pragma solidity ^0.8.17;
 
 import { IBorrowStakerCheckpoint } from "../interfaces/IBorrowStaker.sol";
-import "../interfaces/IVaultManager.sol";
-import "../interfaces/ITreasury.sol";
+import "borrow/interfaces/ITreasury.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "borrow/vaultManager/VaultManager.sol";
 
 contract MockVaultManager {
     ITreasury public treasury;

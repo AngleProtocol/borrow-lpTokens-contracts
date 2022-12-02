@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
-import "../interfaces/ICoreBorrow.sol";
-import { IVaultManagerListing } from "../interfaces/IVaultManager.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
+import { IVaultManagerListing } from "borrow/interfaces/IVaultManager.sol";
 
 /// @title MockBorrowStaker
 /// @author Angle Labs, Inc.

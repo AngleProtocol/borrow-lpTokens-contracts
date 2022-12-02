@@ -5,7 +5,7 @@ import "../BaseTest.test.sol";
 import "../../../contracts/interfaces/external/convex/IBaseRewardPool.sol";
 import "../../../contracts/interfaces/external/convex/IBooster.sol";
 import "../../../contracts/interfaces/external/convex/IConvexToken.sol";
-import "../../../contracts/interfaces/ICoreBorrow.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
 import { ConvexAgEURvEUROCStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/ConvexAgEURvEUROCStaker.sol";
 

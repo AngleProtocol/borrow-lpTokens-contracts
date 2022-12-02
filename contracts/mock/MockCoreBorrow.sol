@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.17;
 
-import "../interfaces/ICoreBorrow.sol";
-import "../interfaces/IFlashAngle.sol";
-import "../interfaces/ITreasury.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
+import "borrow/interfaces/IFlashAngle.sol";
+import "borrow/interfaces/ITreasury.sol";
 
 contract MockCoreBorrow is ICoreBorrow {
     mapping(address => bool) public flashLoaners;

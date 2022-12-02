@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "../BaseLevSwapper.sol";
-import "../../../interfaces/coreModule/IStableMaster.sol";
+import "borrow/interfaces/coreModule/IStableMaster.sol";
 
 /// @title SanTokenLevSwapper
 /// @author Angle Labs, Inc.

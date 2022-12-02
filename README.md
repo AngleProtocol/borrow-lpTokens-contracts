@@ -12,6 +12,8 @@ For more details about what Angle or the Borrowing module are, you can check Ang
 
 This repo contains the contracts and tests associated to this extension of the Borrowing module. Follow the steps described below if you want to be able to use it by yourself.
 
+It only works with Foundry.
+
 ### Install packages
 
 You can install all dependencies by running
@@ -19,6 +21,15 @@ You can install all dependencies by running
 ```bash
 yarn
 forge i
+```
+
+### Install submodules
+
+Before being able to compile the contracts of the repo, you need to install the corresponding submodules.
+
+```bash
+git submodule init
+git submodule update --remote
 ```
 
 ### Create `.env` file
@@ -37,10 +48,6 @@ Warning: always keep your confidential information safe.
 ## Headers
 
 To automatically create headers, follow: <https://github.com/Picodes/headers>
-
-## Hardhat Command line completion
-
-Follow these instructions to have hardhat command line arguments completion: <https://hardhat.org/hardhat-runner/docs/guides/command-line-completion>
 
 ## Foundry Installation
 
@@ -120,7 +127,6 @@ yarn foundry:deploy scripts/foundry/DeployMockAgEUR.s.sol --rpc-url goerli
 We recommend the use of this [vscode extension](ryanluker.vscode-coverage-gutters).
 
 ```bash
-yarn hardhat:coverage
 yarn foundry:coverage
 ```
 

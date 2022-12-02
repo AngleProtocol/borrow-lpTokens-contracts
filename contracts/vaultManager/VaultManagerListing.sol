@@ -3,7 +3,7 @@
 pragma solidity ^0.8.17;
 
 import { IBorrowStakerCheckpoint } from "../interfaces/IBorrowStaker.sol";
-import "./VaultManager.sol";
+import "borrow/vaultManager/VaultManager.sol";
 
 /// @title VaultManagerListing
 /// @author Angle Labs, Inc.
