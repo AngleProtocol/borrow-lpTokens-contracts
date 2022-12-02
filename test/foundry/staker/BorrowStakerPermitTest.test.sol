@@ -294,6 +294,7 @@ contract BorrowStakerPermitTest is BaseTest {
 
     function _getAddresses(uint256 ownerPrivateKey, uint256 spenderPrivateKey)
         internal
+        view
         returns (
             address owner,
             address spender,
@@ -304,12 +305,12 @@ contract BorrowStakerPermitTest is BaseTest {
         ownerPrivateKey = bound(
             ownerPrivateKey,
             1,
-            115792089237316195423570985008687907852837564279074904382605163141518161494337
+            11579208923731619542357098500868790785283756427907490438260516314151816149433
         );
         spenderPrivateKey = bound(
             spenderPrivateKey,
             1,
-            115792089237316195423570985008687907852837564279074904382605163141518161494337
+            11579208923731619542357098500868790785283756427907490438260516314151816149433
         );
 
         owner = vm.addr(ownerPrivateKey);
