@@ -3,5 +3,5 @@
 	url = https://github.com/foundry-rs/forge-std
 [submodule "lib/borrow-contracts"]
 	path = lib/borrow-contracts
-	url = https://github.com/AngleProtocol/borrow-contracts
+	url = https://github.com/AngleProtocol/borrow-contracts.git
 	tags = v2.1
