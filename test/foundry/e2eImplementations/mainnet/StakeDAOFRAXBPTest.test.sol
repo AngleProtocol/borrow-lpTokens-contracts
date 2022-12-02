@@ -169,7 +169,7 @@ contract StakeDAOFRAXBPTest is BaseTest {
         _depositLiquidity(amounts);
         _swapToImbalance(coinSwapFrom, coinSwapTo, swapAmount);
 
-        proportionWithdrawToken = bound(proportionWithdrawToken, 0, 10**9);
+        proportionWithdrawToken = bound(proportionWithdrawToken, 1, 10**9);
 
         (uint256[2] memory amountOut, uint256 keptLPToken) = _deleverageImbalance(proportionWithdrawToken);
 
