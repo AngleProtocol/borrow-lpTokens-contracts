@@ -50,9 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Checkout submodules
-        run: git submodule update --init --recursive
-        env:
+        with:
+          submodules: recursive
           repo-token: ${{ secrets.ACCESS_TOKEN }}
 
       - uses: actions/setup-node@v2
