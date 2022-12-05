@@ -25,7 +25,7 @@ forge i
 
 ### Install submodules
 
-Before being able to compile the contracts of the repo, you need to install the corresponding submodules.
+Before being able to compile the contracts of the repo, you need to install the repository's submodules.
 
 ```bash
 git submodule init
