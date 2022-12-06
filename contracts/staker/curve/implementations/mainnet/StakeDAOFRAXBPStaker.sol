@@ -13,12 +13,12 @@ contract StakeDAOFRAXBPStaker is StakeDAOTokenStaker {
         return IERC20(0x3175Df0976dFA876431C2E9eE6Bc45b65d3473CC);
     }
 
-    /// @notice StakeDAO Vault address
+    /// @inheritdoc StakeDAOTokenStaker
     function _vault() internal pure override returns (IStakeCurveVault) {
         return IStakeCurveVault(0x11D87d278432Bb2CA6ce175e4a8B4AbDaDE80Fd0);
     }
 
-    /// @notice StakeDAO Gauge address
+    /// @inheritdoc StakeDAOTokenStaker
     function _gauge() internal pure override returns (ILiquidityGauge) {
         return ILiquidityGauge(0xBe77585F4159e674767Acf91284160E8C09b96D8);
     }

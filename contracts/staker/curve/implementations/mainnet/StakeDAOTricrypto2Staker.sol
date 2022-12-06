@@ -13,12 +13,12 @@ contract StakeDAOTricrypto2Staker is StakeDAOTokenStaker {
         return IERC20(0xc4AD29ba4B3c580e6D59105FFf484999997675Ff);
     }
 
-    /// @notice StakeDAO Vault address
+    /// @inheritdoc StakeDAOTokenStaker
     function _vault() internal pure override returns (IStakeCurveVault) {
         return IStakeCurveVault(0x903f3c7B4c3b18DF9A06157F9FD5176E6a1fDe68);
     }
 
-    /// @notice StakeDAO Gauge address
+    /// @inheritdoc StakeDAOTokenStaker
     function _gauge() internal pure override returns (ILiquidityGauge) {
         return ILiquidityGauge(0x4D69ad5F243571AA9628bd88ebfFA2C913427b0b);
     }
