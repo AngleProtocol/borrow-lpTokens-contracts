@@ -3,10 +3,10 @@ pragma solidity ^0.8.17;
 
 import "../AuraTokenStaker.sol";
 
-/// @title AuraWETHWSTETHStaker
+/// @title AuraSTETHStaker
 /// @author Angle Labs, Inc.
-/// @dev Implementation of `AuraTokenStaker` for the wETH/wstETH pool
-contract AuraWETHWSTETHStaker is AuraTokenStaker {
+/// @dev Implementation of `AuraTokenStaker` for the Balancer wETH/wstETH pool
+contract AuraSTETHStaker is AuraTokenStaker {
     /// @inheritdoc BorrowStaker
     function asset() public pure override returns (IERC20) {
         return IERC20(0x32296969Ef14EB0c6d29669C550D4a0449130230);

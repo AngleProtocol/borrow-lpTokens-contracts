@@ -4,11 +4,12 @@ pragma solidity ^0.8.17;
 import "../BaseLevSwapper.sol";
 import "../../../interfaces/external/balancer/IBalancerVault.sol";
 
-/// @title BalancerLevSwapper2StableTokens
+/// @title BalancerStableLevSwapper
 /// @author Angle Labs, Inc.
-/// @dev Leverage swapper on Balancer LP tokens
-/// @dev This implementation is for Balancer pools with 2 tokens and for Balancer Stable Pools
-abstract contract BalancerLevSwapper2StableTokens is BaseLevSwapper {
+/// @dev Leverage swapper on Balancer Composable Stable Pools LP tokens
+/// @dev For more info about Balancer Composable Stable Pools, check:
+/// https://docs.balancer.fi/products/balancer-pools/composable-stable-pools#the-lido-wsteth-weth-liquidity-pool
+abstract contract BalancerStableLevSwapper is BaseLevSwapper {
     using SafeERC20 for IERC20;
 
     IBalancerVault public constant BALANCER_VAULT = IBalancerVault(0xBA12222222228d8Ba445958a75a0704d566BF2C8);
@@ -19,8 +20,10 @@ abstract contract BalancerLevSwapper2StableTokens is BaseLevSwapper {
         address _oneInch,
         IAngleRouterSidechain _angleRouter
     ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
-        IERC20(address(tokens()[0])).safeIncreaseAllowance(address(BALANCER_VAULT), type(uint256).max);
-        IERC20(address(tokens()[1])).safeIncreaseAllowance(address(BALANCER_VAULT), type(uint256).max);
+        IAsset[] memory poolTokens = tokens();
+        for (uint256 i = 0; i < poolTokens.length; ++i) {
+            IERC20(address(poolTokens[i])).safeIncreaseAllowance(address(BALANCER_VAULT), type(uint256).max);
+        }
     }
 
     // =============================== MAIN FUNCTIONS ==============================
