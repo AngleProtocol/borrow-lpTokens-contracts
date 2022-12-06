@@ -12,7 +12,7 @@ interface ICurvePoolBalance is IERC20 {
     function balances(uint256 index) external view returns (uint256);
 }
 
-contract OracleTest is BaseTest {
+contract OraclePolygonTest is BaseTest {
     using stdStorage for StdStorage;
     using SafeERC20 for IERC20;
 
