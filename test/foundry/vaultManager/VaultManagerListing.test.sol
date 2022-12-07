@@ -213,7 +213,7 @@ contract VaultManagerListingTest is BaseTest {
                 uint256[] storage vaultIDs = ownerListVaults[account];
                 amounts[i] = bound(amounts[i], 0, vaultIDs.length - 1);
                 uint256 vaultID = vaultIDs[amounts[i]];
-                (bool liquidated, uint256 collateralAmount) = _liquidateVault(_hacker, vaultID);
+                (, uint256 collateralAmount) = _liquidateVault(_hacker, vaultID);
                 collateralVaultAmounts[randomIndex] -= collateralAmount;
                 collateralIdleAmounts[4] += collateralAmount;
             } else if (action == 8) {
@@ -221,7 +221,7 @@ contract VaultManagerListingTest is BaseTest {
                 uint256[] storage vaultIDs = ownerListVaults[account];
                 amounts[i] = bound(amounts[i], 0, vaultIDs.length - 1);
                 uint256 vaultID = vaultIDs[amounts[i]];
-                (bool fullLiquidation, uint256 collateralAmount) = _partialLiquidationVault(_hacker, vaultID);
+                (, uint256 collateralAmount) = _partialLiquidationVault(_hacker, vaultID);
                 collateralVaultAmounts[randomIndex] -= collateralAmount;
                 collateralIdleAmounts[4] += collateralAmount;
             }
@@ -328,7 +328,7 @@ contract VaultManagerListingTest is BaseTest {
 
     // ============================= INTERNAL FUNCTIONS ============================
 
-    function _getAccountByIndex(uint256 index) internal returns (uint256, address) {
+    function _getAccountByIndex(uint256 index) internal view returns (uint256, address) {
         uint256 randomIndex = bound(index, 0, 3);
         address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2 ? _charlie : _dylan;
         return (randomIndex, account);

@@ -10,6 +10,7 @@ struct Permit {
     uint256 deadline;
 }
 
+//solhint-disable
 contract SigUtils {
     bytes32 internal _DOMAIN_SEPARATOR;
 
