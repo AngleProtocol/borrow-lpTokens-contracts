@@ -32,7 +32,7 @@ contract AuraLPTokenStakerTest is BaseTest {
     uint256 public constant WITHDRAW_LENGTH = 2;
 
     function setUp() public override {
-        _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 16132652);
+        _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 16133802);
         vm.selectFork(_ethereum);
 
         super.setUp();
@@ -86,7 +86,6 @@ contract AuraLPTokenStakerTest is BaseTest {
                     for (uint256 j = 0; j < rewardToken.length; j++) {
                         uint256 totSupply = staker.totalSupply();
                         uint256 claimableRewardsFromStaker = _rewardsToBeClaimed(rewardToken[j]);
-                        console.log(claimableRewardsFromStaker);
                         if (totSupply > 0) {
                             pendingRewards[0][j] +=
                                 (staker.balanceOf(_alice) * claimableRewardsFromStaker) /
@@ -179,7 +178,7 @@ contract AuraLPTokenStakerTest is BaseTest {
 
     function _rewardsToBeClaimed(IERC20 _rewardToken) internal view returns (uint256 amount) {
         if (_rewardToken == IERC20(address(_AURA)) || _rewardToken == IERC20(address(_BAL))) {
-            amount = baseRewardPool.earned(address(this));
+            amount = baseRewardPool.earned(address(staker));
             if (_rewardToken == IERC20(address(_AURA))) {
                 // Computation made in the Aura token when claiming rewards check
                 // This computation should also normally take into account a `minterMinted` variable, but this one is private
@@ -202,7 +201,7 @@ contract AuraLPTokenStakerTest is BaseTest {
             for (uint256 i; i < rewardTokenLength; ++i) {
                 IVirtualBalanceRewardPool stakingPool = IVirtualBalanceRewardPool(baseRewardPool.extraRewards(i));
                 if (_rewardToken == IERC20(stakingPool.rewardToken())) {
-                    amount = stakingPool.earned(address(this));
+                    amount = stakingPool.earned(address(staker));
                     break;
                 }
             }
