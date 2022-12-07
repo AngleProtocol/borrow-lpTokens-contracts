@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 import "../../interfaces/external/convex/IBooster.sol";
 import "../../interfaces/external/convex/IBaseRewardPool.sol";
 import "../../interfaces/external/convex/IConvexToken.sol";
+import "../../interfaces/external/convex/IVirtualBalanceRewardPool.sol";
 import "../../interfaces/external/curve/ILiquidityGaugeComplete.sol";
 
 import "../BorrowStaker.sol";
@@ -65,20 +66,32 @@ abstract contract AuraTokenStaker is BorrowStaker {
     }
 
     /// @inheritdoc BorrowStaker
+    /// @dev For reward tokens that are not BAL or AURA, this function can be quite expensive to call, so it's
+    /// better to call it in off-chain settings
     function _rewardsToBeClaimed(IERC20 rewardToken) internal view override returns (uint256 amount) {
-        amount = baseRewardPool().earned(address(this));
-        if (rewardToken == IERC20(address(_AURA))) {
-            // Computation made in the Aura token when claiming rewards check
-            uint256 totalSupply = _AURA.totalSupply();
-            uint256 cliff = totalSupply / _AURA.reductionPerCliff();
-            uint256 totalCliffs = _AURA.totalCliffs();
-            if (cliff < totalCliffs) {
-                uint256 reduction = totalCliffs - cliff;
-                amount = (amount * reduction) / totalCliffs;
-
-                uint256 amtTillMax = _AURA.maxSupply() - totalSupply;
-                if (amount > amtTillMax) {
-                    amount = amtTillMax;
+        if (rewardToken == IERC20(address(_AURA)) || rewardToken == IERC20(address(_BAL))) {
+            amount = baseRewardPool().earned(address(this));
+            if (rewardToken == IERC20(address(_AURA))) {
+                // Computation made in the Aura token when claiming rewards check
+                uint256 totalSupply = _AURA.totalSupply();
+                uint256 cliff = totalSupply / _AURA.reductionPerCliff();
+                uint256 totalCliffs = _AURA.totalCliffs();
+                if (cliff < totalCliffs) {
+                    uint256 reduction = totalCliffs - cliff;
+                    amount = (amount * reduction) / totalCliffs;
+                    uint256 amtTillMax = _AURA.maxSupply() - totalSupply;
+                    if (amount > amtTillMax) {
+                        amount = amtTillMax;
+                    }
+                }
+            }
+        } else {
+            uint256 rewardTokenLength = baseRewardPool().extraRewardsLength();
+            for (uint256 i; i < rewardTokenLength; ++i) {
+                IVirtualBalanceRewardPool stakingPool = IVirtualBalanceRewardPool(baseRewardPool().extraRewards(i));
+                if (rewardToken == IERC20(stakingPool.rewardToken())) {
+                    amount = stakingPool.earned(address(this));
+                    break;
                 }
             }
         }
