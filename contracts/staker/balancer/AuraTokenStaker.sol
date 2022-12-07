@@ -73,13 +73,16 @@ abstract contract AuraTokenStaker is BorrowStaker {
             amount = baseRewardPool().earned(address(this));
             if (rewardToken == IERC20(address(_AURA))) {
                 // Computation made in the Aura token when claiming rewards check
-                uint256 totalSupply = _AURA.totalSupply();
-                uint256 cliff = totalSupply / _AURA.reductionPerCliff();
+                // This computation should also normally take into account a `minterMinted` variable, but this one is private
+                // and can therefore not be read on-chain
+                uint256 emissionsMinted = _AURA.totalSupply() - 5e25;
+                uint256 cliff = emissionsMinted / _AURA.reductionPerCliff();
                 uint256 totalCliffs = _AURA.totalCliffs();
                 if (cliff < totalCliffs) {
-                    uint256 reduction = totalCliffs - cliff;
+                    uint256 reduction = ((totalCliffs - cliff) * 5) / 2 + 700;
                     amount = (amount * reduction) / totalCliffs;
-                    uint256 amtTillMax = _AURA.maxSupply() - totalSupply;
+                    // 5e25 is the emissions max supply
+                    uint256 amtTillMax = 5e25 - emissionsMinted;
                     if (amount > amtTillMax) {
                         amount = amtTillMax;
                     }

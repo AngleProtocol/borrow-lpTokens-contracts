@@ -7,19 +7,16 @@ import "../../../contracts/interfaces/external/convex/IBooster.sol";
 import "../../../contracts/interfaces/external/convex/IConvexToken.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
-import { AuraSTETHStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/balancer/implementations/AuraSTETHStaker.sol";
+import { AuraSTETHStaker, BorrowStakerStorage, IERC20Metadata, IVirtualBalanceRewardPool } from "../../../contracts/staker/balancer/implementations/AuraSTETHStaker.sol";
 
 contract AuraLPTokenStakerTest is BaseTest {
     using stdStorage for StdStorage;
 
     address internal _hacker = address(uint160(uint256(keccak256(abi.encodePacked("hacker")))));
     IERC20 private constant _BAL = IERC20(0xba100000625a3754423978a60c9317c58a424e3D);
-    // IERC20 private constant _LDO = IERC20(0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32);
     IConvexToken private constant _AURA = IConvexToken(0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF);
     IERC20 public asset = IERC20(0x32296969Ef14EB0c6d29669C550D4a0449130230);
-    // IERC20[] public rewardToken = [_BAL, _AURA, _LDO];
     IERC20[] public rewardToken = [_BAL, _AURA];
-    // uint256 public constant NBR_REWARD = 3;
     uint256 public constant NBR_REWARD = 2;
     IConvexBooster public auraBooster = IConvexBooster(0x7818A1DA7BD1E64c199029E86Ba244a9798eEE10);
     IConvexBaseRewardPool public baseRewardPool = IConvexBaseRewardPool(0xDCee1C640cC270121faF145f231fd8fF1d8d5CD4);
@@ -32,7 +29,7 @@ contract AuraLPTokenStakerTest is BaseTest {
     uint8[] public decimalReward;
     uint256[] public rewardAmount;
 
-    uint256 public constant WITHDRAW_LENGTH = 1;
+    uint256 public constant WITHDRAW_LENGTH = 2;
 
     function setUp() public override {
         _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 16132652);
@@ -58,7 +55,7 @@ contract AuraLPTokenStakerTest is BaseTest {
 
     // ============================= DEPOSIT / WITHDRAW ============================
 
-    function testBorrowStakerCurveLP(
+    function testBorrowStakerAuraLP(
         uint256[WITHDRAW_LENGTH] memory amounts,
         uint256[WITHDRAW_LENGTH] memory depositWithdrawRewards,
         uint256[WITHDRAW_LENGTH] memory accounts,
@@ -89,6 +86,7 @@ contract AuraLPTokenStakerTest is BaseTest {
                     for (uint256 j = 0; j < rewardToken.length; j++) {
                         uint256 totSupply = staker.totalSupply();
                         uint256 claimableRewardsFromStaker = _rewardsToBeClaimed(rewardToken[j]);
+                        console.log(claimableRewardsFromStaker);
                         if (totSupply > 0) {
                             pendingRewards[0][j] +=
                                 (staker.balanceOf(_alice) * claimableRewardsFromStaker) /
@@ -180,18 +178,32 @@ contract AuraLPTokenStakerTest is BaseTest {
     }
 
     function _rewardsToBeClaimed(IERC20 _rewardToken) internal view returns (uint256 amount) {
-        amount = baseRewardPool.earned(address(staker));
-        if (_rewardToken == IERC20(address(_AURA))) {
-            uint256 totalSupply = _AURA.totalSupply();
-            uint256 cliff = totalSupply / _AURA.reductionPerCliff();
-            uint256 totalCliffs = _AURA.totalCliffs();
-            if (cliff < totalCliffs) {
-                uint256 reduction = totalCliffs - cliff;
-                amount = (amount * reduction) / totalCliffs;
-
-                uint256 amtTillMax = _AURA.maxSupply() - totalSupply;
-                if (amount > amtTillMax) {
-                    amount = amtTillMax;
+        if (_rewardToken == IERC20(address(_AURA)) || _rewardToken == IERC20(address(_BAL))) {
+            amount = baseRewardPool.earned(address(this));
+            if (_rewardToken == IERC20(address(_AURA))) {
+                // Computation made in the Aura token when claiming rewards check
+                // This computation should also normally take into account a `minterMinted` variable, but this one is private
+                // and can therefore not be read on-chain
+                uint256 emissionsMinted = _AURA.totalSupply() - 5e25;
+                uint256 cliff = emissionsMinted / _AURA.reductionPerCliff();
+                uint256 totalCliffs = _AURA.totalCliffs();
+                if (cliff < totalCliffs) {
+                    uint256 reduction = ((totalCliffs - cliff) * 5) / 2 + 700;
+                    amount = (amount * reduction) / totalCliffs;
+                    // 5e25 is the emissions max supply
+                    uint256 amtTillMax = 5e25 - emissionsMinted;
+                    if (amount > amtTillMax) {
+                        amount = amtTillMax;
+                    }
+                }
+            }
+        } else {
+            uint256 rewardTokenLength = baseRewardPool.extraRewardsLength();
+            for (uint256 i; i < rewardTokenLength; ++i) {
+                IVirtualBalanceRewardPool stakingPool = IVirtualBalanceRewardPool(baseRewardPool.extraRewards(i));
+                if (_rewardToken == IERC20(stakingPool.rewardToken())) {
+                    amount = stakingPool.earned(address(this));
+                    break;
                 }
             }
         }
