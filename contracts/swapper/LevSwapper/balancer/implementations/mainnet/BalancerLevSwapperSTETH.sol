@@ -22,7 +22,9 @@ contract BalancerLevSwapperSTETH is BalancerStableLevSwapper {
     /// @inheritdoc BalancerStableLevSwapper
     function tokens() public pure override returns (IAsset[] memory) {
         IAsset[] memory assets = new IAsset[](2);
+        // WSTETH
         assets[0] = IAsset(0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0);
+        // WETH
         assets[1] = IAsset(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
         return assets;
     }
