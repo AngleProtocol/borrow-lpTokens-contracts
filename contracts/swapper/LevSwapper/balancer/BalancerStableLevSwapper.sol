@@ -21,7 +21,7 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
         IAngleRouterSidechain _angleRouter
     ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
         IAsset[] memory poolTokens = tokens();
-        for (uint256 i = 0; i < poolTokens.length; ++i) {
+        for (uint256 i; i < poolTokens.length; ++i) {
             IERC20(address(poolTokens[i])).safeIncreaseAllowance(address(BALANCER_VAULT), type(uint256).max);
         }
     }
@@ -29,12 +29,13 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
     // =============================== MAIN FUNCTIONS ==============================
 
     /// @inheritdoc BaseLevSwapper
+    /// @dev Inspired from: https://dev.balancer.fi/resources/joins-and-exits/pool-joins#stablepool-joinkinds
     function _add(bytes memory) internal override returns (uint256 amountOut) {
         IAsset[] memory poolTokens = tokens();
         // Instead of doing sweeps at the end just use the full balance to add liquidity
         uint256[] memory amounts = new uint256[](poolTokens.length);
         bool nonNullAmount;
-        for (uint256 i = 0; i < poolTokens.length; ++i) {
+        for (uint256 i; i < poolTokens.length; ++i) {
             uint256 amount = IERC20(address(poolTokens[i])).balanceOf(address(this));
             if (amount > 0) nonNullAmount = true;
             amounts[i] = amount;
@@ -56,21 +57,24 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
     }
 
     /// @inheritdoc BaseLevSwapper
+    /// @dev Inspired from: https://dev.balancer.fi/resources/joins-and-exits/pool-exits#stablepool-exitkinds
     function _remove(uint256 burnAmount, bytes memory data) internal override returns (uint256 amountOut) {
-        (ExitKind removalType, uint256 tokenIndex) = abi.decode(data, (ExitKind, uint256));
+        (uint256 removalType, uint256 tokenIndex) = abi.decode(data, (uint256, uint256));
         bytes memory userData;
-        if (removalType == ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT)
+        if (ExitKind(removalType) == ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT)
             userData = abi.encode(removalType, burnAmount, tokenIndex);
-        else if (removalType == ExitKind.EXACT_BPT_IN_FOR_TOKENS_OUT) userData = abi.encode(removalType, burnAmount);
-
-        IAsset[] memory poolTokens = tokens();
-        uint256[] memory amounts = new uint256[](poolTokens.length);
-        BALANCER_VAULT.exitPool(
-            poolId(),
-            address(this),
-            payable(address(this)),
-            IBalancerVault.ExitPoolRequest(poolTokens, amounts, userData, false)
-        );
+        else if (ExitKind(removalType) == ExitKind.EXACT_BPT_IN_FOR_TOKENS_OUT)
+            userData = abi.encode(removalType, burnAmount);
+        if (userData.length > 0) {
+            IAsset[] memory poolTokens = tokens();
+            uint256[] memory amounts = new uint256[](poolTokens.length);
+            BALANCER_VAULT.exitPool(
+                poolId(),
+                address(this),
+                payable(address(this)),
+                IBalancerVault.ExitPoolRequest(poolTokens, amounts, userData, false)
+            );
+        }
         return 0;
     }
 
