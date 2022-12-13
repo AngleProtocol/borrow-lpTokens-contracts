@@ -11,7 +11,7 @@ import "../../../../contracts/mock/MockTokenPermit.sol";
 import { SwapType, BaseLevSwapper, MockBalancerStableLevSwapper, Swapper, IUniswapV3Router, IAngleRouterSidechain, IBalancerVault, IAsset } from "../../../../contracts/mock/MockBalancerStableLevSwapper.sol";
 import { MockBorrowStaker } from "../../../../contracts/mock/MockBorrowStaker.sol";
 
-contract BalancerStableLevSwapper1InchTest is BaseTest {
+contract BalancerStableLevSwapperTest is BaseTest {
     using stdStorage for StdStorage;
     using SafeERC20 for IERC20;
 
@@ -134,8 +134,6 @@ contract BalancerStableLevSwapper1InchTest is BaseTest {
         vm.expectRevert(Swapper.TooSmallAmountOut.selector);
         swapper.swap(IERC20(address(_WETH)), IERC20(address(staker)), _alice, 0, amount, data);
         vm.stopPrank();
-        uint256 balance = staker.balanceOf(_alice);
-        assertEq(balance, _LP_TOKEN.balanceOf(address(staker)));
     }
 
     function testOneTokenWSTETHJoin(uint256 amount) public {

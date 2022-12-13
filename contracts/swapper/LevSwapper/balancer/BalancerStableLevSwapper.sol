@@ -59,21 +59,39 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
     /// @inheritdoc BaseLevSwapper
     /// @dev Inspired from: https://dev.balancer.fi/resources/joins-and-exits/pool-exits#stablepool-exitkinds
     function _remove(uint256 burnAmount, bytes memory data) internal override returns (uint256 amountOut) {
-        (uint256 removalType, uint256 tokenIndex) = abi.decode(data, (uint256, uint256));
+        IAsset[] memory poolTokens = tokens();
+        uint256[] memory minAmountsOut = new uint256[](poolTokens.length);
+        uint256 removalType;
+        address to;
+        bytes memory extraData;
+        (removalType, extraData) = abi.decode(data, (uint256, bytes));
         bytes memory userData;
-        if (ExitKind(removalType) == ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT)
-            userData = abi.encode(removalType, burnAmount, tokenIndex);
-        else if (ExitKind(removalType) == ExitKind.EXACT_BPT_IN_FOR_TOKENS_OUT)
+        if (ExitKind(removalType) == ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT) {
+            // There is no need to care for slippage here if the exit is done just in one token because there is a final
+            // slippage check performed in the output token
+            uint256 exitTokenIndex = abi.decode(extraData, (uint256));
+            userData = abi.encode(removalType, burnAmount, exitTokenIndex);
+        } else if (ExitKind(removalType) == ExitKind.EXACT_BPT_IN_FOR_TOKENS_OUT) {
+            // This helps to guarantee that a slippage check is performed not only on the `outToken` if there are multiple
+            // tokens out
+            minAmountsOut = abi.decode(extraData, (uint256[]));
             userData = abi.encode(removalType, burnAmount);
+        } else if (ExitKind(removalType) == ExitKind.BPT_IN_FOR_EXACT_TOKENS_OUT) {
+            uint256[] memory amountsOut;
+            (amountsOut, to) = abi.decode(extraData, (uint256[], address));
+            userData = abi.encode(removalType, amountsOut, burnAmount);
+        }
         if (userData.length > 0) {
-            IAsset[] memory poolTokens = tokens();
-            uint256[] memory amounts = new uint256[](poolTokens.length);
             BALANCER_VAULT.exitPool(
                 poolId(),
                 address(this),
                 payable(address(this)),
-                IBalancerVault.ExitPoolRequest(poolTokens, amounts, userData, false)
+                IBalancerVault.ExitPoolRequest(poolTokens, minAmountsOut, userData, false)
             );
+        }
+        if (ExitKind(removalType) == ExitKind.BPT_IN_FOR_EXACT_TOKENS_OUT) {
+            uint256 leftover = lpToken().balanceOf(address(this));
+            if (leftover > 0) angleStaker().deposit(leftover, to);
         }
         return 0;
     }
