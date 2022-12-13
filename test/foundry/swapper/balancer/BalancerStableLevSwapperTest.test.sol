@@ -230,10 +230,11 @@ contract BalancerStableLevSwapperTest is BaseTest {
         uint256 amountToRemove = (balance * proportion) / 10**9;
         bytes memory data;
         {
+            bytes memory extraData = abi.encode(1);
             bytes memory removeData = abi.encode(
                 // MockBalancerStableLevSwapper.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT
                 0,
-                1
+                extraData
             );
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
@@ -260,7 +261,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
         uint256 amountToRemove = (balance * proportion) / 10**9;
         bytes memory data;
         {
-            bytes memory removeData = abi.encode(0, 0);
+            bytes memory removeData = abi.encode(0, abi.encode(0));
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
             bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
@@ -287,7 +288,9 @@ contract BalancerStableLevSwapperTest is BaseTest {
         uint256 amountToRemove = (balance * proportion) / 10**9;
         bytes memory data;
         {
-            bytes memory removeData = abi.encode(1, 0);
+            uint256[] memory minAmountsOut = new uint256[](2);
+            bytes memory extraData = abi.encode(minAmountsOut);
+            bytes memory removeData = abi.encode(1, extraData);
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
             bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
@@ -306,6 +309,94 @@ contract BalancerStableLevSwapperTest is BaseTest {
         assertEq(_LP_TOKEN.balanceOf(_alice), 0);
     }
 
+    function testExactTokenOutExit(uint256 amount, uint256 proportion) public {
+        amount = bound(amount, 10**18, 10**23);
+        deal(address(_WETH), address(_alice), amount);
+        _joinOneCoin(amount, _WETH);
+        vm.startPrank(_alice);
+        uint256 balance = staker.balanceOf(_alice);
+        proportion = bound(proportion, 1, 10);
+        uint256 amountToRemove = (balance * proportion) / 10;
+        bytes memory data;
+        {
+            uint256[] memory amountsOut = new uint256[](2);
+            amountsOut[0] = amountToRemove / 5;
+            amountsOut[1] = amountToRemove / 5;
+            bytes memory extraData = abi.encode(amountsOut, _alice);
+            bytes memory removeData = abi.encode(2, extraData);
+            bytes[] memory oneInchData;
+            IERC20[] memory sweepTokens;
+            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory leverageData = abi.encode(false, _alice, swapData);
+            data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
+        }
+        staker.transfer(address(swapper), amountToRemove);
+
+        swapper.swap(IERC20(address(staker)), IERC20(address(_WSTETH)), _alice, 0, amount, data);
+        vm.stopPrank();
+        assertGt(staker.balanceOf(_alice), balance - amountToRemove);
+        assertApproxEqAbs(_WSTETH.balanceOf(_alice), amountToRemove / 5, 10**(10));
+        // In this case if we don't sweep balance is 0
+        assertEq(_WETH.balanceOf(_alice), 0);
+        assertEq(_WETH.balanceOf(address(swapper)), amountToRemove / 5);
+        assertEq(_LP_TOKEN.balanceOf(_alice), 0);
+    }
+
+    function testExactTokenOutRevertExit(uint256 amount, uint256 proportion) public {
+        amount = bound(amount, 10**18, 10**23);
+        deal(address(_WETH), address(_alice), amount);
+        _joinOneCoin(amount, _WETH);
+        vm.startPrank(_alice);
+        uint256 balance = staker.balanceOf(_alice);
+        proportion = bound(proportion, 1, 10);
+        uint256 amountToRemove = (balance * proportion) / 10;
+        bytes memory data;
+        {
+            uint256[] memory amountsOut = new uint256[](2);
+            amountsOut[0] = amountToRemove;
+            amountsOut[1] = amountToRemove;
+            bytes memory extraData = abi.encode(amountsOut, _alice);
+            bytes memory removeData = abi.encode(2, extraData);
+            bytes[] memory oneInchData;
+            IERC20[] memory sweepTokens;
+            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory leverageData = abi.encode(false, _alice, swapData);
+            data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
+        }
+        staker.transfer(address(swapper), amountToRemove);
+        vm.expectRevert();
+        // In this case, we are burning too much
+        swapper.swap(IERC20(address(staker)), IERC20(address(_WSTETH)), _alice, 0, amount, data);
+        vm.stopPrank();
+    }
+
+    function testMultiTokenExitRevert(uint256 amount, uint256 proportion) public {
+        amount = bound(amount, 10**18, 10**24);
+        deal(address(_WETH), address(_alice), amount);
+        _joinOneCoin(amount, _WETH);
+        vm.startPrank(_alice);
+        uint256 balance = staker.balanceOf(_alice);
+        proportion = bound(proportion, 10**8, 10**9);
+        uint256 amountToRemove = (balance * proportion) / 10**9;
+        bytes memory data;
+        {
+            uint256[] memory minAmountsOut = new uint256[](2);
+            minAmountsOut[1] = amount;
+            bytes memory extraData = abi.encode(minAmountsOut);
+            bytes memory removeData = abi.encode(1, extraData);
+            bytes[] memory oneInchData;
+            IERC20[] memory sweepTokens;
+            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory leverageData = abi.encode(false, _alice, swapData);
+            data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
+        }
+        staker.transfer(address(swapper), amountToRemove);
+        vm.expectRevert();
+        // It should revert because of the slippage here below
+        swapper.swap(IERC20(address(staker)), IERC20(address(_WSTETH)), _alice, 0, amount, data);
+        vm.stopPrank();
+    }
+
     function testMultiTokenExitWithSweep(uint256 amount, uint256 proportion) public {
         amount = bound(amount, 10**18, 10**24);
         deal(address(_WETH), address(_alice), amount);
@@ -316,7 +407,9 @@ contract BalancerStableLevSwapperTest is BaseTest {
         uint256 amountToRemove = (balance * proportion) / 10**9;
         bytes memory data;
         {
-            bytes memory removeData = abi.encode(1, 0);
+            uint256[] memory minAmountsOut = new uint256[](2);
+            bytes memory extraData = abi.encode(minAmountsOut);
+            bytes memory removeData = abi.encode(1, extraData);
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens = new IERC20[](1);
             sweepTokens[0] = IERC20(_WETH);
@@ -346,7 +439,8 @@ contract BalancerStableLevSwapperTest is BaseTest {
         uint256 amountToRemove = (balance * proportion) / 10**9;
         bytes memory data;
         {
-            bytes memory removeData = abi.encode(2, 0);
+            bytes memory extraData;
+            bytes memory removeData = abi.encode(3, extraData);
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
             bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
