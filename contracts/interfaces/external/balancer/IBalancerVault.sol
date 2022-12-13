@@ -6,12 +6,12 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "./IAsset.sol";
 
-enum JoinKind {
+enum JoinKindStablePool {
     INIT,
     EXACT_TOKENS_IN_FOR_BPT_OUT,
     TOKEN_IN_FOR_EXACT_BPT_OUT
 }
-enum ExitKind {
+enum ExitKindStablePool {
     EXACT_BPT_IN_FOR_ONE_TOKEN_OUT,
     EXACT_BPT_IN_FOR_TOKENS_OUT,
     BPT_IN_FOR_EXACT_TOKENS_OUT

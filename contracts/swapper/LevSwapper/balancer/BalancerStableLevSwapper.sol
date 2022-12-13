@@ -49,7 +49,7 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
                 IBalancerVault.JoinPoolRequest(
                     poolTokens,
                     amounts,
-                    abi.encode(JoinKind.EXACT_TOKENS_IN_FOR_BPT_OUT, amounts, 0),
+                    abi.encode(JoinKindStablePool.EXACT_TOKENS_IN_FOR_BPT_OUT, amounts, 0),
                     false
                 )
             );
@@ -68,12 +68,12 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
             IAsset[] memory poolTokens = tokens();
             uint256[] memory minAmountsOut = new uint256[](poolTokens.length);
             address to;
-            if (ExitKind(removalType) == ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT) {
+            if (ExitKindStablePool(removalType) == ExitKindStablePool.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT) {
                 // There is no need to care for slippage here if the exit is done just in one token because there is a final
                 // slippage check performed in the output token
                 uint256 exitTokenIndex = abi.decode(extraData, (uint256));
                 userData = abi.encode(removalType, burnAmount, exitTokenIndex);
-            } else if (ExitKind(removalType) == ExitKind.EXACT_BPT_IN_FOR_TOKENS_OUT) {
+            } else if (ExitKindStablePool(removalType) == ExitKindStablePool.EXACT_BPT_IN_FOR_TOKENS_OUT) {
                 // This helps to guarantee that a slippage check is performed not only on the `outToken` if there are multiple
                 // tokens out
                 // A good practice to find minimum amounts to set in this setting is to call: `queryExit` in `BalancerHelpers`
@@ -82,7 +82,7 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
                 minAmountsOut = abi.decode(extraData, (uint256[]));
                 userData = abi.encode(removalType, burnAmount);
             } else {
-                // In this case, we have `(ExitKind(removalType) == ExitKind.BPT_IN_FOR_EXACT_TOKENS_OUT)`
+                // In this case, we have `(ExitKindStablePool(removalType) == ExitKindStablePool.BPT_IN_FOR_EXACT_TOKENS_OUT)`
                 uint256[] memory amountsOut;
                 (amountsOut, to) = abi.decode(extraData, (uint256[], address));
                 userData = abi.encode(removalType, amountsOut, burnAmount);
@@ -95,7 +95,7 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
                 IBalancerVault.ExitPoolRequest(poolTokens, minAmountsOut, userData, false)
             );
 
-            if (ExitKind(removalType) == ExitKind.BPT_IN_FOR_EXACT_TOKENS_OUT) {
+            if (ExitKindStablePool(removalType) == ExitKindStablePool.BPT_IN_FOR_EXACT_TOKENS_OUT) {
                 uint256 leftover = lpToken().balanceOf(address(this));
                 if (leftover > 0) angleStaker().deposit(leftover, to);
             }

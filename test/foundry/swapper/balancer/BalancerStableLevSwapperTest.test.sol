@@ -249,7 +249,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
         {
             bytes memory extraData = abi.encode(1);
             bytes memory removeData = abi.encode(
-                // MockBalancerStableLevSwapper.ExitKind.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT
+                // MockBalancerStableLevSwapper.ExitKindStablePool.EXACT_BPT_IN_FOR_ONE_TOKEN_OUT
                 0,
                 extraData
             );
