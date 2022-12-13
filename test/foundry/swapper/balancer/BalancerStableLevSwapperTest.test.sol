@@ -145,6 +145,29 @@ contract BalancerStableLevSwapperTest is BaseTest {
         _assertCommonLeverage();
     }
 
+    function testJoinNoUnderlyingDeposited(uint256 amount) public {
+        amount = bound(amount, 1, 10**27);
+        deal(address(_LP_TOKEN), address(_alice), amount);
+        vm.startPrank(_alice);
+        // intermediary variables
+        bytes[] memory oneInchData = new bytes[](0);
+
+        bytes memory addData;
+        bytes memory swapData = abi.encode(oneInchData, addData);
+        bytes memory leverageData = abi.encode(true, _alice, swapData);
+        bytes memory data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
+
+        // we first need to send the tokens before hand, you should always use the swapper
+        // in another tx to not losse your funds by front running
+        _LP_TOKEN.transfer(address(swapper), amount);
+        swapper.swap(IERC20(address(_LP_TOKEN)), IERC20(address(staker)), _alice, 0, amount, data);
+        vm.stopPrank();
+        assertEq(staker.balanceOf(_alice), amount);
+        assertEq(_LP_TOKEN.balanceOf(address(staker)), amount);
+        assertEq(staker.balanceOf(_alice), staker.totalSupply());
+        _assertCommonLeverage();
+    }
+
     function testRevertJoinOneTokenWETH(uint256 amount) public {
         amount = bound(amount, 10**6, 10**24);
 
