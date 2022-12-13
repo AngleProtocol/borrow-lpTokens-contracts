@@ -10,10 +10,10 @@ contract MyScript is Script {
         vm.startBroadcast();
 
         MockToken token = new MockToken("Name", "SYM", 18);
-        address _sender = address(uint160(uint256(keccak256(abi.encodePacked("sender")))));
-        address _receiver = address(uint160(uint256(keccak256(abi.encodePacked("receiver")))));
 
         console.log(address(token));
+        //address _sender = address(uint160(uint256(keccak256(abi.encodePacked("sender")))));
+        // address _receiver = address(uint160(uint256(keccak256(abi.encodePacked("receiver")))));
 
         // deal(address(token), _sender, 1 ether);
         // vm.prank(_sender);

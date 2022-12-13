@@ -12,7 +12,7 @@ interface ICurvePoolBalance is IERC20 {
     function balances(uint256 index) external view returns (uint256);
 }
 
-contract OracleTest is BaseTest {
+contract OraclePolygonTest is BaseTest {
     using stdStorage for StdStorage;
     using SafeERC20 for IERC20;
 
@@ -43,15 +43,17 @@ contract OracleTest is BaseTest {
 
     function testReadTricryptoPool() public view {
         {
+            /*
             uint256 usdTotal = ((uint256(1064545) * uint256(8133834303140886875013829)) /
                 10**24 +
                 (uint256(18441) * uint256(48020677053)) /
                 10**8 +
                 (uint256(1267) * uint256(6950798106072563439294)) /
                 10**18);
-            // uint256 truePrice = (usdTotal * 10**18) / 29396520412868861416651;
-            // console.log("api usd total ", usdTotal);
-            // console.log("api price ", truePrice);
+            uint256 truePrice = (usdTotal * 10**18) / 29396520412868861416651;
+            console.log("api usd total ", usdTotal);
+            console.log("api price ", truePrice);
+            */
         }
         uint256 lpAaveBPGrossPrice;
         {

@@ -36,7 +36,7 @@ contract CurveLevSwapper2Tokens1InchTest is BaseTest {
     uint8 public decimalReward = 6;
     uint256 public rewardAmount = 10**2 * 10**(decimalReward);
     uint256 public maxTokenAmount = 10**15 * 10**decimalToken;
-    uint256 public SLIPPAGE_BPS = 9900;
+    uint256 public constant SLIPPAGE_BPS = 9900;
 
     uint256 public constant DEPOSIT_LENGTH = 10;
     uint256 public constant WITHDRAW_LENGTH = 10;
