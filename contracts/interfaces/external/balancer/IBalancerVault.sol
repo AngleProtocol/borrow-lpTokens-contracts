@@ -11,10 +11,25 @@ enum JoinKindStablePool {
     EXACT_TOKENS_IN_FOR_BPT_OUT,
     TOKEN_IN_FOR_EXACT_BPT_OUT
 }
+
+enum JoinKindWeightedPool {
+    INIT,
+    EXACT_TOKENS_IN_FOR_BPT_OUT,
+    TOKEN_IN_FOR_EXACT_BPT_OUT,
+    ALL_TOKENS_IN_FOR_EXACT_BPT_OUT
+}
+
 enum ExitKindStablePool {
     EXACT_BPT_IN_FOR_ONE_TOKEN_OUT,
     EXACT_BPT_IN_FOR_TOKENS_OUT,
     BPT_IN_FOR_EXACT_TOKENS_OUT
+}
+
+enum ExitKindWeightedPool {
+    EXACT_BPT_IN_FOR_ONE_TOKEN_OUT,
+    EXACT_BPT_IN_FOR_TOKENS_OUT,
+    BPT_IN_FOR_EXACT_TOKENS_OUT,
+    MANAGEMENT_FEE_TOKENS_OUT
 }
 
 interface IBalancerVault {
