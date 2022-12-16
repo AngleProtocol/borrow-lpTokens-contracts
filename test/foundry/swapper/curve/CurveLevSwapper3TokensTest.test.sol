@@ -176,6 +176,25 @@ contract CurveLevSwapper3TokensTest is BaseTest {
         _assertCommonDeleverage();
     }
 
+    function testNoDepositDeleverageCollatAndOneCoinToken1(uint256 amount, uint256 propToRemove) public {
+        amount = bound(amount, 10**20, 10**24);
+        propToRemove = bound(propToRemove, 0, BASE_PARAMS);
+        int128 coinIndex = 1;
+        IERC20 outToken = IERC20(address(_amUSDC));
+
+        _depositDirect(amount);
+        (uint256 minOneCoin, uint256 keptCollateral) = _deleverageCollateralAndOneCoin(
+            coinIndex,
+            propToRemove,
+            outToken
+        );
+
+        assertGe(_amUSDC.balanceOf(_alice), minOneCoin);
+        assertEq(_amUSDT.balanceOf(_alice), 0);
+        assertEq(_amDAI.balanceOf(_alice), 0);
+        assertEq(asset.balanceOf(address(_alice)), keptCollateral);
+    }
+
     function testNoDepositDeleverageBalance(uint256 amount) public {
         amount = bound(amount, 10**20, 10**24);
         _depositDirect(amount);
@@ -257,6 +276,7 @@ contract CurveLevSwapper3TokensTest is BaseTest {
             proportionWithdrawToken1,
             proportionWithdrawToken2
         );
+        if (amountOut[0] == 0 && amountOut[1] == 0) return;
 
         // Aave balances have rounding issues as they are corrected by an index
         assertApproxEqAbs(_amDAI.balanceOf(_alice), amountOut[0], 5 wei);
@@ -376,7 +396,7 @@ contract CurveLevSwapper3TokensTest is BaseTest {
             // sweepTokens[0] = _USDC;
             minOneCoin = (_METAPOOL.calc_withdraw_one_coin(amount, coinIndex) * SLIPPAGE_BPS) / _BPS;
             bytes memory removeData = abi.encode(CurveRemovalType.oneCoin, abi.encode(coinIndex, minOneCoin));
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), minOneCoin, SwapType.Leverage, leverageData);
         }
@@ -386,6 +406,35 @@ contract CurveLevSwapper3TokensTest is BaseTest {
         vm.stopPrank();
 
         return minOneCoin;
+    }
+
+    function _deleverageCollateralAndOneCoin(
+        int128 coinIndex,
+        uint256 propToRemove,
+        IERC20 outToken
+    ) internal returns (uint256, uint256) {
+        vm.startPrank(_alice);
+        // deleverage
+        uint256 amount = staker.balanceOf(_alice);
+        uint256 amountToRemove = (amount * propToRemove) / BASE_PARAMS;
+        uint256 minOneCoin;
+        bytes memory data;
+        {
+            bytes[] memory oneInchData = new bytes[](0);
+            IERC20[] memory sweepTokens = new IERC20[](1);
+            sweepTokens[0] = asset;
+            minOneCoin = (_METAPOOL.calc_withdraw_one_coin(amountToRemove, coinIndex) * SLIPPAGE_BPS) / _BPS;
+            bytes memory removeData = abi.encode(CurveRemovalType.oneCoin, abi.encode(coinIndex, minOneCoin));
+            bytes memory swapData = abi.encode(amount, amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory leverageData = abi.encode(false, _alice, swapData);
+            data = abi.encode(address(0), minOneCoin, SwapType.Leverage, leverageData);
+        }
+        staker.transfer(address(swapper), amount);
+        swapper.swap(IERC20(address(staker)), outToken, _alice, 0, amount, data);
+
+        vm.stopPrank();
+
+        return (minOneCoin, amount - amountToRemove);
     }
 
     function _deleverageBalance() internal returns (uint256[3] memory minAmounts) {
@@ -404,7 +453,7 @@ contract CurveLevSwapper3TokensTest is BaseTest {
                 (_METAPOOL.balances(2) * amount * SLIPPAGE_BPS) / (_BPS * asset.totalSupply())
             ];
             bytes memory removeData = abi.encode(CurveRemovalType.balance, abi.encode(minAmounts));
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), minAmounts[1], SwapType.Leverage, leverageData);
         }
@@ -464,7 +513,7 @@ contract CurveLevSwapper3TokensTest is BaseTest {
             sweepTokens[0] = _amUSDT;
             sweepTokens[1] = _amDAI;
             bytes memory removeData = abi.encode(CurveRemovalType.imbalance, abi.encode(_bob, amountOuts));
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), minAmountOut, SwapType.Leverage, leverageData);
         }

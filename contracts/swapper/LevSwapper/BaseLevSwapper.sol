@@ -56,11 +56,15 @@ abstract contract BaseLevSwapper is Swapper {
             angleStaker().deposit(amountOut, to);
         } else {
             uint256 toUnstake;
+            uint256 toRemove;
             IERC20[] memory sweepTokens;
-            (toUnstake, sweepTokens, oneInchPayloads, data) = abi.decode(data, (uint256, IERC20[], bytes[], bytes));
+            (toUnstake, toRemove, sweepTokens, oneInchPayloads, data) = abi.decode(
+                data,
+                (uint256, uint256, IERC20[], bytes[], bytes)
+            );
             // Should transfer the token to the contract this will claim the rewards for the current owner of the wrapper
             angleStaker().withdraw(toUnstake, address(this), address(this));
-            _remove(toUnstake, data);
+            _remove(toRemove, data);
             // Taking the same example as in the `leverage` side, you can withdraw USDC, DAI and USDT while wanting to
             // to repay a debt in agEUR so you need to do a multiswap.
             // These swaps are not easy to anticipate the amounts received depend on the deleverage action which can be chaotic

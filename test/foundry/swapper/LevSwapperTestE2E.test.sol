@@ -199,7 +199,7 @@ contract LevSwapperTestE2E is BaseTest {
                             IERC20[] memory sweepToken = new IERC20[](0);
                             bytes[] memory oneInchData;
                             bytes memory addData;
-                            bytes memory swapData = abi.encode(toUnstake, sweepToken, oneInchData, addData);
+                            bytes memory swapData = abi.encode(toUnstake, toUnstake, sweepToken, oneInchData, addData);
                             bytes memory leverageData = abi.encode(leverage, stakeFor, swapData);
                             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
                         }
