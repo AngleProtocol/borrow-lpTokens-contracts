@@ -11,8 +11,8 @@ contract PolygonConstants {
     address public constant PROXY_ADMIN_GUARDIAN = 0x10Be886C0C93615D1d109Be6C9415eeA34Fe8b57;
     address public constant CORE_BORROW = 0x78754109cb73772d70A6560297037657C2AF51b8;
 
-    address public constant ANGLE_ROUTER = 0x892bf71463Bd9fa57f3c2266aB74dbe1B96DECEa;
-    address public constant ONE_INCH = 0x1111111254fb6c44bAC0beD2854e76F90643097d;
+    address public constant ANGLE_ROUTER = 0x595AB88628CD1Af06706E25f10c485B651C47aa8;
+    address public constant ONE_INCH = 0x1111111254EEB25477B68fb85Ed929f73A960582;
     address public constant UNI_V3_ROUTER = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
 
     // AGEUR Polygon treasury
