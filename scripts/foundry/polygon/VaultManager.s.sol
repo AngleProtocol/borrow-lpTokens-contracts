@@ -67,6 +67,8 @@ contract DeployVaultManager is Script, PolygonConstants {
 
         console.log("Successfully deployed vaultManager tricrypto at the address: ", address(vaultManager));
 
+        // TODO Governor/Guardian call to add addVaultManager on the `staker`
+
         vm.stopBroadcast();
     }
 }
