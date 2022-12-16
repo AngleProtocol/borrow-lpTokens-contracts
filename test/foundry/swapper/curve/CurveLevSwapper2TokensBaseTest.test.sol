@@ -175,6 +175,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         proportionWithdrawToken = bound(proportionWithdrawToken, 0, 10**9);
 
         (uint256[2] memory amountOut, uint256 keptLPToken) = _deleverageImbalance(proportionWithdrawToken);
+        if (amountOut[0] < 10 wei && amountOut[1] < 10 wei) return;
 
         assertGe(_USDC.balanceOf(_alice), amountOut[1]);
         assertGe(_FRAX.balanceOf(_alice), amountOut[0]);
@@ -270,7 +271,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
             // sweepTokens[0] = _USDC;
             minOneCoin = (_METAPOOL.calc_withdraw_one_coin(amount, coinIndex) * SLIPPAGE_BPS) / _BPS;
             bytes memory removeData = abi.encode(CurveRemovalType.oneCoin, abi.encode(coinIndex, minOneCoin));
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), minOneCoin, SwapType.Leverage, leverageData);
         }
@@ -296,7 +297,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
                 (_METAPOOL.balances(1) * amount * SLIPPAGE_BPS) / (_BPS * asset.totalSupply())
             ];
             bytes memory removeData = abi.encode(CurveRemovalType.balance, abi.encode(minAmounts));
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), minAmounts[0], SwapType.Leverage, leverageData);
         }
@@ -338,6 +339,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
                 } else if (curveBalanceUSDC < amountOuts[1]) {
                     amountOuts[1] = curveBalanceUSDC**99 / 100;
                 }
+                if (amountOuts[0] < 10 wei && amountOuts[1] < 10 wei) return (amountOuts, 0);
             }
             maxBurnAmount = IMetaPool2(address(_METAPOOL)).calc_token_amount(amountOuts, false);
 
@@ -345,7 +347,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
             IERC20[] memory sweepTokens = new IERC20[](1);
             sweepTokens[0] = _USDC;
             bytes memory removeData = abi.encode(CurveRemovalType.imbalance, abi.encode(_bob, amountOuts));
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), amountOuts[0], SwapType.Leverage, leverageData);
         }

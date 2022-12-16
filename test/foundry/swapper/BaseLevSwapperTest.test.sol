@@ -140,7 +140,52 @@ contract BaseLevSwapperTest is BaseTest {
         IERC20[] memory sweepToken = new IERC20[](0);
         oneInchData;
         addData;
-        swapData = abi.encode(amount, sweepToken, oneInchData, addData);
+        swapData = abi.encode(amount, amount, sweepToken, oneInchData, addData);
+        leverageData = abi.encode(leverage, stakeFor, swapData);
+        data = abi.encode(address(0), amount, SwapType.Leverage, leverageData);
+        staker.transfer(address(swapper), amount);
+        swapper.swap(IERC20(address(staker)), IERC20(address(asset)), _alice, 0, amount, data);
+
+        vm.stopPrank();
+
+        assertEq(asset.balanceOf(_alice), amount);
+        assertEq(staker.balanceOf(address(swapper)), 0);
+        assertEq(staker.balanceOf(_alice), 0);
+        assertEq(asset.balanceOf(address(swapper)), 0);
+        assertEq(asset.balanceOf(address(staker)), 0);
+    }
+
+    function testWithdrawSwapperToRemoveNo1Inch(uint256 amount, uint256 propToRemove) public {
+        setUpNoFork();
+
+        amount = bound(amount, 0, maxTokenAmount);
+        deal(address(asset), address(_alice), amount);
+        vm.startPrank(_alice);
+        // intermediary variables
+        bool leverage = true;
+        address stakeFor = _alice;
+        bytes[] memory oneInchData = new bytes[](0);
+        bytes memory addData;
+        bytes memory swapData = abi.encode(oneInchData, addData);
+        bytes memory leverageData = abi.encode(leverage, stakeFor, swapData);
+        bytes memory data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
+
+        // we first need to send the tokens before hand, you should always use the swapper
+        // in another tx to not losse your funds by front running
+        asset.transfer(address(swapper), amount);
+        swapper.swap(IERC20(address(asset)), IERC20(address(staker)), _alice, 0, amount, data);
+
+        // deleverage
+        leverage = false;
+        stakeFor = _alice;
+        IERC20[] memory sweepToken = new IERC20[](0);
+        oneInchData;
+        addData;
+        {
+            propToRemove = bound(propToRemove, 0, 10**9);
+            uint256 amountToRemove = (amount * propToRemove) / 10**9;
+            swapData = abi.encode(amount, amountToRemove, sweepToken, oneInchData, addData);
+        }
         leverageData = abi.encode(leverage, stakeFor, swapData);
         data = abi.encode(address(0), amount, SwapType.Leverage, leverageData);
         staker.transfer(address(swapper), amount);
@@ -181,7 +226,7 @@ contract BaseLevSwapperTest is BaseTest {
         sweepToken[0] = IERC20(address(staker));
         oneInchData;
         addData;
-        swapData = abi.encode(amount, sweepToken, oneInchData, addData);
+        swapData = abi.encode(amount, amount, sweepToken, oneInchData, addData);
         leverageData = abi.encode(leverage, stakeFor, swapData);
         data = abi.encode(address(0), amount, SwapType.Leverage, leverageData);
         staker.transfer(address(swapper), amount);
@@ -312,7 +357,7 @@ contract BaseLevSwapperTest is BaseTest {
                 hex"e449022e000000000000000000000000000000000000000000000000000000046c7cfe000000000000000000000000000000000000000000000003fbfd1ac7f9631196a0000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000018000000000000000000000009a834b70c07c81a9fcd6f22e842bf002fbffbe4dcfee7c08"
             );
             bytes memory addData;
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, addData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, addData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), minAmountOut, SwapType.Leverage, leverageData);
         }
@@ -391,7 +436,7 @@ contract BaseLevSwapperTest is BaseTest {
                 hex"e449022e000000000000000000000000000000000000000000000000000000046c7cfe000000000000000000000000000000000000000000000003fbfd1ac7f9631196a0000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000018000000000000000000000009a834b70c07c81a9fcd6f22e842bf002fbffbe4dcfee7c08"
             );
             bytes memory addData;
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, addData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, addData);
             bytes memory leverageData = abi.encode(false, _bob, swapData);
             data = abi.encode(address(0), minAmountOut, SwapType.Leverage, leverageData);
         }

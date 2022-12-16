@@ -255,7 +255,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
             );
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
-            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amountToRemove, amountToRemove, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
         }
@@ -281,7 +281,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
             bytes memory removeData = abi.encode(0, abi.encode(0));
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
-            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amountToRemove, amountToRemove, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
         }
@@ -310,7 +310,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
             bytes memory removeData = abi.encode(1, extraData);
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
-            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amountToRemove, amountToRemove, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
         }
@@ -342,7 +342,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens = new IERC20[](1);
             sweepTokens[0] = IERC20(_WETH);
-            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amountToRemove, amountToRemove, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
         }
@@ -374,7 +374,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
             bytes memory removeData = abi.encode(1, extraData);
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
-            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amountToRemove, amountToRemove, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
         }
@@ -402,7 +402,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
             bytes memory removeData = abi.encode(2, extraData);
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
-            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amountToRemove, amountToRemove, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
         }
@@ -435,7 +435,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
             bytes memory removeData = abi.encode(2, extraData);
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
-            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amountToRemove, amountToRemove, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
         }
@@ -460,7 +460,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
             bytes memory removeData = abi.encode(3, extraData);
             bytes[] memory oneInchData;
             IERC20[] memory sweepTokens;
-            bytes memory swapData = abi.encode(amountToRemove, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amountToRemove, amountToRemove, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
         }

@@ -185,7 +185,7 @@ contract CurveLevSwapper2Tokens1InchTest is BaseTest {
             // Do an action that does not exist on the swapper --> keeps the LP tokens as is
             bytes memory fakeData = "0";
             bytes memory removeData = abi.encode(CurveRemovalType.none, fakeData);
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
         }
@@ -287,7 +287,7 @@ contract CurveLevSwapper2Tokens1InchTest is BaseTest {
             // Do an action that does not exist on the swapper --> keeps the LP tokens as is
             bytes memory fakeData = "0";
             bytes memory removeData = abi.encode(CurveRemovalType.none, fakeData);
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
         }
@@ -405,7 +405,7 @@ contract CurveLevSwapper2Tokens1InchTest is BaseTest {
             IERC20[] memory sweepTokens = new IERC20[](1);
             sweepTokens[0] = _USDC;
             bytes memory removeData = abi.encode(CurveRemovalType.oneCoin, abi.encode(1, minOneCoin));
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), minOneCoin, SwapType.Leverage, leverageData);
         }
@@ -531,7 +531,7 @@ contract CurveLevSwapper2Tokens1InchTest is BaseTest {
             sweepTokens[0] = _USDC;
 
             bytes memory removeData = abi.encode(CurveRemovalType.balance, abi.encode(minAmounts));
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), minAmounts[0], SwapType.Leverage, leverageData);
         }
@@ -675,6 +675,8 @@ contract CurveLevSwapper2Tokens1InchTest is BaseTest {
                     ];
                 }
             }
+            if (amountOuts[0] < 10 wei && amountOuts[1] < 10 wei) return;
+
             maxBurnAmount = IMetaPool2(address(_METAPOOL)).calc_token_amount(amountOuts, false);
 
             bytes[] memory oneInchData;
@@ -693,7 +695,7 @@ contract CurveLevSwapper2Tokens1InchTest is BaseTest {
             IERC20[] memory sweepTokens = new IERC20[](1);
             sweepTokens[0] = _USDC;
             bytes memory removeData = abi.encode(CurveRemovalType.imbalance, abi.encode(_bob, amountOuts));
-            bytes memory swapData = abi.encode(amount, sweepTokens, oneInchData, removeData);
+            bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
             bytes memory leverageData = abi.encode(false, _alice, swapData);
             data = abi.encode(address(0), amountOuts[0], SwapType.Leverage, leverageData);
         }
