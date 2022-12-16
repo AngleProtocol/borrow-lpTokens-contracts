@@ -175,6 +175,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         proportionWithdrawToken = bound(proportionWithdrawToken, 0, 10**9);
 
         (uint256[2] memory amountOut, uint256 keptLPToken) = _deleverageImbalance(proportionWithdrawToken);
+        if (amountOut[0] < 10 wei && amountOut[1] < 10 wei) return;
 
         assertGe(_USDC.balanceOf(_alice), amountOut[1]);
         assertGe(_FRAX.balanceOf(_alice), amountOut[0]);
@@ -338,6 +339,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
                 } else if (curveBalanceUSDC < amountOuts[1]) {
                     amountOuts[1] = curveBalanceUSDC**99 / 100;
                 }
+                if (amountOuts[0] < 10 wei && amountOuts[1] < 10 wei) return (amountOuts, 0);
             }
             maxBurnAmount = IMetaPool2(address(_METAPOOL)).calc_token_amount(amountOuts, false);
 

@@ -276,7 +276,7 @@ contract CurveLevSwapper3TokensTest is BaseTest {
             proportionWithdrawToken1,
             proportionWithdrawToken2
         );
-        if (amountOut[0] == 0 && amountOut[1] == 0) return;
+        if (amountOut[0] < 10 wei && amountOut[1] < 10 wei && amountOut[2] < 10 wei) return;
 
         // Aave balances have rounding issues as they are corrected by an index
         assertApproxEqAbs(_amDAI.balanceOf(_alice), amountOut[0], 5 wei);
@@ -503,6 +503,7 @@ contract CurveLevSwapper3TokensTest is BaseTest {
                 } else if (curveBalanceUSDT < amountOuts[2]) {
                     amountOuts[2] = curveBalanceUSDT**99 / 100;
                 }
+                if (amountOuts[0] < 10 wei && amountOuts[1] < 10 wei && amountOuts[2] < 10 wei) return (amountOuts, 0);
             }
             maxBurnAmount = IMetaPool3(address(_METAPOOL)).calc_token_amount(amountOuts, false);
             // Again there can be rounding issues on Aave because of the index value

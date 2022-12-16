@@ -675,6 +675,8 @@ contract CurveLevSwapper2Tokens1InchTest is BaseTest {
                     ];
                 }
             }
+            if (amountOuts[0] < 10 wei && amountOuts[1] < 10 wei) return;
+
             maxBurnAmount = IMetaPool2(address(_METAPOOL)).calc_token_amount(amountOuts, false);
 
             bytes[] memory oneInchData;
