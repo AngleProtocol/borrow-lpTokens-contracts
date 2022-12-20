@@ -9,7 +9,7 @@ import "../../../interfaces/external/curve/ICurveOracle.sol";
 /// @author Angle Labs, Inc.
 /// @notice Gives the price of Curve TriCrypto2 in Euro in base 18
 contract OracleTriCrypto2EURChainlink is BaseOracleChainlinkMulti {
-    string public constant DESCRIPTION = "tricrypto2/EUR Oracle";
+    string public constant DESCRIPTION = "crv3crypto/EUR Oracle";
     ICurveOracle public constant TRI_CRYPTO_ORACLE = ICurveOracle(0xE8b2989276E2Ca8FDEA2268E3551b2b4B2418950);
 
     /// @notice Constructor of the contract

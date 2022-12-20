@@ -9,7 +9,7 @@ import "../../../interfaces/external/balancer/IBalancerStablePool.sol";
 /// @author Angle Labs, Inc.
 /// @notice Gives a lower bound of the price of the Balancer WETH/WSTETH in Euro in base 18
 contract OracleBalancerSTETHChainlink is BaseOracleChainlinkMulti {
-    string public constant DESCRIPTION = "Balancer WETH/WSTETH Oracle";
+    string public constant DESCRIPTION = "B-stETH-STABLE/EUR Oracle";
     IBalancerStablePool public constant STETHBPT = IBalancerStablePool(0x32296969Ef14EB0c6d29669C550D4a0449130230);
 
     /// @notice Constructor of the contract

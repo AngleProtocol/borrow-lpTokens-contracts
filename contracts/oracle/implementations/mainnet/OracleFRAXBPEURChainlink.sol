@@ -9,7 +9,7 @@ import "../../../interfaces/external/curve/ICurveCryptoSwapPool.sol";
 /// @author Angle Labs, Inc.
 /// @notice Gives a lower bound of the price of Curve FRAXBP in Euro in base 18
 contract OracleFRAXBPEURChainlink is BaseOracleChainlinkMulti {
-    string public constant DESCRIPTION = "FRAXBP/EUR Oracle";
+    string public constant DESCRIPTION = "crvFRAX/EUR Oracle";
     ICurveCryptoSwapPool public constant FRAXBP = ICurveCryptoSwapPool(0xDcEF968d416a41Cdac0ED8702fAC8128A64241A2);
 
     /// @notice Constructor of the contract
