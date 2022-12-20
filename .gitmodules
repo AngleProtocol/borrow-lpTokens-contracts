@@ -4,4 +4,4 @@
 [submodule "lib/borrow-contracts"]
 	path = lib/borrow-contracts
 	url = https://github.com/AngleProtocol/borrow-contracts
-	tags = v2.1
+	tags = v2.3
