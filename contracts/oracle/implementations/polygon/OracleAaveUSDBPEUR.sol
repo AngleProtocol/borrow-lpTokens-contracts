@@ -21,16 +21,16 @@ contract OracleAaveUSDBPEUR is BaseOracleChainlinkMulti {
     function circuitChainlink() public pure returns (AggregatorV3Interface[] memory) {
         // as it is a collateral test we consider that 1 amXXX = 1 XXX, but there can be liquidity issue
         // in which case this may not hold anymore
-        AggregatorV3Interface[] memory _circuitChainlink_ = new AggregatorV3Interface[](4);
+        AggregatorV3Interface[] memory _circuitChainlink = new AggregatorV3Interface[](4);
         // Chainlink DAI/USD address
-        _circuitChainlink_[0] = AggregatorV3Interface(0x4746DeC9e833A82EC7C2C1356372CcF2cfcD2F3D);
+        _circuitChainlink[0] = AggregatorV3Interface(0x4746DeC9e833A82EC7C2C1356372CcF2cfcD2F3D);
         // Chainlink USDC/USD address
-        _circuitChainlink_[1] = AggregatorV3Interface(0xfE4A8cc5b5B2366C1B58Bea3858e81843581b2F7);
+        _circuitChainlink[1] = AggregatorV3Interface(0xfE4A8cc5b5B2366C1B58Bea3858e81843581b2F7);
         // Chainlink USDT/USD address
-        _circuitChainlink_[2] = AggregatorV3Interface(0x0A6513e40db6EB1b165753AD52E80663aeA50545);
+        _circuitChainlink[2] = AggregatorV3Interface(0x0A6513e40db6EB1b165753AD52E80663aeA50545);
         // Chainlink EUR/USD address
-        _circuitChainlink_[3] = AggregatorV3Interface(0x73366Fe0AA0Ded304479862808e02506FE556a98);
-        return _circuitChainlink_;
+        _circuitChainlink[3] = AggregatorV3Interface(0x73366Fe0AA0Ded304479862808e02506FE556a98);
+        return _circuitChainlink;
     }
 
     /// @inheritdoc IOracle

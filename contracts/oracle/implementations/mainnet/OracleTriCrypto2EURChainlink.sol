@@ -18,12 +18,12 @@ contract OracleTriCrypto2EURChainlink is BaseOracleChainlinkMulti {
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
 
     function circuitChainlink() public pure returns (AggregatorV3Interface[] memory) {
-        AggregatorV3Interface[] memory _circuitChainlink_ = new AggregatorV3Interface[](2);
+        AggregatorV3Interface[] memory _circuitChainlink = new AggregatorV3Interface[](2);
         // Chainlink USDT/USD address
-        _circuitChainlink_[0] = AggregatorV3Interface(0x3E7d1eAB13ad0104d2750B8863b489D65364e32D);
+        _circuitChainlink[0] = AggregatorV3Interface(0x3E7d1eAB13ad0104d2750B8863b489D65364e32D);
         // Chainlink EUR/USD address
-        _circuitChainlink_[1] = AggregatorV3Interface(0xb49f677943BC038e9857d61E7d053CaA2C1734C1);
-        return _circuitChainlink_;
+        _circuitChainlink[1] = AggregatorV3Interface(0xb49f677943BC038e9857d61E7d053CaA2C1734C1);
+        return _circuitChainlink;
     }
 
     /// @inheritdoc IOracle
