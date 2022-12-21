@@ -3,13 +3,17 @@ pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
 import { SafeERC20 } from "../../../contracts/mock/MockTokenPermit.sol";
-import { OracleCrvUSDBTCETHEUR, IOracle } from "../../../contracts/oracle/implementations/polygon/OracleCrvUSDBTCETHEUR.sol";
+import { OracleCrvUSDBTCETHEUR, IOracle, AggregatorV3Interface } from "../../../contracts/oracle/implementations/polygon/OracleCrvUSDBTCETHEUR.sol";
 import { OracleAaveUSDBPEUR } from "../../../contracts/oracle/implementations/polygon/OracleAaveUSDBPEUR.sol";
 import "../../../contracts/interfaces/external/curve/ITricryptoPool.sol";
 import "../../../contracts/interfaces/external/curve/ICurveCryptoSwapPool.sol";
 
 interface ICurvePoolBalance is IERC20 {
     function balances(uint256 index) external view returns (uint256);
+}
+
+interface IMockOracle {
+    function circuitChainlink() external pure returns (AggregatorV3Interface[] memory);
 }
 
 contract OraclePolygonTest is BaseTest {
@@ -41,7 +45,7 @@ contract OraclePolygonTest is BaseTest {
 
     // ================================== READ ==================================
 
-    function testReadTricryptoPool() public view {
+    function testReadTricryptoPool() public {
         {
             /*
             uint256 usdTotal = ((uint256(1064545) * uint256(8133834303140886875013829)) /
@@ -90,13 +94,19 @@ contract OraclePolygonTest is BaseTest {
 
         // console.log("lpTriGrossPrice ", lpTriGrossPrice);
 
-        // uint256 lpPriceInEUR = oracleTriCrypto.read();
-        // console.log("lpPriceInEUR ", lpPriceInEUR);
+        uint256 lpPriceInEUR = oracleTriCrypto.read();
+        console.log("lpPriceInEUR ", lpPriceInEUR);
+
+        AggregatorV3Interface[] memory chainlinkAddress = IMockOracle(address(oracleTriCrypto)).circuitChainlink();
+        assertEq(address(chainlinkAddress[0]), 0x4746DeC9e833A82EC7C2C1356372CcF2cfcD2F3D);
+        assertEq(address(chainlinkAddress[1]), 0xfE4A8cc5b5B2366C1B58Bea3858e81843581b2F7);
+        assertEq(address(chainlinkAddress[2]), 0x0A6513e40db6EB1b165753AD52E80663aeA50545);
+        assertEq(address(chainlinkAddress[3]), 0x73366Fe0AA0Ded304479862808e02506FE556a98);
 
         // assertEq(lpPriceInEUR, lpTriGrossPrice);
     }
 
-    function testReadAaveUSDBPPool() public view {
+    function testReadAaveUSDBPPool() public {
         uint256 lpAaveBPGrossPrice;
         {
             uint256 daiAmount = ICurvePoolBalance(address(AaveBP)).balances(0);
@@ -113,6 +123,12 @@ contract OraclePolygonTest is BaseTest {
 
         uint256 lpPriceInEUR = oracleAaveBp.read();
         console.log("our lowerbound lpPriceInEUR ", lpPriceInEUR);
+
+        AggregatorV3Interface[] memory chainlinkAddress = IMockOracle(address(oracleAaveBp)).circuitChainlink();
+        assertEq(address(chainlinkAddress[0]), 0x4746DeC9e833A82EC7C2C1356372CcF2cfcD2F3D);
+        assertEq(address(chainlinkAddress[1]), 0xfE4A8cc5b5B2366C1B58Bea3858e81843581b2F7);
+        assertEq(address(chainlinkAddress[2]), 0x0A6513e40db6EB1b165753AD52E80663aeA50545);
+        assertEq(address(chainlinkAddress[3]), 0x73366Fe0AA0Ded304479862808e02506FE556a98);
 
         // assertGe(lpAaveBPGrossPrice, lpPriceInEUR);
     }
