@@ -17,7 +17,7 @@ contract OracleBalancerSTETHChainlink is BaseOracleChainlinkMulti {
     /// @param _treasury Treasury associated to the `VaultManager` which reads from this feed
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
 
-    function circuitChainlink() public pure returns (AggregatorV3Interface[] memory) {
+    function circuitChainlink() public pure override returns (AggregatorV3Interface[] memory) {
         AggregatorV3Interface[] memory _circuitChainlink = new AggregatorV3Interface[](3);
         // Chainlink stETH/USD address
         _circuitChainlink[0] = AggregatorV3Interface(0xCfE54B5cD566aB89272946F602D76Ea879CAb4a8);

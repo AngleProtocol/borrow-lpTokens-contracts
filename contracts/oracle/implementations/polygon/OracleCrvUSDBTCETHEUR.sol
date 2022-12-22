@@ -25,7 +25,7 @@ contract OracleCrvUSDBTCETHEUR is BaseOracleChainlinkMulti {
     /// @param _treasury Treasury associated to the `VaultManager` which reads from this feed
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
 
-    function circuitChainlink() public pure returns (AggregatorV3Interface[] memory) {
+    function circuitChainlink() public pure override returns (AggregatorV3Interface[] memory) {
         AggregatorV3Interface[] memory _circuitChainlink = new AggregatorV3Interface[](4);
         // Chainlink DAI/USD address
         _circuitChainlink[0] = AggregatorV3Interface(0x4746DeC9e833A82EC7C2C1356372CcF2cfcD2F3D);

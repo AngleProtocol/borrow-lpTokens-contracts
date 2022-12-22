@@ -18,7 +18,7 @@ contract OracleAaveUSDBPEUR is BaseOracleChainlinkMulti {
     /// @param _treasury Treasury associated to the `VaultManager` which reads from this feed
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
 
-    function circuitChainlink() public pure returns (AggregatorV3Interface[] memory) {
+    function circuitChainlink() public pure override returns (AggregatorV3Interface[] memory) {
         // as it is a collateral test we consider that 1 amXXX = 1 XXX, but there can be liquidity issue
         // in which case this may not hold anymore
         AggregatorV3Interface[] memory _circuitChainlink = new AggregatorV3Interface[](4);
