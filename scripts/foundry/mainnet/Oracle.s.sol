@@ -8,7 +8,7 @@ import { OracleFRAXBPEURChainlink } from "../../../contracts/oracle/implementati
 import "./MainnetConstants.s.sol";
 
 contract DeployOracleMainnet is Script, MainnetConstants {
-    uint32 public constant STALE_PERIOD = 3600 * 24;
+    uint32 public constant STALE_PERIOD = 3600 * 48;
 
     function run() external {
         uint256 deployerPrivateKey = vm.deriveKey(vm.envString("MNEMONIC_MAINNET"), 0);

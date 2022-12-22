@@ -8,12 +8,13 @@ import "./MainnetConstants.s.sol";
 
 contract DeployVaultManagerMainnet is Script, MainnetConstants {
     // TODO to be changed at deployment depending on the vaultManager
-    VaultManagerListing public constant VAULT_MANAGER_IMPL = VaultManagerListing(address(0));
-    IOracle public constant ORACLE = IOracle(address(0));
+    VaultManagerListing public constant VAULT_MANAGER_IMPL =
+        VaultManagerListing(0xCe43220f72A7060F34BC242630D6B96434105Ae4);
+    IOracle public constant ORACLE = IOracle(0xAF2dAa417F1a5Eb6DBFaA4B434929a36B4d66Fc8);
     // the staker address
-    IERC20 public constant COLLATERAL = IERC20(0xe1Bc17f85d54a81068FC510d5A94E95800D342d9);
+    IERC20 public constant COLLATERAL = IERC20(0xa9d2Eea75C80fF9669cc998c276Ff26D741Dcb26);
 
-    string public constant SYMBOL = "cvxcrvFRAX-EUR";
+    string public constant SYMBOL = "sdcrvFRAX-EUR";
     uint256 public constant DEBT_CEILING = 100 ether;
     uint64 public constant CF = (8 * BASE_PARAMS) / 10;
     uint64 public constant THF = (105 * BASE_PARAMS) / 100;
@@ -64,7 +65,7 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
             )
         );
 
-        console.log("Successfully deployed vaultManager Convex FRAXBP at the address: ", address(vaultManager));
+        console.log("Successfully deployed vaultManager StakeDAO FRAXBP at the address: ", address(vaultManager));
 
         // TODO Governor/Guardian call to add addVaultManager on the `staker`
 

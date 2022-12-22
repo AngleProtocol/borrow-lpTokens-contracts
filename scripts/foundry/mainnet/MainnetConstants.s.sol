@@ -22,6 +22,6 @@ contract MainnetConstants {
     uint64 public constant BASE_PARAMS = 10**9;
 
     function deployUpgradeable(address implementation, bytes memory data) public returns (address) {
-        return address(new TransparentUpgradeableProxy(implementation, PROXY_ADMIN_GUARDIAN, data));
+        return address(new TransparentUpgradeableProxy(implementation, PROXY_ADMIN, data));
     }
 }

@@ -16,6 +16,6 @@ contract ConvexLevSwapperFRAXBP is CurveLevSwapperFRAXBP {
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {
-        return IBorrowStaker(address(0));
+        return IBorrowStaker(0xC68421f20bf6f0Eb475F00b9C5484f7D0AC0331e);
     }
 }

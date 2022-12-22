@@ -16,6 +16,6 @@ contract StakeDAOLevSwapperFRAXBP is CurveLevSwapperFRAXBP {
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {
-        return IBorrowStaker(address(0));
+        return IBorrowStaker(0xa9d2Eea75C80fF9669cc998c276Ff26D741Dcb26);
     }
 }
