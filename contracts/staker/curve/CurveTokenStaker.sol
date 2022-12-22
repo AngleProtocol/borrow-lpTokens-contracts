@@ -12,6 +12,17 @@ abstract contract CurveTokenStaker is BorrowStaker {
     /// @notice Curve-related constants
     IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
 
+    /// @notice Initializes the `BorrowStaker` for Curve
+    function initialize(ICoreBorrow _coreBorrow) external initializer {
+        string memory name_ = IERC20Metadata(address(asset())).name();
+        __ERC20Permit_init(name_);
+        __ERC20_init_unchained(
+            string(abi.encodePacked("Angle ", name_, " Curve Staker")),
+            string(abi.encodePacked("agstk-crv-", IERC20Metadata(address(asset())).symbol()))
+        );
+        _initialize(_coreBorrow);
+    }
+
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable

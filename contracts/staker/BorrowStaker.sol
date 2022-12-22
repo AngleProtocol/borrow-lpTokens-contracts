@@ -46,13 +46,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     using SafeERC20 for IERC20;
 
     /// @notice Initializes the `BorrowStaker`
-    function initialize(ICoreBorrow _coreBorrow) external initializer {
-        string memory name_ = IERC20Metadata(address(asset())).name();
-        __ERC20Permit_init(name_);
-        __ERC20_init_unchained(
-            string(abi.encodePacked("Angle ", name_, " Staker")),
-            string(abi.encodePacked("agstk-", IERC20Metadata(address(asset())).symbol()))
-        );
+    function _initialize(ICoreBorrow _coreBorrow) internal initializer {
         coreBorrow = _coreBorrow;
         _decimals = IERC20Metadata(address(asset())).decimals();
     }
