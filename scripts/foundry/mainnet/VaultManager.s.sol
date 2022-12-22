@@ -23,7 +23,7 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
     uint64 public constant LIQUIDATION_SURCHARGE = (98 * BASE_PARAMS) / 100;
     uint64 public constant MAX_LIQUIDATION_DISCOUNT = (8 * BASE_PARAMS) / 100;
     bool public constant WHITELISTING_ACTIVATED = false;
-    uint256 public constant BASE_BOOST = (25 * BASE_PARAMS) / 100;
+    uint256 public constant BASE_BOOST = (25 * BASE_PARAMS) / 10;
 
     VaultManagerListing public vaultManager;
 

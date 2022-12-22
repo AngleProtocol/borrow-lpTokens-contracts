@@ -15,7 +15,7 @@ contract MainnetConstants {
     address public constant ONE_INCH = 0x1111111254EEB25477B68fb85Ed929f73A960582;
     address public constant UNI_V3_ROUTER = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
 
-    // AGEUR Polygon treasury
+    // AGEUR Mainnet treasury
     address public constant AGEUR_TREASURY = 0x8667DBEBf68B0BFa6Db54f550f41Be16c4067d60;
 
     uint256 public constant BASE_TOKENS = 10**18;
