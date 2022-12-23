@@ -20,7 +20,7 @@ abstract contract ConvexTokenStaker is BorrowStaker {
     IConvexToken private constant _CVX = IConvexToken(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
 
     /// @notice Initializes the `BorrowStaker` for Stake DAO
-    function initialize(ICoreBorrow _coreBorrow) external initializer {
+    function initialize(ICoreBorrow _coreBorrow) external {
         string memory name_ = IERC20Metadata(address(asset())).name();
         __ERC20Permit_init(name_);
         __ERC20_init_unchained(

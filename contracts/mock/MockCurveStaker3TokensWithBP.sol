@@ -12,7 +12,7 @@ contract MockCurveStaker3TokensWithBP is BorrowStaker {
     IERC20 public fakeReward;
 
     /// @notice Initializes the `BorrowStaker` for Curve
-    function initialize(ICoreBorrow _coreBorrow) external initializer {
+    function initialize(ICoreBorrow _coreBorrow) external {
         string memory name_ = IERC20Metadata(address(asset())).name();
         __ERC20Permit_init(name_);
         __ERC20_init_unchained(

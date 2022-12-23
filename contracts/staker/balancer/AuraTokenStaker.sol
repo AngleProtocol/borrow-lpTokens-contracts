@@ -20,7 +20,7 @@ abstract contract AuraTokenStaker is BorrowStaker {
     IConvexBooster private constant _AURA_BOOSTER = IConvexBooster(0x7818A1DA7BD1E64c199029E86Ba244a9798eEE10);
 
     /// @notice Initializes the `BorrowStaker` for Aura
-    function initialize(ICoreBorrow _coreBorrow) external initializer {
+    function initialize(ICoreBorrow _coreBorrow) external {
         string memory name_ = IERC20Metadata(address(asset())).name();
         __ERC20Permit_init(name_);
         __ERC20_init_unchained(
