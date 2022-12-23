@@ -14,13 +14,11 @@ abstract contract SanTokenStaker is BorrowStaker {
 
     /// @notice Initializes the `BorrowStaker` for Angle SLP
     function initialize(ICoreBorrow _coreBorrow) external {
-        string memory name_ = IERC20Metadata(address(asset())).name();
-        __ERC20Permit_init(name_);
-        __ERC20_init_unchained(
-            string(abi.encodePacked("Angle ", name_, " Staker")),
-            string(abi.encodePacked("agstk-", IERC20Metadata(address(asset())).symbol()))
+        string memory erc20Name = string(
+            abi.encodePacked("Angle ", IERC20Metadata(address(asset())).name(), " Staker")
         );
-        _initialize(_coreBorrow);
+        string memory erc20Symbol = string(abi.encodePacked("agstk-", IERC20Metadata(address(asset())).symbol()));
+        _initialize(_coreBorrow, erc20Name, erc20Symbol);
     }
 
     // ============================= INTERNAL FUNCTIONS ============================
