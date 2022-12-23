@@ -77,8 +77,8 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
             IBorrowStaker(address(staker))
         );
 
-        assertEq(staker.name(), "Angle Curve.fi FRAX/USDC Curve Staker");
-        assertEq(staker.symbol(), "agstk-crv-crvFRAX");
+        assertEq(staker.name(), "Angle Curve.fi FRAX/USDC Mock Staker");
+        assertEq(staker.symbol(), "agstk-mock-crvFRAX");
         assertEq(staker.decimals(), 18);
 
         vm.startPrank(_GOVERNOR);
