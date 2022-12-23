@@ -17,7 +17,7 @@ contract OracleTriCrypto2EURChainlink is BaseOracleChainlinkMulti {
     /// @param _treasury Treasury associated to the `VaultManager` which reads from this feed
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
 
-    function circuitChainlink() public pure returns (AggregatorV3Interface[] memory) {
+    function circuitChainlink() public pure override returns (AggregatorV3Interface[] memory) {
         AggregatorV3Interface[] memory _circuitChainlink = new AggregatorV3Interface[](2);
         // Chainlink USDT/USD address
         _circuitChainlink[0] = AggregatorV3Interface(0x3E7d1eAB13ad0104d2750B8863b489D65364e32D);

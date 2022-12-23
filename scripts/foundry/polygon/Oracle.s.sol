@@ -8,7 +8,7 @@ import { OracleAaveUSDBPEUR } from "../../../contracts/oracle/implementations/po
 import "./PolygonConstants.s.sol";
 
 contract DeployOracle is Script, PolygonConstants {
-    uint32 public constant STALE_PERIOD = 3600 * 24;
+    uint32 public constant STALE_PERIOD = 3600 * 48;
 
     function run() external {
         uint256 deployerPrivateKey = vm.deriveKey(vm.envString("MNEMONIC_POLYGON"), 2);
