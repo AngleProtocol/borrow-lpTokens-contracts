@@ -15,6 +15,15 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
 
     error WithdrawFeeTooLarge();
 
+    /// @notice Initializes the `BorrowStaker` for Stake DAO
+    function initialize(ICoreBorrow _coreBorrow) external {
+        string memory erc20Name = string(
+            abi.encodePacked("Angle ", IERC20Metadata(address(asset())).name(), " Stake DAO Staker")
+        );
+        string memory erc20Symbol = string(abi.encodePacked("agstk-sd-", IERC20Metadata(address(asset())).symbol()));
+        _initialize(_coreBorrow, erc20Name, erc20Symbol);
+    }
+
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable

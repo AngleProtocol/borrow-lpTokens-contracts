@@ -19,6 +19,15 @@ abstract contract ConvexTokenStaker is BorrowStaker {
     IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
     IConvexToken private constant _CVX = IConvexToken(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
 
+    /// @notice Initializes the `BorrowStaker` for Stake DAO
+    function initialize(ICoreBorrow _coreBorrow) external {
+        string memory erc20Name = string(
+            abi.encodePacked("Angle ", IERC20Metadata(address(asset())).name(), " Convex Staker")
+        );
+        string memory erc20Symbol = string(abi.encodePacked("agstk-cvx-", IERC20Metadata(address(asset())).symbol()));
+        _initialize(_coreBorrow, erc20Name, erc20Symbol);
+    }
+
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable

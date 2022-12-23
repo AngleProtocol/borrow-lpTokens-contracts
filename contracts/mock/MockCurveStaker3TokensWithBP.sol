@@ -11,6 +11,15 @@ contract MockCurveStaker3TokensWithBP is BorrowStaker {
     /// @notice Curve-related constants
     IERC20 public fakeReward;
 
+    /// @notice Initializes the `BorrowStaker` for Curve
+    function initialize(ICoreBorrow _coreBorrow) external {
+        string memory erc20Name = string(
+            abi.encodePacked("Angle ", IERC20Metadata(address(asset())).name(), " Curve Staker")
+        );
+        string memory erc20Symbol = string(abi.encodePacked("agstk-crv-", IERC20Metadata(address(asset())).symbol()));
+        _initialize(_coreBorrow, erc20Name, erc20Symbol);
+    }
+
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable
