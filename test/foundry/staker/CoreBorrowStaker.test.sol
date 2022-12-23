@@ -53,8 +53,8 @@ contract CoreBorrowStakerTest is BaseTest {
     }
 
     function testInitalize() public {
-        assertEq(staker.name(), "Angle agEUR Staker");
-        assertEq(staker.symbol(), "agstk-agEUR");
+        assertEq(staker.name(), "Angle agEUR Mock Staker");
+        assertEq(staker.symbol(), "agstk-mock-agEUR");
         assertEq(address(staker.asset()), address(asset));
         assertEq(address(staker.coreBorrow()), address(coreBorrow));
         assertEq(staker.decimals(), decimalToken);

@@ -15,6 +15,17 @@ contract MockBorrowStaker is BorrowStaker {
     IERC20 public rewardToken;
     uint256 public rewardAmount;
 
+    /// @notice Initializes the `BorrowStaker` for Mock
+    function initialize(ICoreBorrow _coreBorrow) external initializer {
+        string memory name_ = IERC20Metadata(address(asset())).name();
+        __ERC20Permit_init(name_);
+        __ERC20_init_unchained(
+            string(abi.encodePacked("Angle ", name_, " Mock Staker")),
+            string(abi.encodePacked("agstk-mock-", IERC20Metadata(address(asset())).symbol()))
+        );
+        _initialize(_coreBorrow);
+    }
+
     /// @notice Changes allowance of a set of tokens to addresses
     /// @param tokens Tokens to change allowance for
     /// @param spenders Addresses to approve

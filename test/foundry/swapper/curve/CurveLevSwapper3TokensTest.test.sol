@@ -100,8 +100,8 @@ contract CurveLevSwapper3TokensTest is BaseTest {
         _payloadDAI = abi.encodePacked(_PAYLOAD_DAI_PRE, address(swapper), _PAYLOAD_DAI_POST);
         _payloadUSDT = abi.encodePacked(_PAYLOAD_USDT_PRE, address(swapper), _PAYLOAD_USDT_POST);
 
-        assertEq(staker.name(), "Angle Curve.fi amDAI/amUSDC/amUSDT Staker");
-        assertEq(staker.symbol(), "agstk-am3CRV");
+        assertEq(staker.name(), "Angle Curve.fi amDAI/amUSDC/amUSDT Curve Staker");
+        assertEq(staker.symbol(), "agstk-crv-am3CRV");
         assertEq(staker.decimals(), 18);
 
         vm.startPrank(_GOVERNOR);

@@ -11,6 +11,17 @@ contract MockCurveTokenTricrypto3Staker is BorrowStaker {
     /// @notice Curve-related constants
     IERC20 private constant _FAKE_REWARD = IERC20(0x02Cb0586F9252626e992B2C6c1B792d9751f2Ede);
 
+    /// @notice Initializes the `BorrowStaker` for Curve
+    function initialize(ICoreBorrow _coreBorrow) external initializer {
+        string memory name_ = IERC20Metadata(address(asset())).name();
+        __ERC20Permit_init(name_);
+        __ERC20_init_unchained(
+            string(abi.encodePacked("Angle ", name_, " Curve Staker")),
+            string(abi.encodePacked("agstk-crv", IERC20Metadata(address(asset())).symbol()))
+        );
+        _initialize(_coreBorrow);
+    }
+
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable

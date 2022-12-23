@@ -72,8 +72,8 @@ contract ConvexFRAXBPTest is BaseTest {
             IBorrowStaker(address(staker))
         );
 
-        assertEq(staker.name(), "Angle Curve.fi FRAX/USDC Staker");
-        assertEq(staker.symbol(), "agstk-crvFRAX");
+        assertEq(staker.name(), "Angle Curve.fi FRAX/USDC Convex Staker");
+        assertEq(staker.symbol(), "agstk-cvx-crvFRAX");
         assertEq(staker.decimals(), 18);
 
         vm.startPrank(_GOVERNOR);

@@ -103,8 +103,8 @@ pragma solidity ^0.8.17;
 //         _payloadDAI = abi.encodePacked(_PAYLOAD_DAI_PRE, address(swapper), _PAYLOAD_DAI_POST);
 //         _payloadUSDT = abi.encodePacked(_PAYLOAD_USDT_PRE, address(swapper), _PAYLOAD_USDT_POST);
 
-//         assertEq(staker.name(), "Angle Curve USD-BTC-ETH Staker");
-//         assertEq(staker.symbol(), "agstk-crvUSDBTCETH");
+//         assertEq(staker.name(), "Angle Curve USD-BTC-ETH Curve Staker");
+//         assertEq(staker.symbol(), "agstk-crv-crvUSDBTCETH");
 //         assertEq(staker.decimals(), 18);
 
 //         vm.startPrank(_GOVERNOR);

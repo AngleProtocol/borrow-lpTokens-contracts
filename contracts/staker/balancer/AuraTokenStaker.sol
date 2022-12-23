@@ -19,6 +19,17 @@ abstract contract AuraTokenStaker is BorrowStaker {
     IERC20 private constant _BAL = IERC20(0xba100000625a3754423978a60c9317c58a424e3D);
     IConvexBooster private constant _AURA_BOOSTER = IConvexBooster(0x7818A1DA7BD1E64c199029E86Ba244a9798eEE10);
 
+    /// @notice Initializes the `BorrowStaker` for Aura
+    function initialize(ICoreBorrow _coreBorrow) external initializer {
+        string memory name_ = IERC20Metadata(address(asset())).name();
+        __ERC20Permit_init(name_);
+        __ERC20_init_unchained(
+            string(abi.encodePacked("Angle ", name_, " Aura Staker")),
+            string(abi.encodePacked("agstk-aura-", IERC20Metadata(address(asset())).symbol()))
+        );
+        _initialize(_coreBorrow);
+    }
+
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable
