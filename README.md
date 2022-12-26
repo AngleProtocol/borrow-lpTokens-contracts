@@ -6,7 +6,18 @@
 
 This repository contains the contracts of the Angle Protocol Borrowing module adapted to productive assets (e.g. staked tokens that can receive rewards).
 
-For more details about what Angle or the Borrowing module are, you can check Angle documentation [here](https://docs.angle.money) or the contracts for the Borrowing module of the protocol using vanilla collateral assets [here](https://github.com/AngleProtocol/angle-borrow).
+### Further Information
+
+For more details about what Angle or the Borrowing module are, you can check Angle documentation [here](https://docs.angle.money) or the contracts for the Borrowing module of the protocol using vanilla collateral assets [here](https://github.com/AngleProtocol/borrow-contracts).
+
+Other Angle-related smart contracts can be found in the following repositories:
+
+- [Angle Core module contracts](https://github.com/AngleProtocol/angle-core)
+- [Angle Strategies](https://github.com/AngleProtocol/angle-strategies)
+- [Angle Router contracts](https://github.com/AngleProtocol/angle-router)
+- [Angle Algorithmic Market Operations](https://github.com/AngleProtocol/angle-amo)
+
+Otherwise, for more info about the protocol, check out [this portal](https://linktr.ee/angleprotocol) of resources.
 
 ## Starting
 
@@ -96,9 +107,8 @@ You can run tests as follows:
 
 ```bash
 forge test -vvvv --watch
-forge test -vvvv --match-path contracts/forge-tests/KeeperMulticall.t.sol
+forge test -vvvv --match-path test/foundry/vaultManager/VaultManagerListing.t.sol
 forge test -vvvv --match-test "testAbc*"
-forge test -vvvv --fork-url https://eth-mainnet.alchemyapi.io/v2/Lc7oIGYeL_QvInzI0Wiu_pOZZDEKBrdf
 ```
 
 You can also list tests:
@@ -114,12 +124,6 @@ There is an example script in the `scripts/foundry` folder. Then you can run:
 
 ```bash
 yarn foundry:deploy <FILE_NAME> --rpc-url <NETWORK_NAME>
-```
-
-Example:
-
-```bash
-yarn foundry:deploy scripts/foundry/DeployMockAgEUR.s.sol --rpc-url goerli
 ```
 
 ### Coverage
