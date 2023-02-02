@@ -33,13 +33,13 @@ interface IMetaPool2 is IMetaPoolBase {
         bool _previous
     ) external view returns (uint256);
 
-    function add_liquidity(uint256[N_COINS] memory _amounts, uint256 _min_mint_amount) external returns (uint256);
+    function add_liquidity(uint256[N_COINS] memory _amounts, uint256 _min_mint_amount) external;
 
     function add_liquidity(
         uint256[N_COINS] memory _amounts,
         uint256 _min_mint_amount,
         address _receiver
-    ) external returns (uint256);
+    ) external;
 
     function get_dy(
         int128 i,

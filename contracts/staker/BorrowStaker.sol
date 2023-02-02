@@ -45,22 +45,16 @@ import "./BorrowStakerStorage.sol";
 abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     using SafeERC20 for IERC20;
 
-    // ================================= VARIABLES =================================
-    IERC20 public asset;
-
     /// @notice Initializes the `BorrowStaker`
     function _initialize(
         ICoreBorrow _coreBorrow,
-        IERC20 _asset,
         string memory erc20Name,
         string memory erc20Symbol
     ) internal initializer {
-        if (address(_asset) == address(0)) revert ZeroAddress();
         __ERC20Permit_init(erc20Name);
         __ERC20_init_unchained(erc20Name, erc20Symbol);
         coreBorrow = _coreBorrow;
-        asset = _asset;
-        _decimals = IERC20Metadata(address(_asset)).decimals();
+        _decimals = IERC20Metadata(address(asset())).decimals();
     }
 
     // ================================= MODIFIERS =================================
@@ -104,7 +98,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param to Address for which the token is deposited
     function deposit(uint256 amount, address to) public returns (uint256) {
         // Need to transfer before minting or ERC777s could reenter.
-        asset.safeTransferFrom(msg.sender, address(this), amount);
+        asset().safeTransferFrom(msg.sender, address(this), amount);
         _mint(to, amount);
         emit Deposit(msg.sender, to, amount);
         return amount;
@@ -135,7 +129,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         }
         _burn(from, amount);
         emit Withdraw(from, to, amount);
-        asset.safeTransfer(to, amount);
+        asset().safeTransfer(to, amount);
         return amount;
     }
 
@@ -219,7 +213,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         address to,
         uint256 amountToRecover
     ) external onlyGovernor {
-        if (tokenAddress == address(asset)) revert InvalidToken();
+        if (tokenAddress == address(asset())) revert InvalidToken();
         IERC20(tokenAddress).safeTransfer(to, amountToRecover);
         emit Recovered(tokenAddress, to, amountToRecover);
     }
@@ -331,6 +325,9 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     }
 
     // ============================= VIRTUAL FUNCTIONS =============================
+
+    /// @notice Underlying token to be staked
+    function asset() public virtual returns (IERC20);
 
     /// @notice Claims all rewards accumulated by this contract and increases the integral associated
     /// to each reward token

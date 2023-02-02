@@ -2,7 +2,8 @@
 pragma solidity ^0.8.17;
 
 import "../BaseLevSwapper.sol";
-import "../../../interfaces/external/curve/IMetaPool3.sol";
+import { IMetaPool2 } from "../../../interfaces/external/curve/IMetaPool2.sol";
+import { IMetaPool3 } from "../../../interfaces/external/curve/IMetaPool3.sol";
 
 /// @notice All possible removals on Curve
 enum CurveRemovalType {
@@ -15,9 +16,9 @@ enum CurveRemovalType {
 /// @title CurveLevSwapper3TokensWithBP
 /// @author Angle Labs, Inc.
 /// @dev Leverage swapper on Curve LP tokens
-/// @dev This implementation is for Curve pools with 3 tokens and 1 token is a Curve (3 token) LP token
+/// @dev This implementation is for Curve pools with 2 tokens and 1 token is a Curve (3 token) LP token
 /// @dev The implementation suppose that the LP `basepool` token is at index 0
-abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
+abstract contract CurveLevSwapper2TokensWithBP is BaseLevSwapper {
     using SafeERC20 for IERC20;
 
     uint256 public constant NBR_TOKEN_META = 3;
@@ -32,7 +33,6 @@ abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
         if (address(metapool()) != address(0)) {
             tokens()[0].safeIncreaseAllowance(address(metapool()), type(uint256).max);
             tokens()[1].safeIncreaseAllowance(address(metapool()), type(uint256).max);
-            tokens()[2].safeIncreaseAllowance(address(metapool()), type(uint256).max);
             tokensBP()[0].safeIncreaseAllowance(address(basepool()), type(uint256).max);
             tokensBP()[1].safeIncreaseAllowance(address(basepool()), type(uint256).max);
             tokensBP()[2].safeIncreaseAllowance(address(basepool()), type(uint256).max);
@@ -54,12 +54,10 @@ abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
             basepool().add_liquidity([amountTokenBP1, amountTokenBP2, amountTokenBP3], 0);
         }
         // Instead of doing sweeps at the end just use the full balance to add liquidity
-        uint256 amountTokenLP = tokens()[0].balanceOf(address(this));
-        uint256 amountToken1 = tokens()[1].balanceOf(address(this));
-        uint256 amountToken2 = tokens()[2].balanceOf(address(this));
+        uint256 amountToken1 = tokens()[0].balanceOf(address(this));
+        uint256 amountToken2 = tokens()[1].balanceOf(address(this));
         // Slippage is checked at the very end of the `swap` function
-        if (amountTokenLP != 0 || amountToken1 != 0 || amountToken2 != 0)
-            metapool().add_liquidity([amountTokenLP, amountToken1, amountToken2], 0);
+        if (amountToken1 != 0 || amountToken2 != 0) metapool().add_liquidity([amountToken1, amountToken2], 0);
 
         // Other solution is also to let the user specify how many tokens have been sent + get
         // the return value from `add_liquidity`: it's more gas efficient but adds more verbose
@@ -74,17 +72,18 @@ abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
         (removalType, swapLPBP, data) = abi.decode(data, (CurveRemovalType, bool, bytes));
         uint256 lpTokenBPReceived;
         if (removalType == CurveRemovalType.oneCoin) {
-            (uint256 whichCoin, uint256 minAmountOut) = abi.decode(data, (uint256, uint256));
+            (int128 whichCoin, uint256 minAmountOut) = abi.decode(data, (int128, uint256));
             amountOut = metapool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
-            lpTokenBPReceived = whichCoin == 0 ? amountOut : 0;
+            // This not true for all pools some may have first the LP token first
+            lpTokenBPReceived = whichCoin == 1 ? amountOut : 0;
         } else if (removalType == CurveRemovalType.balance) {
-            uint256[3] memory minAmountOuts = abi.decode(data, (uint256[3]));
+            uint256[2] memory minAmountOuts = abi.decode(data, (uint256[2]));
             minAmountOuts = metapool().remove_liquidity(burnAmount, minAmountOuts);
-            lpTokenBPReceived = minAmountOuts[0];
+            lpTokenBPReceived = minAmountOuts[1];
         } else if (removalType == CurveRemovalType.imbalance) {
-            (address to, uint256[3] memory amountOuts) = abi.decode(data, (address, uint256[3]));
+            (address to, uint256[2] memory amountOuts) = abi.decode(data, (address, uint256[2]));
             uint256 actualBurnAmount = metapool().remove_liquidity_imbalance(amountOuts, burnAmount);
-            lpTokenBPReceived = amountOuts[0];
+            lpTokenBPReceived = amountOuts[1];
             // We may have withdrawn more than needed: maybe not optimal because a user may not want to have
             // lp tokens staked. Solution is to do a sweep on all tokens in the `BaseLevSwapper` contract
             if (burnAmount > actualBurnAmount) angleStaker().deposit(burnAmount - actualBurnAmount, to);
@@ -116,10 +115,10 @@ abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
     // ============================= VIRTUAL FUNCTIONS =============================
 
     /// @notice Reference to the native `tokens` of the Curve pool
-    function tokens() public pure virtual returns (IERC20[3] memory);
+    function tokens() public pure virtual returns (IERC20[2] memory);
 
     /// @notice Reference to the Curve Pool contract
-    function metapool() public pure virtual returns (IMetaPool3);
+    function metapool() public pure virtual returns (IMetaPool2);
 
     /// @notice Reference to the actual collateral contract
     /// @dev Most of the time this is the same address as the `metapool`

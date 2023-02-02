@@ -19,25 +19,13 @@ abstract contract ConvexTokenStaker is BorrowStaker {
     IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
     IConvexToken private constant _CVX = IConvexToken(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
 
-    // ================================= VARIABLES =================================
-    IConvexBaseRewardPool public baseRewardPool;
-    uint256 public poolPid;
-
     /// @notice Initializes the `BorrowStaker` for Stake DAO
-    function initialize(
-        ICoreBorrow _coreBorrow,
-        IERC20 _asset,
-        IConvexBaseRewardPool _baseRewardPool,
-        uint256 _poolPid
-    ) external {
-        if (address(_baseRewardPool) == address(0)) revert ZeroAddress();
-        baseRewardPool = _baseRewardPool;
-        poolPid = _poolPid;
+    function initialize(ICoreBorrow _coreBorrow) external {
         string memory erc20Name = string(
-            abi.encodePacked("Angle ", IERC20Metadata(address(_asset)).name(), " Convex Staker")
+            abi.encodePacked("Angle ", IERC20Metadata(address(asset())).name(), " Convex Staker")
         );
-        string memory erc20Symbol = string(abi.encodePacked("agstk-cvx-", IERC20Metadata(address(_asset)).symbol()));
-        _initialize(_coreBorrow, _asset, erc20Name, erc20Symbol);
+        string memory erc20Symbol = string(abi.encodePacked("agstk-cvx-", IERC20Metadata(address(asset())).symbol()));
+        _initialize(_coreBorrow, erc20Name, erc20Symbol);
     }
 
     // ============================= INTERNAL FUNCTIONS ============================
@@ -51,14 +39,14 @@ abstract contract ConvexTokenStaker is BorrowStaker {
         // Stake on Convex if it is a deposit
         if (from == address(0)) {
             // Deposit the Curve LP tokens into the convex contract and stake
-            _changeAllowance(asset, address(_CONVEX_BOOSTER), amount);
-            _CONVEX_BOOSTER.deposit(poolPid, amount, true);
+            _changeAllowance(asset(), address(_CONVEX_BOOSTER), amount);
+            _CONVEX_BOOSTER.deposit(poolPid(), amount, true);
         }
     }
 
     /// @inheritdoc BorrowStaker
     function _withdrawFromProtocol(uint256 amount) internal override {
-        baseRewardPool.withdrawAndUnwrap(amount, false);
+        baseRewardPool().withdrawAndUnwrap(amount, false);
     }
 
     /// @inheritdoc BorrowStaker
@@ -66,7 +54,7 @@ abstract contract ConvexTokenStaker is BorrowStaker {
     function _claimContractRewards() internal override {
         // Claim on Convex
         address[] memory rewardContracts = new address[](1);
-        rewardContracts[0] = address(baseRewardPool);
+        rewardContracts[0] = address(baseRewardPool());
 
         uint256 prevBalanceCRV = _CRV.balanceOf(address(this));
         uint256 prevBalanceCVX = _CVX.balanceOf(address(this));
@@ -101,7 +89,7 @@ abstract contract ConvexTokenStaker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     function _rewardsToBeClaimed(IERC20 rewardToken) internal view override returns (uint256 amount) {
-        amount = baseRewardPool.earned(address(this));
+        amount = baseRewardPool().earned(address(this));
         if (rewardToken == IERC20(address(_CVX))) {
             // Computation made in the Convex token when claiming rewards check
             // https://etherscan.io/address/0x4e3fbd56cd56c3e72c1403e103b45db9da5b9d2b#code
@@ -119,4 +107,12 @@ abstract contract ConvexTokenStaker is BorrowStaker {
             }
         }
     }
+
+    // ============================= VIRTUAL FUNCTIONS =============================
+
+    /// @notice Address of the Convex contract on which to claim rewards
+    function baseRewardPool() public pure virtual returns (IConvexBaseRewardPool);
+
+    /// @notice ID of the pool associated to the LP token on Convex
+    function poolPid() public pure virtual returns (uint256);
 }

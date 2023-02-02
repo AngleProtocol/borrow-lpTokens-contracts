@@ -7,7 +7,7 @@ import "./IMetaPoolBase.sol";
 uint256 constant N_COINS = 3;
 
 //solhint-disable
-interface IMetaPool3 is IMetaPoolBase {
+interface IMetaPool3NoReturn is IMetaPoolBase {
     function coins() external view returns (uint256[N_COINS] memory);
 
     function balances(uint256) external view returns (uint256);
@@ -61,25 +61,21 @@ interface IMetaPool3 is IMetaPoolBase {
         uint256 min_dy
     ) external returns (uint256);
 
-    function remove_liquidity(uint256 _burn_amount, uint256[N_COINS] memory _min_amounts)
-        external
-        returns (uint256[N_COINS] memory);
+    function remove_liquidity(uint256 _burn_amount, uint256[N_COINS] memory _min_amounts) external;
 
     function remove_liquidity(
         uint256 _burn_amount,
         uint256[N_COINS] memory _min_amounts,
         address _receiver
-    ) external returns (uint256[N_COINS] memory);
+    ) external;
 
-    function remove_liquidity_imbalance(uint256[N_COINS] memory _amounts, uint256 _max_burn_amount)
-        external
-        returns (uint256);
+    function remove_liquidity_imbalance(uint256[N_COINS] memory _amounts, uint256 _max_burn_amount) external;
 
     function remove_liquidity_imbalance(
         uint256[N_COINS] memory _amounts,
         uint256 _max_burn_amount,
         address _receiver
-    ) external returns (uint256);
+    ) external;
 
     // overload functions because some pools requires i to be an int128 or an uint256
     function calc_withdraw_one_coin(uint256 _burn_amount, uint256 i) external view returns (uint256);
@@ -88,5 +84,5 @@ interface IMetaPool3 is IMetaPoolBase {
         uint256 _burn_amount,
         uint256 i,
         uint256 _min_received
-    ) external returns (uint256);
+    ) external;
 }
