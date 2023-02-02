@@ -68,48 +68,72 @@ abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
 
     /// @inheritdoc BaseLevSwapper
     /// @dev For some pools `CurveRemovalType.imbalance` may be impossible
-    function _remove(uint256 burnAmount, bytes memory data) internal override returns (uint256 amountOut) {
+    function _remove(uint256 burnAmount, bytes memory data) internal override {
         CurveRemovalType removalType;
         bool swapLPBP;
         (removalType, swapLPBP, data) = abi.decode(data, (CurveRemovalType, bool, bytes));
         uint256 lpTokenBPReceived;
-        if (removalType == CurveRemovalType.oneCoin) {
-            (uint256 whichCoin, uint256 minAmountOut) = abi.decode(data, (uint256, uint256));
-            amountOut = metapool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
-            lpTokenBPReceived = whichCoin == 0 ? amountOut : 0;
-        } else if (removalType == CurveRemovalType.balance) {
-            uint256[3] memory minAmountOuts = abi.decode(data, (uint256[3]));
-            minAmountOuts = metapool().remove_liquidity(burnAmount, minAmountOuts);
-            lpTokenBPReceived = minAmountOuts[0];
-        } else if (removalType == CurveRemovalType.imbalance) {
+        if (removalType == CurveRemovalType.oneCoin) lpTokenBPReceived = _removeMetaLiquidityOneCoin(burnAmount, data);
+        else if (removalType == CurveRemovalType.balance)
+            lpTokenBPReceived = _removeMetaLiquidityBalance(burnAmount, data);
+        else if (removalType == CurveRemovalType.imbalance) {
             (address to, uint256[3] memory amountOuts) = abi.decode(data, (address, uint256[3]));
-            uint256 actualBurnAmount = metapool().remove_liquidity_imbalance(amountOuts, burnAmount);
+            metapool().remove_liquidity_imbalance(amountOuts, burnAmount);
             lpTokenBPReceived = amountOuts[0];
+            uint256 keptAmount = lpToken().balanceOf(address(this));
             // We may have withdrawn more than needed: maybe not optimal because a user may not want to have
             // lp tokens staked. Solution is to do a sweep on all tokens in the `BaseLevSwapper` contract
-            if (burnAmount > actualBurnAmount) angleStaker().deposit(burnAmount - actualBurnAmount, to);
+            if (keptAmount > 0) angleStaker().deposit(keptAmount, to);
         }
         if (swapLPBP) _removeBP(lpTokenBPReceived, data);
+    }
+
+    /// @notice Remove liquidity into one coin on `metapool`
+    /// @dev It should be overriden if:
+    /// - `metapool` return values when removing liquidity as it will be more efficient
+    /// - `whichCoin` is not a `int256` but a `int128`
+    function _removeMetaLiquidityOneCoin(uint256 burnAmount, bytes memory data)
+        internal
+        virtual
+        returns (uint256 lpTokenBPReceived)
+    {
+        (uint256 whichCoin, uint256 minAmountOut) = abi.decode(data, (uint256, uint256));
+        metapool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
+        // This not true for all pools some may have first the LP token first
+        if (whichCoin == indexBPToken()) lpTokenBPReceived = tokens()[indexBPToken()].balanceOf(address(this));
+    }
+
+    /// @notice Remove liquidity in a balance manner from `metapool`
+    /// @dev It should be overriden if `metapool` return values when removing liquidity as it will be more efficient
+    function _removeMetaLiquidityBalance(uint256 burnAmount, bytes memory data)
+        internal
+        virtual
+        returns (uint256 lpTokenBPReceived)
+    {
+        uint256[3] memory minAmountOuts = abi.decode(data, (uint256[3]));
+        metapool().remove_liquidity(burnAmount, minAmountOuts);
+        lpTokenBPReceived = tokens()[indexBPToken()].balanceOf(address(this));
     }
 
     /// @notice Remove liquidity from the `basepool`
     /// @param burnAmount Amount of LP token to burn
     /// @param data External data to process the removal
-    function _removeBP(uint256 burnAmount, bytes memory data) internal returns (uint256 amountOut) {
+    function _removeBP(uint256 burnAmount, bytes memory data) internal {
         CurveRemovalType removalType;
         (removalType, data) = abi.decode(data, (CurveRemovalType, bytes));
         if (removalType == CurveRemovalType.oneCoin) {
             (int128 whichCoin, uint256 minAmountOut) = abi.decode(data, (int128, uint256));
-            amountOut = basepool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
+            basepool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
         } else if (removalType == CurveRemovalType.balance) {
             uint256[3] memory minAmountOuts = abi.decode(data, (uint256[3]));
-            minAmountOuts = basepool().remove_liquidity(burnAmount, minAmountOuts);
+            basepool().remove_liquidity(burnAmount, minAmountOuts);
         } else if (removalType == CurveRemovalType.imbalance) {
             (address to, uint256[3] memory amountOuts) = abi.decode(data, (address, uint256[3]));
-            uint256 actualBurnAmount = basepool().remove_liquidity_imbalance(amountOuts, burnAmount);
+            basepool().remove_liquidity_imbalance(amountOuts, burnAmount);
+            uint256 keptAmount = lpToken().balanceOf(address(this));
             // We may have withdrawn more than needed: maybe not optimal because a user may not want to have
             // lp tokens staked. Solution is to do a sweep on all tokens in the `BaseLevSwapper` contract
-            if (burnAmount > actualBurnAmount) angleStaker().deposit(burnAmount - actualBurnAmount, to);
+            if (keptAmount > 0) angleStaker().deposit(keptAmount, to);
         }
     }
 
@@ -117,6 +141,9 @@ abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
 
     /// @notice Reference to the native `tokens` of the Curve pool
     function tokens() public pure virtual returns (IERC20[3] memory);
+
+    /// @notice Index LP token `basepool` in `tokens`
+    function indexBPToken() public pure virtual returns (uint256);
 
     /// @notice Reference to the Curve Pool contract
     function metapool() public pure virtual returns (IMetaPool3);

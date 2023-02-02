@@ -58,7 +58,7 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
 
     /// @inheritdoc BaseLevSwapper
     /// @dev Inspired from: https://dev.balancer.fi/resources/joins-and-exits/pool-exits#stablepool-exitkinds
-    function _remove(uint256 burnAmount, bytes memory data) internal override returns (uint256 amountOut) {
+    function _remove(uint256 burnAmount, bytes memory data) internal override {
         uint256 removalType;
         bytes memory extraData;
         (removalType, extraData) = abi.decode(data, (uint256, bytes));
@@ -100,7 +100,6 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
                 if (leftover > 0) angleStaker().deposit(leftover, to);
             }
         }
-        return 0;
     }
 
     // ============================= VIRTUAL FUNCTIONS =============================

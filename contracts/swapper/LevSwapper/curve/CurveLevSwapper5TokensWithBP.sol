@@ -13,7 +13,7 @@ enum CurveRemovalType {
     none
 }
 
-/// @title CurveLevSwapper2Tokens
+/// @title CurveLevSwapper5TokensWithBP
 /// @author Angle Labs, Inc.
 /// @dev Leverage swapper on Curve LP tokens
 /// @dev This implementation is for Curve pools with 5 tokens
@@ -55,15 +55,15 @@ abstract contract CurveLevSwapper5TokensWithBP is BaseLevSwapper {
     }
 
     /// @inheritdoc BaseLevSwapper
-    function _remove(uint256 burnAmount, bytes memory data) internal override returns (uint256 amountOut) {
+    function _remove(uint256 burnAmount, bytes memory data) internal override {
         CurveRemovalType removalType;
         (removalType, data) = abi.decode(data, (CurveRemovalType, bytes));
         if (removalType == CurveRemovalType.oneCoin) {
             (uint256 whichCoin, uint256 minAmountOut) = abi.decode(data, (uint256, uint256));
-            amountOut = metapool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
+            metapool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
         } else if (removalType == CurveRemovalType.balance) {
             uint256[5] memory minAmountOuts = abi.decode(data, (uint256[5]));
-            minAmountOuts = metapool().remove_liquidity(burnAmount, minAmountOuts);
+            metapool().remove_liquidity(burnAmount, minAmountOuts);
         }
     }
 

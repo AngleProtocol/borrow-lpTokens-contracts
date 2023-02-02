@@ -423,7 +423,7 @@ contract CurveLevSwapper3TokensWithBPBaseTest is BaseTest {
                 true
             ) * SLIPPAGE_BPS) / _BPS;
             minAmountOut =
-                (IMetaPool2(address(_METAPOOL)).calc_token_amount([amounts[3], 0], true) * SLIPPAGE_BPS) /
+                (IMetaPool2(address(_METAPOOL)).calc_token_amount([amounts[3], lowerBoundLPBP], true) * SLIPPAGE_BPS) /
                 _BPS;
         }
 

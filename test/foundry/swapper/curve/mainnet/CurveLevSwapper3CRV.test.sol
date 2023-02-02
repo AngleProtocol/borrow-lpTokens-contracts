@@ -27,6 +27,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
     IERC20 internal constant _USDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     IERC20 internal constant _USDT = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
     IERC20 internal constant _DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
+    IERC20[3] internal listTokens;
     uint256 internal constant _DECIMAL_NORM_USDC = 10**12;
     uint256 internal constant _DECIMAL_NORM_USDT = 10**12;
 
@@ -44,6 +45,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 16535240);
         vm.selectFork(_ethereum);
 
+        listTokens = [_DAI, _USDC, _USDT];
         // reset coreBorrow because the `makePersistent()` doens't work on my end
         coreBorrow = new MockCoreBorrow();
         coreBorrow.toggleGuardian(_GUARDIAN);
@@ -111,7 +113,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
     }
 
     function testNoDepositDeleverageOneCoinToken1(uint256 amount) public {
-        amount = bound(amount, 10**20, 10**24);
+        amount = bound(amount, 1, 10**24);
         int128 coinIndex = 1;
         IERC20 outToken = IERC20(address(_USDC));
 
@@ -125,7 +127,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
     }
 
     function testNoDepositDeleverageCollatAndOneCoinToken1(uint256 amount, uint256 propToRemove) public {
-        amount = bound(amount, 10**20, 10**24);
+        amount = bound(amount, 1, 10**24);
         propToRemove = bound(propToRemove, 0, BASE_PARAMS);
         int128 coinIndex = 1;
         IERC20 outToken = IERC20(address(_USDC));
@@ -144,7 +146,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
     }
 
     function testNoDepositDeleverageBalance(uint256 amount) public {
-        amount = bound(amount, 10**20, 10**24);
+        amount = bound(amount, 1, 10**24);
         _depositDirect(amount);
         uint256[3] memory minAmounts = _deleverageBalance();
 
@@ -154,12 +156,14 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         _assertCommonDeleverage();
     }
 
-    function testDeleverageOneCoinToken2(
+    function testDeleverageOneCoinToken(
         uint256[3] memory amounts,
         uint256 swapAmount,
+        uint256 coinIndex,
         int128 coinSwapFrom,
         int128 coinSwapTo
     ) public {
+        coinIndex = bound(coinIndex, 0, 2);
         _depositSwapAndAddLiquidity(amounts);
 
         coinSwapFrom = int128(uint128(bound(uint256(uint128(coinSwapFrom)), 0, 2)));
@@ -170,14 +174,14 @@ contract CurveLevSwapper3CRVTest is BaseTest {
 
         _swapToImbalance(coinSwapFrom, coinSwapTo, swapAmount);
 
-        int128 coinIndex = 1;
-        IERC20 outToken = IERC20(address(_USDC));
+        IERC20 outToken = listTokens[coinIndex];
 
-        uint256 minOneCoin = _deleverageOneCoin(coinIndex, outToken);
+        uint256 minOneCoin = _deleverageOneCoin(int128(uint128(coinIndex)), outToken);
 
-        assertGe(_USDC.balanceOf(_alice), minOneCoin);
-        assertGe(_DAI.balanceOf(_alice), 0);
-        assertGe(_USDT.balanceOf(_alice), 0);
+        for (uint256 i; i < listTokens.length; i++) {
+            if (i == coinIndex) assertGe(listTokens[i].balanceOf(_alice), minOneCoin);
+            else assertEq(listTokens[i].balanceOf(_alice), 0);
+        }
         _assertCommonDeleverage();
     }
 
@@ -307,7 +311,6 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         {
             bytes[] memory oneInchData = new bytes[](0);
             IERC20[] memory sweepTokens = new IERC20[](0);
-            // sweepTokens[0] = _USDC;
             minOneCoin = (_METAPOOL.calc_withdraw_one_coin(amount, coinIndex) * SLIPPAGE_BPS) / _BPS;
             bytes memory removeData = abi.encode(CurveRemovalType.oneCoin, abi.encode(coinIndex, minOneCoin));
             bytes memory swapData = abi.encode(amount, amount, sweepTokens, oneInchData, removeData);
@@ -460,7 +463,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         } else {
             swapAmount = bound(swapAmount, 10**6, 10**11);
             deal(address(_USDT), address(_dylan), swapAmount);
-            IERC20(address(_USDT)).approve(address(_METAPOOL), type(uint256).max);
+            IERC20(address(_USDT)).safeApprove(address(_METAPOOL), type(uint256).max);
         }
         _METAPOOL.exchange(coinSwapFrom, coinSwapTo, swapAmount, 0);
 
@@ -472,9 +475,6 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         assertEq(asset.balanceOf(address(_alice)), 0);
         assertEq(asset.balanceOf(address(swapper)), 0);
         assertEq(asset.balanceOf(address(staker)), staker.totalSupply());
-        assertEq(_USDT.balanceOf(_alice), 0);
-        assertEq(_USDC.balanceOf(_alice), 0);
-        assertEq(_DAI.balanceOf(_alice), 0);
         assertEq(_USDC.balanceOf(address(swapper)), 0);
         assertEq(_DAI.balanceOf(address(swapper)), 0);
         assertEq(_USDT.balanceOf(address(swapper)), 0);

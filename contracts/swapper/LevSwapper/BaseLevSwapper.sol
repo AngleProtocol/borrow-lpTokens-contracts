@@ -116,5 +116,5 @@ abstract contract BaseLevSwapper is Swapper {
     /// @notice Implements the bundle transaction to decrease exposure to a token
     /// @param toRemove Amount of tokens to remove
     /// @param data Encoded data giving specific instruction to the bundle tx
-    function _remove(uint256 toRemove, bytes memory data) internal virtual returns (uint256 amount);
+    function _remove(uint256 toRemove, bytes memory data) internal virtual;
 }

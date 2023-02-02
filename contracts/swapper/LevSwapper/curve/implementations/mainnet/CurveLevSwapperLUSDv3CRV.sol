@@ -2,6 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "../../CurveLevSwapper2TokensWithBP.sol";
+import { IMetaPool2WithReturn } from "../../../../../interfaces/external/curve/IMetaPool2WithReturn.sol";
 
 /// @author Angle Labs, Inc.
 /// @notice Template leverage swapper on Curve LP tokens
@@ -22,6 +23,11 @@ contract CurveLevSwapperLUSDv3CRV is CurveLevSwapper2TokensWithBP {
     /// @inheritdoc CurveLevSwapper2TokensWithBP
     function tokens() public pure override returns (IERC20[2] memory) {
         return [IERC20(0x5f98805A4E8be255a32880FDeC7F6728C6568bA0), IERC20(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490)];
+    }
+
+    /// @inheritdoc CurveLevSwapper2TokensWithBP
+    function indexBPToken() public pure override returns (uint256) {
+        return 1;
     }
 
     /// @inheritdoc CurveLevSwapper2TokensWithBP
@@ -46,5 +52,18 @@ contract CurveLevSwapperLUSDv3CRV is CurveLevSwapper2TokensWithBP {
     /// @inheritdoc CurveLevSwapper2TokensWithBP
     function basepool() public pure override returns (IMetaPool3) {
         return IMetaPool3(0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7);
+    }
+
+    // ================================== OVERRIDE =================================
+
+    /// @inheritdoc CurveLevSwapper2TokensWithBP
+    function _removeMetaLiquidityBalance(uint256 burnAmount, bytes memory data)
+        internal
+        override
+        returns (uint256 lpTokenBPReceived)
+    {
+        uint256[2] memory minAmountOuts = abi.decode(data, (uint256[2]));
+        minAmountOuts = IMetaPool2WithReturn(address(metapool())).remove_liquidity(burnAmount, minAmountOuts);
+        lpTokenBPReceived = minAmountOuts[indexBPToken()];
     }
 }
