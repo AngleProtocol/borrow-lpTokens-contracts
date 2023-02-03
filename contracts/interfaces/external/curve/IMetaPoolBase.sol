@@ -67,12 +67,6 @@ interface IMetaPoolBase is IERC20 {
     function remove_liquidity_one_coin(
         uint256 _burn_amount,
         int128 i,
-        uint256 _min_received
-    ) external;
-
-    function remove_liquidity_one_coin(
-        uint256 _burn_amount,
-        int128 i,
         uint256 _min_received,
         address _receiver
     ) external;

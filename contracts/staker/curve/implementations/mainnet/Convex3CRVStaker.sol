@@ -6,7 +6,7 @@ import "../../ConvexTokenStakerMainnet.sol";
 /// @title Convex3CRVStaker
 /// @author Angle Labs, Inc.
 /// @dev Implementation of `ConvexTokenStaker` for the 3CRV pool
-contract ConvexFRAXBPStaker is ConvexTokenStaker {
+contract Convex3CRVStaker is ConvexTokenStaker {
     // ============================= VIRTUAL FUNCTIONS =============================
 
     /// @inheritdoc BorrowStaker

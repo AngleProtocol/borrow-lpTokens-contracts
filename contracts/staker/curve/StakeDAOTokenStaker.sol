@@ -31,7 +31,7 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
         address from,
         address,
         uint256 amount
-    ) internal override {
+    ) internal virtual override {
         // Stake on StakeDAO if it is a deposit
         if (from == address(0)) {
             // Approve the vault contract for the Curve LP tokens

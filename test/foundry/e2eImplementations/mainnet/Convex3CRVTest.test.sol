@@ -1,20 +1,19 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.17;
 
-import "../../../BaseTest.test.sol";
-import { AToken } from "borrow/interfaces/external/aave/AToken.sol";
-import { ILendingPool } from "borrow/interfaces/external/aave/ILendingPool.sol";
-import "../../../../../contracts/interfaces/IBorrowStaker.sol";
+import "../../BaseTest.test.sol";
+import "../../../../contracts/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../../../contracts/interfaces/external/curve/IMetaPool3.sol";
+import "../../../../contracts/interfaces/external/convex/IConvexToken.sol";
+import "../../../../contracts/interfaces/external/curve/IMetaPool3.sol";
 import "borrow/interfaces/coreModule/IStableMaster.sol";
 import "borrow/interfaces/coreModule/IPoolManager.sol";
-import "../../../../../contracts/mock/MockTokenPermit.sol";
-import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper3CRV, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../../contracts/mock/implementations/swapper/mainnet/MockCurveLevSwapper3CRV.sol";
-import { MockBorrowStaker } from "../../../../../contracts/mock/MockBorrowStaker.sol";
+import "../../../../contracts/mock/MockTokenPermit.sol";
 
-// @dev Testing on Polygon
-contract CurveLevSwapper3CRVTest is BaseTest {
+import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper3CRV, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/implementations/swapper/mainnet/MockCurveLevSwapper3CRV.sol";
+import { Convex3CRVStaker } from "../../../../contracts/staker/curve/implementations/mainnet/Convex3CRVStaker.sol";
+
+contract Convex3CRVTest is BaseTest {
     using stdStorage for StdStorage;
     using SafeERC20 for IERC20;
 
@@ -22,7 +21,6 @@ contract CurveLevSwapper3CRVTest is BaseTest {
     IUniswapV3Router internal constant _UNI_V3_ROUTER = IUniswapV3Router(0xE592427A0AEce92De3Edee1F18E0157C05861564);
     IAngleRouterSidechain internal constant _ANGLE_ROUTER =
         IAngleRouterSidechain(address(uint160(uint256(keccak256(abi.encodePacked("_fakeAngleRouter"))))));
-
     IERC20 public asset = IERC20(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
     IERC20 internal constant _USDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     IERC20 internal constant _USDT = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
@@ -31,13 +29,15 @@ contract CurveLevSwapper3CRVTest is BaseTest {
     uint256 internal constant _DECIMAL_NORM_USDC = 10**12;
     uint256 internal constant _DECIMAL_NORM_USDT = 10**12;
 
+    IERC20 internal constant _BASE_REWARD_POOL = IERC20(0x689440f2Ff927E1f24c72F1087E1FAF471eCe1c8);
+
     IMetaPool3 internal constant _METAPOOL = IMetaPool3(0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7);
 
     uint256 internal constant _BPS = 10000;
     MockCurveLevSwapper3CRV public swapper;
-    MockBorrowStaker public stakerImplementation;
-    MockBorrowStaker public staker;
-    uint256 public SLIPPAGE_BPS = 9800;
+    Convex3CRVStaker public stakerImplementation;
+    Convex3CRVStaker public staker;
+    uint256 public SLIPPAGE_BPS = 9900;
 
     function setUp() public override {
         super.setUp();
@@ -51,11 +51,13 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         coreBorrow.toggleGuardian(_GUARDIAN);
         coreBorrow.toggleGovernor(_GOVERNOR);
 
-        stakerImplementation = new MockBorrowStaker();
-        staker = MockBorrowStaker(
-            deployUpgradeable(address(stakerImplementation), abi.encodeWithSelector(staker.setAsset.selector, asset))
+        stakerImplementation = new Convex3CRVStaker();
+        staker = Convex3CRVStaker(
+            deployUpgradeable(
+                address(stakerImplementation),
+                abi.encodeWithSelector(staker.initialize.selector, coreBorrow)
+            )
         );
-        staker.initialize(coreBorrow);
 
         swapper = new MockCurveLevSwapper3CRV(
             coreBorrow,
@@ -65,8 +67,8 @@ contract CurveLevSwapper3CRVTest is BaseTest {
             IBorrowStaker(address(staker))
         );
 
-        assertEq(staker.name(), "Angle Curve.fi DAI/USDC/USDT Mock Staker");
-        assertEq(staker.symbol(), "agstk-mock-3Crv");
+        assertEq(staker.name(), "Angle Curve.fi DAI/USDC/USDT Convex Staker");
+        assertEq(staker.symbol(), "agstk-cvx-3Crv");
         assertEq(staker.decimals(), 18);
 
         vm.startPrank(_GOVERNOR);
@@ -84,62 +86,26 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         _USDT.safeIncreaseAllowance(address(swapper), type(uint256).max);
         _DAI.approve(address(swapper), type(uint256).max);
         vm.stopPrank();
-
-        vm.startPrank(_dylan);
-        _USDC.approve(address(swapper), type(uint256).max);
-        _USDT.safeIncreaseAllowance(address(swapper), type(uint256).max);
-        _DAI.approve(address(swapper), type(uint256).max);
-        vm.stopPrank();
     }
 
     function testLeverageNoUnderlyingTokensDeposited(uint256 amount) public {
-        amount = bound(amount, 0, 10**27);
+        amount = bound(amount, 1, 10**27);
 
         _depositDirect(amount);
 
         assertEq(staker.balanceOf(_alice), amount);
-        assertEq(asset.balanceOf(address(staker)), amount);
+        assertEq(_BASE_REWARD_POOL.balanceOf(address(staker)), amount);
         assertEq(staker.balanceOf(_alice), staker.totalSupply());
         _assertCommonLeverage();
     }
 
     function testLeverageSuccess(uint256[3] memory amounts) public {
-        uint256 minAmountOut = _depositSwapAndAddLiquidity(amounts);
+        uint256 minAmountOut = _depositLiquidity(amounts);
 
-        assertGe(staker.balanceOf(_alice), minAmountOut);
-        assertGe(asset.balanceOf(address(staker)), minAmountOut);
+        assertGt(staker.balanceOf(_alice), minAmountOut);
+        assertGt(_BASE_REWARD_POOL.balanceOf(address(staker)), minAmountOut);
         assertEq(staker.balanceOf(_alice), staker.totalSupply());
         _assertCommonLeverage();
-    }
-
-    function testNoDepositDeleverageCollatAndOneCoinToken1(uint256 amount, uint256 propToRemove) public {
-        amount = bound(amount, 0, 10**24);
-        propToRemove = bound(propToRemove, 0, BASE_PARAMS);
-        int128 coinIndex = 1;
-        IERC20 outToken = IERC20(address(_USDC));
-
-        _depositDirect(amount);
-        (uint256 minOneCoin, uint256 keptCollateral) = _deleverageCollateralAndOneCoin(
-            coinIndex,
-            propToRemove,
-            outToken
-        );
-
-        assertGe(_USDC.balanceOf(_alice), minOneCoin);
-        assertEq(_USDT.balanceOf(_alice), 0);
-        assertEq(_DAI.balanceOf(_alice), 0);
-        assertEq(asset.balanceOf(address(_alice)), keptCollateral);
-    }
-
-    function testNoDepositDeleverageBalance(uint256 amount) public {
-        amount = bound(amount, 1, 10**24);
-        _depositDirect(amount);
-        uint256[3] memory minAmounts = _deleverageBalance();
-
-        assertGe(_DAI.balanceOf(_alice), minAmounts[0]);
-        assertGe(_USDC.balanceOf(_alice), minAmounts[1]);
-        assertGe(_USDT.balanceOf(_alice), minAmounts[2]);
-        _assertCommonDeleverage();
     }
 
     function testDeleverageOneCoinToken(
@@ -150,17 +116,16 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         int128 coinSwapTo
     ) public {
         coinIndex = bound(coinIndex, 0, 2);
-        _depositSwapAndAddLiquidity(amounts);
-
+        _depositLiquidity(amounts);
         coinSwapFrom = int128(uint128(bound(uint256(uint128(coinSwapFrom)), 0, 2)));
         coinSwapTo = int128(uint128(bound(uint256(uint128(coinSwapTo)), 0, 2)));
 
         if (coinSwapTo == coinSwapFrom && coinSwapTo < 2) coinSwapTo += 1;
         else if (coinSwapTo == coinSwapFrom) coinSwapTo -= 1;
+
         _swapToImbalance(coinSwapFrom, coinSwapTo, swapAmount);
 
         IERC20 outToken = listTokens[coinIndex];
-
         uint256 minOneCoin = _deleverageOneCoin(int128(uint128(coinIndex)), outToken);
 
         for (uint256 i; i < listTokens.length; i++) {
@@ -172,16 +137,17 @@ contract CurveLevSwapper3CRVTest is BaseTest {
 
     function testDeleverageBalance(
         uint256[3] memory amounts,
+        uint256 swapAmount,
         int128 coinSwapFrom,
         int128 coinSwapTo
     ) public {
-        _depositSwapAndAddLiquidity(amounts);
-
+        _depositLiquidity(amounts);
         coinSwapFrom = int128(uint128(bound(uint256(uint128(coinSwapFrom)), 0, 2)));
         coinSwapTo = int128(uint128(bound(uint256(uint128(coinSwapTo)), 0, 2)));
 
         if (coinSwapTo == coinSwapFrom && coinSwapTo < 2) coinSwapTo += 1;
         else if (coinSwapTo == coinSwapFrom) coinSwapTo -= 1;
+        _swapToImbalance(coinSwapFrom, coinSwapTo, swapAmount);
 
         uint256[3] memory minAmounts = _deleverageBalance();
 
@@ -202,7 +168,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         proportionWithdrawToken1 = bound(proportionWithdrawToken1, 0, 10**9);
         proportionWithdrawToken2 = bound(proportionWithdrawToken2, 0, 10**9 - proportionWithdrawToken1);
 
-        _depositSwapAndAddLiquidity(amounts);
+        _depositLiquidity(amounts);
 
         coinSwapFrom = int128(uint128(bound(uint256(uint128(coinSwapFrom)), 0, 2)));
         coinSwapTo = int128(uint128(bound(uint256(uint128(coinSwapTo)), 0, 2)));
@@ -217,9 +183,9 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         );
         if (amountOut[0] < 10 wei && amountOut[1] < 10 wei && amountOut[2] < 10 wei) return;
 
-        assertEq(_DAI.balanceOf(_alice), amountOut[0]);
-        assertEq(_USDC.balanceOf(_alice), amountOut[1]);
-        assertEq(_USDT.balanceOf(_alice), amountOut[2]);
+        assertApproxEqAbs(_DAI.balanceOf(_alice), amountOut[0], 5 wei);
+        assertApproxEqAbs(_USDC.balanceOf(_alice), amountOut[1], 5 wei);
+        assertApproxEqAbs(_USDT.balanceOf(_alice), amountOut[2], 5 wei);
         assertEq(_DAI.balanceOf(_bob), 0);
         assertEq(_USDC.balanceOf(_bob), 0);
         assertEq(_USDT.balanceOf(_bob), 0);
@@ -235,15 +201,13 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         deal(address(asset), address(_alice), amount);
         vm.startPrank(_alice);
         // intermediary variables
-        bytes memory data;
-        {
-            bytes[] memory oneInchData = new bytes[](0);
+        bytes[] memory oneInchData = new bytes[](0);
 
-            bytes memory addData;
-            bytes memory swapData = abi.encode(oneInchData, addData);
-            bytes memory leverageData = abi.encode(true, _alice, swapData);
-            data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
-        }
+        bytes memory addData;
+        bytes memory swapData = abi.encode(oneInchData, addData);
+        bytes memory leverageData = abi.encode(true, _alice, swapData);
+        bytes memory data = abi.encode(address(0), 0, SwapType.Leverage, leverageData);
+
         // we first need to send the tokens before hand, you should always use the swapper
         // in another tx to not losse your funds by front running
         asset.transfer(address(swapper), amount);
@@ -252,7 +216,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         vm.stopPrank();
     }
 
-    function _depositSwapAndAddLiquidity(uint256[3] memory amounts) internal returns (uint256 minAmountOut) {
+    function _depositLiquidity(uint256[3] memory amounts) internal returns (uint256 minAmountOut) {
         // DAI - USDC - USDT
         amounts[0] = bound(amounts[0], 10**20, 10**24);
         amounts[1] = bound(amounts[1], 10**8, 10**12);
@@ -309,35 +273,6 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         vm.stopPrank();
 
         return minOneCoin;
-    }
-
-    function _deleverageCollateralAndOneCoin(
-        int128 coinIndex,
-        uint256 propToRemove,
-        IERC20 outToken
-    ) internal returns (uint256, uint256) {
-        vm.startPrank(_alice);
-        // deleverage
-        uint256 amount = staker.balanceOf(_alice);
-        uint256 amountToRemove = (amount * propToRemove) / BASE_PARAMS;
-        uint256 minOneCoin;
-        bytes memory data;
-        {
-            bytes[] memory oneInchData = new bytes[](0);
-            IERC20[] memory sweepTokens = new IERC20[](1);
-            sweepTokens[0] = asset;
-            minOneCoin = (_METAPOOL.calc_withdraw_one_coin(amountToRemove, coinIndex) * SLIPPAGE_BPS) / _BPS;
-            bytes memory removeData = abi.encode(CurveRemovalType.oneCoin, abi.encode(coinIndex, minOneCoin));
-            bytes memory swapData = abi.encode(amount, amountToRemove, sweepTokens, oneInchData, removeData);
-            bytes memory leverageData = abi.encode(false, _alice, swapData);
-            data = abi.encode(address(0), minOneCoin, SwapType.Leverage, leverageData);
-        }
-        staker.transfer(address(swapper), amount);
-        swapper.swap(IERC20(address(staker)), outToken, _alice, 0, amount, data);
-
-        vm.stopPrank();
-
-        return (minOneCoin, amount - amountToRemove);
     }
 
     function _deleverageBalance() internal returns (uint256[3] memory minAmounts) {
@@ -460,7 +395,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         assertEq(staker.balanceOf(address(swapper)), 0);
         assertEq(asset.balanceOf(address(_alice)), 0);
         assertEq(asset.balanceOf(address(swapper)), 0);
-        assertEq(asset.balanceOf(address(staker)), staker.totalSupply());
+        assertEq(_BASE_REWARD_POOL.balanceOf(address(staker)), staker.totalSupply());
         assertEq(_USDC.balanceOf(address(swapper)), 0);
         assertEq(_DAI.balanceOf(address(swapper)), 0);
         assertEq(_USDT.balanceOf(address(swapper)), 0);
@@ -472,7 +407,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
     function _assertCommonDeleverage() internal {
         _assertCommonLeverage();
         assertEq(staker.balanceOf(_alice), 0);
-        assertEq(asset.balanceOf(address(staker)), 0);
+        assertEq(_BASE_REWARD_POOL.balanceOf(address(staker)), 0);
         assertEq(staker.totalSupply(), 0);
     }
 }

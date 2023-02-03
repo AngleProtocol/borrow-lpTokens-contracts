@@ -57,13 +57,34 @@ contract CurveLevSwapperLUSDv3CRV is CurveLevSwapper2TokensWithBP {
     // ================================== OVERRIDE =================================
 
     /// @inheritdoc CurveLevSwapper2TokensWithBP
+    function _removeMetaLiquidityOneCoin(uint256 burnAmount, bytes memory data)
+        internal
+        override
+        returns (uint256 lpTokenBPReceived, bytes memory)
+    {
+        int128 whichCoin;
+        uint256 minAmountOut;
+        (whichCoin, minAmountOut, data) = abi.decode(data, (int128, uint256, bytes));
+        minAmountOut = IMetaPool2WithReturn(address(metapool())).remove_liquidity_one_coin(
+            burnAmount,
+            whichCoin,
+            minAmountOut
+        );
+        // This not true for all pools some may have first the LP token first
+        if (whichCoin == int128(int256(indexBPToken()))) lpTokenBPReceived = minAmountOut;
+        return (lpTokenBPReceived, data);
+    }
+
+    /// @inheritdoc CurveLevSwapper2TokensWithBP
     function _removeMetaLiquidityBalance(uint256 burnAmount, bytes memory data)
         internal
         override
-        returns (uint256 lpTokenBPReceived)
+        returns (uint256 lpTokenBPReceived, bytes memory)
     {
-        uint256[2] memory minAmountOuts = abi.decode(data, (uint256[2]));
+        uint256[2] memory minAmountOuts;
+        (minAmountOuts, data) = abi.decode(data, (uint256[2], bytes));
         minAmountOuts = IMetaPool2WithReturn(address(metapool())).remove_liquidity(burnAmount, minAmountOuts);
         lpTokenBPReceived = minAmountOuts[indexBPToken()];
+        return (lpTokenBPReceived, data);
     }
 }

@@ -72,11 +72,13 @@ abstract contract CurveLevSwapper2TokensWithBP is BaseLevSwapper {
         (removalType, swapLPBP, data) = abi.decode(data, (CurveRemovalType, bool, bytes));
         uint256 lpTokenBPReceived;
         if (removalType == CurveRemovalType.oneCoin) {
-            lpTokenBPReceived = _removeMetaLiquidityOneCoin(burnAmount, data);
+            (lpTokenBPReceived, data) = _removeMetaLiquidityOneCoin(burnAmount, data);
         } else if (removalType == CurveRemovalType.balance) {
-            lpTokenBPReceived = _removeMetaLiquidityBalance(burnAmount, data);
+            (lpTokenBPReceived, data) = _removeMetaLiquidityBalance(burnAmount, data);
         } else if (removalType == CurveRemovalType.imbalance) {
-            (address to, uint256[2] memory amountOuts) = abi.decode(data, (address, uint256[2]));
+            address to;
+            uint256[2] memory amountOuts;
+            (to, amountOuts, data) = abi.decode(data, (address, uint256[2], bytes));
             metapool().remove_liquidity_imbalance(amountOuts, burnAmount);
             lpTokenBPReceived = amountOuts[1];
             uint256 keptAmount = lpToken().balanceOf(address(this));
@@ -94,13 +96,16 @@ abstract contract CurveLevSwapper2TokensWithBP is BaseLevSwapper {
     function _removeMetaLiquidityOneCoin(uint256 burnAmount, bytes memory data)
         internal
         virtual
-        returns (uint256 lpTokenBPReceived)
+        returns (uint256 lpTokenBPReceived, bytes memory)
     {
-        (int128 whichCoin, uint256 minAmountOut) = abi.decode(data, (int128, uint256));
+        int128 whichCoin;
+        uint256 minAmountOut;
+        (whichCoin, minAmountOut, data) = abi.decode(data, (int128, uint256, bytes));
         metapool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
         // This not true for all pools some may have first the LP token first
         if (whichCoin == int128(int256(indexBPToken())))
             lpTokenBPReceived = tokens()[indexBPToken()].balanceOf(address(this));
+        return (lpTokenBPReceived, data);
     }
 
     /// @notice Remove liquidity in a balance manner from `metapool`
@@ -108,11 +113,13 @@ abstract contract CurveLevSwapper2TokensWithBP is BaseLevSwapper {
     function _removeMetaLiquidityBalance(uint256 burnAmount, bytes memory data)
         internal
         virtual
-        returns (uint256 lpTokenBPReceived)
+        returns (uint256 lpTokenBPReceived, bytes memory)
     {
-        uint256[2] memory minAmountOuts = abi.decode(data, (uint256[2]));
+        uint256[2] memory minAmountOuts;
+        (minAmountOuts, data) = abi.decode(data, (uint256[2], bytes));
         metapool().remove_liquidity(burnAmount, minAmountOuts);
         lpTokenBPReceived = tokens()[indexBPToken()].balanceOf(address(this));
+        return (lpTokenBPReceived, data);
     }
 
     /// @notice Remove liquidity from the `basepool`

@@ -61,6 +61,12 @@ interface IMetaPool3 is IMetaPoolBase {
         uint256 min_dy
     ) external;
 
+    function remove_liquidity_one_coin(
+        uint256 _burn_amount,
+        int128 i,
+        uint256 _min_received
+    ) external;
+
     function remove_liquidity(uint256 _burn_amount, uint256[N_COINS] memory _min_amounts) external;
 
     function remove_liquidity(
