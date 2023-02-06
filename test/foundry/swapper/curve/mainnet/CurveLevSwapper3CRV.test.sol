@@ -37,9 +37,10 @@ contract CurveLevSwapper3CRVTest is BaseTest {
     MockCurveLevSwapper3CRV public swapper;
     MockBorrowStaker public stakerImplementation;
     MockBorrowStaker public staker;
+    IERC20 public tokenHolder;
     uint256 public SLIPPAGE_BPS = 9800;
 
-    function setUp() public override {
+    function setUp() public virtual override {
         super.setUp();
 
         _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 16535240);
@@ -50,6 +51,8 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         coreBorrow = new MockCoreBorrow();
         coreBorrow.toggleGuardian(_GUARDIAN);
         coreBorrow.toggleGovernor(_GOVERNOR);
+
+        tokenHolder = asset;
 
         stakerImplementation = new MockBorrowStaker();
         staker = MockBorrowStaker(
@@ -64,10 +67,6 @@ contract CurveLevSwapper3CRVTest is BaseTest {
             _ANGLE_ROUTER,
             IBorrowStaker(address(staker))
         );
-
-        assertEq(staker.name(), "Angle Curve.fi DAI/USDC/USDT Mock Staker");
-        assertEq(staker.symbol(), "agstk-mock-3Crv");
-        assertEq(staker.decimals(), 18);
 
         vm.startPrank(_GOVERNOR);
         IERC20[] memory tokens = new IERC20[](1);
@@ -92,13 +91,19 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         vm.stopPrank();
     }
 
+    function testInitialise() public virtual {
+        assertEq(staker.name(), "Angle Curve.fi DAI/USDC/USDT Mock Staker");
+        assertEq(staker.symbol(), "agstk-mock-3Crv");
+        assertEq(staker.decimals(), 18);
+    }
+
     function testLeverageNoUnderlyingTokensDeposited(uint256 amount) public {
-        amount = bound(amount, 0, 10**27);
+        amount = bound(amount, 1, 10**27);
 
         _depositDirect(amount);
 
         assertEq(staker.balanceOf(_alice), amount);
-        assertEq(asset.balanceOf(address(staker)), amount);
+        assertEq(tokenHolder.balanceOf(address(staker)), amount);
         assertEq(staker.balanceOf(_alice), staker.totalSupply());
         _assertCommonLeverage();
     }
@@ -107,13 +112,13 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         uint256 minAmountOut = _depositSwapAndAddLiquidity(amounts);
 
         assertGe(staker.balanceOf(_alice), minAmountOut);
-        assertGe(asset.balanceOf(address(staker)), minAmountOut);
+        assertGe(tokenHolder.balanceOf(address(staker)), minAmountOut);
         assertEq(staker.balanceOf(_alice), staker.totalSupply());
         _assertCommonLeverage();
     }
 
     function testNoDepositDeleverageCollatAndOneCoinToken1(uint256 amount, uint256 propToRemove) public {
-        amount = bound(amount, 0, 10**24);
+        amount = bound(amount, 1, 10**24);
         propToRemove = bound(propToRemove, 0, BASE_PARAMS);
         int128 coinIndex = 1;
         IERC20 outToken = IERC20(address(_USDC));
@@ -254,9 +259,9 @@ contract CurveLevSwapper3CRVTest is BaseTest {
 
     function _depositSwapAndAddLiquidity(uint256[3] memory amounts) internal returns (uint256 minAmountOut) {
         // DAI - USDC - USDT
-        amounts[0] = bound(amounts[0], 10**20, 10**24);
-        amounts[1] = bound(amounts[1], 10**8, 10**12);
-        amounts[2] = bound(amounts[2], 10**8, 10**12);
+        amounts[0] = bound(amounts[0], 1, 10**24);
+        amounts[1] = bound(amounts[1], 1, 10**12);
+        amounts[2] = bound(amounts[2], 1, 10**12);
 
         deal(address(_DAI), address(_alice), amounts[0]);
         deal(address(_USDC), address(_alice), amounts[1]);
@@ -460,7 +465,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
         assertEq(staker.balanceOf(address(swapper)), 0);
         assertEq(asset.balanceOf(address(_alice)), 0);
         assertEq(asset.balanceOf(address(swapper)), 0);
-        assertEq(asset.balanceOf(address(staker)), staker.totalSupply());
+        assertEq(tokenHolder.balanceOf(address(staker)), staker.totalSupply());
         assertEq(_USDC.balanceOf(address(swapper)), 0);
         assertEq(_DAI.balanceOf(address(swapper)), 0);
         assertEq(_USDT.balanceOf(address(swapper)), 0);
@@ -472,7 +477,7 @@ contract CurveLevSwapper3CRVTest is BaseTest {
     function _assertCommonDeleverage() internal {
         _assertCommonLeverage();
         assertEq(staker.balanceOf(_alice), 0);
-        assertEq(asset.balanceOf(address(staker)), 0);
+        assertEq(tokenHolder.balanceOf(address(staker)), 0);
         assertEq(staker.totalSupply(), 0);
     }
 }
