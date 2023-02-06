@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import "../../swapper/curve/CurveLevSwapper2TokensWithBPBaseTest.test.sol";
 import { MockCurveLevSwapperLUSDv3CRV } from "../../../../contracts/mock/implementations/swapper/mainnet/MockCurveLevSwapperLUSDv3CRV.sol";
-import { StakeDAOLUSDv3CRVStaker, IStakeCurveVault } from "../../../../contracts/staker/curve/implementations/mainnet/StakeDAOLUSDv3CRVStaker.sol";
+import { StakeDAOLUSDv3CRVStaker, IStakeCurveVault } from "../../../../contracts/staker/curve/implementations/mainnet/pools/StakeDAOLUSDv3CRVStaker.sol";
 
 contract StakeDAOLUSDv3CRVTest is CurveLevSwapper2TokensWithBPBaseTest {
     using stdStorage for StdStorage;

@@ -51,4 +51,8 @@ interface IConvexBaseRewardPool {
     function withdrawAllAndUnwrap(bool claim) external;
 
     function withdrawAndUnwrap(uint256 amount, bool claim) external returns (bool);
+
+    // ============================= ARBITRUM INTERFACE ============================
+
+    function getReward(address _account) external;
 }

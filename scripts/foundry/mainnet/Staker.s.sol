@@ -3,8 +3,8 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
-import { ConvexFRAXBPStaker } from "../../../contracts/staker/curve/implementations/mainnet/ConvexFRAXBPStaker.sol";
-import { StakeDAOFRAXBPStaker } from "../../../contracts/staker/curve/implementations/mainnet/StakeDAOFRAXBPStaker.sol";
+import { ConvexFRAXBPStaker } from "../../../contracts/staker/curve/implementations/mainnet/pools/ConvexFRAXBPStaker.sol";
+import { StakeDAOFRAXBPStaker } from "../../../contracts/staker/curve/implementations/mainnet/pools/StakeDAOFRAXBPStaker.sol";
 import "./MainnetConstants.s.sol";
 
 contract DeployStakerMainnet is Script, MainnetConstants {

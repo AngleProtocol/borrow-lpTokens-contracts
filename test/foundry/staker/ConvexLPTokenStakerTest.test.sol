@@ -7,7 +7,7 @@ import "../../../contracts/interfaces/external/convex/IBooster.sol";
 import "../../../contracts/interfaces/external/convex/IConvexToken.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
-import { ConvexLUSDv3CRVStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/ConvexLUSDv3CRVStaker.sol";
+import { ConvexLUSDv3CRVStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/pools/ConvexLUSDv3CRVStaker.sol";
 
 contract ConvexLPTokenStakerTest is BaseTest {
     using stdStorage for StdStorage;

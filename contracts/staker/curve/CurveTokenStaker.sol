@@ -44,19 +44,8 @@ abstract contract CurveTokenStaker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by the implementation if there are more rewards
-    function _claimContractRewards() internal virtual override {
-        uint256 prevBalanceCRV = _CRV.balanceOf(address(this));
+    function _claimGauges() internal virtual override {
         liquidityGauge().claim_rewards(address(this), address(0));
-        uint256 crvRewards = _CRV.balanceOf(address(this)) - prevBalanceCRV;
-        // Do the same thing for additional rewards
-        _updateRewards(_CRV, crvRewards);
-    }
-
-    /// @inheritdoc BorrowStaker
-    function _getRewards() internal pure override returns (IERC20[] memory rewards) {
-        rewards = new IERC20[](1);
-        rewards[0] = _CRV;
-        return rewards;
     }
 
     /// @inheritdoc BorrowStaker

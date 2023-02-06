@@ -1,26 +1,26 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../ConvexTokenStakerMainnet.sol";
+import "../ConvexTokenStakerMainnet.sol";
 
-/// @title ConvexTricrypto2Staker
+/// @title ConvexAgEURvEUROCStaker
 /// @author Angle Labs, Inc.
-/// @dev Implementation of `ConvexTokenStaker` for the Tricrypto2 pool
-contract ConvexTricrypto2Staker is ConvexTokenStaker {
+/// @dev Implementation of `ConvexTokenStakerMainnet` for the agEUR-EUROC pool
+contract ConvexAgEURvEUROCStaker is ConvexTokenStakerMainnet {
     // ============================= VIRTUAL FUNCTIONS =============================
 
     /// @inheritdoc BorrowStaker
     function asset() public pure override returns (IERC20) {
-        return IERC20(0xc4AD29ba4B3c580e6D59105FFf484999997675Ff);
+        return IERC20(0xBa3436Fd341F2C8A928452Db3C5A3670d1d5Cc73);
     }
 
     /// @inheritdoc ConvexTokenStaker
     function baseRewardPool() public pure override returns (IConvexBaseRewardPool) {
-        return IConvexBaseRewardPool(0x9D5C5E364D81DaB193b72db9E9BE9D8ee669B652);
+        return IConvexBaseRewardPool(0xA91fccC1ec9d4A2271B7A86a7509Ca05057C1A98);
     }
 
     /// @inheritdoc ConvexTokenStaker
     function poolPid() public pure override returns (uint256) {
-        return 38;
+        return 113;
     }
 }

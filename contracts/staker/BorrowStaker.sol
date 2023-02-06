@@ -277,6 +277,25 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
         }
     }
 
+    /// @notice Claims all rewards accumulated by this contract and increases the integral associated
+    /// to each reward token
+    function _claimContractRewards() internal virtual {
+        IERC20[] memory rewardTokens = _getRewards();
+        uint256 rewardTokensLength = rewardTokens.length;
+        uint256[] memory prevBalances = new uint256[](rewardTokensLength);
+        for (uint256 i; i < rewardTokensLength; ++i) {
+            prevBalances[i] = rewardTokens[i].balanceOf(address(this));
+        }
+
+        _claimGauges();
+
+        for (uint256 i; i < rewardTokensLength; ++i) {
+            IERC20 rewardToken = rewardTokens[i];
+            uint256 rewards = rewardToken.balanceOf(address(this)) - prevBalances[i];
+            _updateRewards(rewardToken, rewards);
+        }
+    }
+
     /// @notice Checkpoints rewards earned by a user
     /// @param from Address to claim rewards from
     /// @param _claim Whether to claim or not the rewards
@@ -329,9 +348,8 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @notice Underlying token to be staked
     function asset() public virtual returns (IERC20);
 
-    /// @notice Claims all rewards accumulated by this contract and increases the integral associated
-    /// to each reward token
-    function _claimContractRewards() internal virtual;
+    /// @notice Do the actual reward call on the Staker contract
+    function _claimGauges() internal virtual;
 
     /// @notice Returns a list of all reward tokens supported by this contract
     function _getRewards() internal view virtual returns (IERC20[] memory reward);

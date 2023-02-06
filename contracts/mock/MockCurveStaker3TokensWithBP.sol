@@ -43,12 +43,8 @@ contract MockCurveStaker3TokensWithBP is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by the implementation if there are more rewards
-    function _claimContractRewards() internal virtual override {
-        uint256 prevBalanceCRV = fakeReward.balanceOf(address(this));
+    function _claimGauges() internal virtual override {
         liquidityGauge().claim_rewards(address(this), address(0));
-        uint256 crvRewards = fakeReward.balanceOf(address(this)) - prevBalanceCRV;
-        // Do the same thing for additional rewards
-        _updateRewards(fakeReward, crvRewards);
     }
 
     /// @inheritdoc BorrowStaker

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "../../swapper/curve/CurveLevSwapper2TokensBaseTest.test.sol";
-import { ConvexFRAXBPStaker } from "../../../../contracts/staker/curve/implementations/mainnet/ConvexFRAXBPStaker.sol";
+import { ConvexFRAXBPStaker } from "../../../../contracts/staker/curve/implementations/mainnet/pools/ConvexFRAXBPStaker.sol";
 
 contract ConvexFRAXBPTest is CurveLevSwapper2TokensBaseTest {
     using stdStorage for StdStorage;

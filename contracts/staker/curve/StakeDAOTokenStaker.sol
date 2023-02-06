@@ -10,9 +10,6 @@ import "../BorrowStaker.sol";
 /// @author Angle Labs, Inc.
 /// @dev Borrow staker adapted to Curve LP tokens deposited on StakeDAO
 abstract contract StakeDAOTokenStaker is BorrowStaker {
-    IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
-    IERC20 private constant _SDT = IERC20(0x73968b9a57c6E53d41345FD57a6E6ae27d6CDB2F);
-
     error WithdrawFeeTooLarge();
 
     /// @notice Initializes the `BorrowStaker` for Stake DAO
@@ -50,26 +47,8 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by implementation if there are more rewards
-    function _claimContractRewards() internal override {
-        uint256 prevBalanceCRV = _CRV.balanceOf(address(this));
-        uint256 prevBalanceSDT = _SDT.balanceOf(address(this));
-
+    function _claimGauges() internal override {
         _gauge().claim_rewards(address(this));
-
-        uint256 crvRewards = _CRV.balanceOf(address(this)) - prevBalanceCRV;
-        uint256 sdtRewards = _SDT.balanceOf(address(this)) - prevBalanceSDT;
-
-        // do the same thing for additional rewards
-        _updateRewards(_CRV, crvRewards);
-        _updateRewards(_SDT, sdtRewards);
-    }
-
-    /// @inheritdoc BorrowStaker
-    function _getRewards() internal pure override returns (IERC20[] memory rewards) {
-        rewards = new IERC20[](2);
-        rewards[0] = _CRV;
-        rewards[1] = _SDT;
-        return rewards;
     }
 
     /// @inheritdoc BorrowStaker

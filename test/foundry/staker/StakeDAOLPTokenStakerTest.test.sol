@@ -7,7 +7,7 @@ import "../../../contracts/interfaces/external/stakeDAO/IClaimerRewards.sol";
 import "../../../contracts/interfaces/external/stakeDAO/ILiquidityGauge.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
-import { StakeDAOLUSDv3CRVStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/StakeDAOLUSDv3CRVStaker.sol";
+import { StakeDAOLUSDv3CRVStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/pools/StakeDAOLUSDv3CRVStaker.sol";
 
 contract StakeDAOLPTokenStakerTest is BaseTest {
     using stdStorage for StdStorage;

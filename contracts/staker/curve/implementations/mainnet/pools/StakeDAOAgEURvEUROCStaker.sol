@@ -1,26 +1,25 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../StakeDAOTokenStaker.sol";
+import "../StakeDAOTokenStakerMainnet.sol";
 
-/// @title StakeDAO3CRVStaker
+/// @title StakeDAOAgEURvEUROCStaker
 /// @author Angle Labs, Inc.
-/// @dev Implementation of `StakeDAOTokenStaker` for the 3CRV pool
-contract StakeDAO3CRVStaker is StakeDAOTokenStaker {
+/// @dev Implementation of `StakeDAOTokenStakerMainnet` for the agEUR-EUROC pool
+contract StakeDAOAgEURvEUROCStaker is StakeDAOTokenStakerMainnet {
     // ============================= VIRTUAL FUNCTIONS =============================
-
     /// @inheritdoc BorrowStaker
     function asset() public pure override returns (IERC20) {
-        return IERC20(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
+        return IERC20(0xBa3436Fd341F2C8A928452Db3C5A3670d1d5Cc73);
     }
 
     /// @inheritdoc StakeDAOTokenStaker
     function _vault() internal pure override returns (IStakeCurveVault) {
-        return IStakeCurveVault(0xb9205784b05fbe5b5298792A24C2CB844B7dc467);
+        return IStakeCurveVault(0xDe46532a49c88af504594F488822F452b7FBc7BD);
     }
 
     /// @inheritdoc StakeDAOTokenStaker
     function _gauge() internal pure override returns (ILiquidityGauge) {
-        return ILiquidityGauge(0xf99FD99711671268EE557fEd651EA45e34B2414f);
+        return ILiquidityGauge(0x63f222079608EEc2DDC7a9acdCD9344a21428Ce7);
     }
 }
