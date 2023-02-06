@@ -7,7 +7,7 @@ import "../../../contracts/interfaces/external/stakeDAO/IClaimerRewards.sol";
 import "../../../contracts/interfaces/external/stakeDAO/ILiquidityGauge.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
-import { StakeDAO3CRVStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/StakeDAO3CRVStaker.sol";
+import { StakeDAOLUSDv3CRVStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/StakeDAOLUSDv3CRVStaker.sol";
 
 contract StakeDAOLPTokenStakerTest is BaseTest {
     using stdStorage for StdStorage;
@@ -21,12 +21,12 @@ contract StakeDAOLPTokenStakerTest is BaseTest {
     address public constant curveStrategy = 0x20F1d4Fed24073a9b9d388AfA2735Ac91f079ED6;
 
     // To be changed
-    IERC20 public asset = IERC20(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
-    IStakeCurveVault internal constant _vault = IStakeCurveVault(0xb9205784b05fbe5b5298792A24C2CB844B7dc467);
-    ILiquidityGauge internal constant _gauge = ILiquidityGauge(0xf99FD99711671268EE557fEd651EA45e34B2414f);
+    IERC20 public asset = IERC20(0xEd279fDD11cA84bEef15AF5D39BB4d4bEE23F0cA);
+    IStakeCurveVault internal constant _vault = IStakeCurveVault(0xfB5312107c4150c86228e8fd719b8b0Ae2db581d);
+    ILiquidityGauge internal constant _gauge = ILiquidityGauge(0x3794C7C69B9c761ede266A9e8B8bb0f6cdf4E3E5);
+    StakeDAOLUSDv3CRVStaker public stakerImplementation;
+    StakeDAOLUSDv3CRVStaker public staker;
 
-    StakeDAO3CRVStaker public stakerImplementation;
-    StakeDAO3CRVStaker public staker;
     uint8 public decimalToken;
     uint256 public maxTokenAmount;
     uint8[2] public decimalReward;
@@ -39,8 +39,8 @@ contract StakeDAOLPTokenStakerTest is BaseTest {
         vm.selectFork(_ethereum);
 
         super.setUp();
-        stakerImplementation = new StakeDAO3CRVStaker();
-        staker = StakeDAO3CRVStaker(
+        stakerImplementation = new StakeDAOLUSDv3CRVStaker();
+        staker = StakeDAOLUSDv3CRVStaker(
             deployUpgradeable(
                 address(stakerImplementation),
                 abi.encodeWithSelector(staker.initialize.selector, coreBorrow)

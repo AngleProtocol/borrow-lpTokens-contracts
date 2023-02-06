@@ -7,7 +7,7 @@ import "../../../contracts/interfaces/external/convex/IBooster.sol";
 import "../../../contracts/interfaces/external/convex/IConvexToken.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
-import { Convex3CRVStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/Convex3CRVStaker.sol";
+import { ConvexLUSDv3CRVStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/ConvexLUSDv3CRVStaker.sol";
 
 contract ConvexLPTokenStakerTest is BaseTest {
     using stdStorage for StdStorage;
@@ -19,26 +19,26 @@ contract ConvexLPTokenStakerTest is BaseTest {
     uint256 public constant NBR_REWARD = 2;
     IConvexBooster public convexBooster = IConvexBooster(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
     // To be changed for different pools
-    IERC20 public asset = IERC20(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
-    IConvexBaseRewardPool public baseRewardPool = IConvexBaseRewardPool(0x689440f2Ff927E1f24c72F1087E1FAF471eCe1c8);
-    uint256 public constant POOL_ID = 9;
+    IERC20 public asset = IERC20(0xEd279fDD11cA84bEef15AF5D39BB4d4bEE23F0cA);
+    IConvexBaseRewardPool public baseRewardPool = IConvexBaseRewardPool(0x2ad92A7aE036a038ff02B96c88de868ddf3f8190);
+    uint256 public constant POOL_ID = 33;
+    ConvexLUSDv3CRVStaker public stakerImplementation;
+    ConvexLUSDv3CRVStaker public staker;
 
-    Convex3CRVStaker public stakerImplementation;
-    Convex3CRVStaker public staker;
     uint8 public decimalToken;
     uint256 public maxTokenAmount;
     uint8[] public decimalReward;
     uint256[] public rewardAmount;
 
-    uint256 public constant WITHDRAW_LENGTH = 3;
+    uint256 public constant WITHDRAW_LENGTH = 10;
 
     function setUp() public override {
         _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 15775969);
         vm.selectFork(_ethereum);
 
         super.setUp();
-        stakerImplementation = new Convex3CRVStaker();
-        staker = Convex3CRVStaker(
+        stakerImplementation = new ConvexLUSDv3CRVStaker();
+        staker = ConvexLUSDv3CRVStaker(
             deployUpgradeable(
                 address(stakerImplementation),
                 abi.encodeWithSelector(staker.initialize.selector, coreBorrow)

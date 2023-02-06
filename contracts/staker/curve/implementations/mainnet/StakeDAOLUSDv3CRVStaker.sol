@@ -10,7 +10,7 @@ contract StakeDAOLUSDv3CRVStaker is StakeDAOTokenStaker {
     // ============================= VIRTUAL FUNCTIONS =============================
     /// @inheritdoc BorrowStaker
     function asset() public pure override returns (IERC20) {
-        return IERC20(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
+        return IERC20(0xEd279fDD11cA84bEef15AF5D39BB4d4bEE23F0cA);
     }
 
     /// @inheritdoc StakeDAOTokenStaker

@@ -13,7 +13,7 @@ import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper2TokensW
 import { MockBorrowStaker } from "../../../../contracts/mock/MockBorrowStaker.sol";
 
 // @dev Testing on Polygon
-contract CurveLevSwapper3TokensWithBPBaseTest is BaseTest {
+contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
     using stdStorage for StdStorage;
     using SafeERC20 for IERC20;
 
@@ -41,9 +41,10 @@ contract CurveLevSwapper3TokensWithBPBaseTest is BaseTest {
     MockCurveLevSwapper2TokensWithBP public swapper;
     MockBorrowStaker public stakerImplementation;
     MockBorrowStaker public staker;
+    IERC20 public tokenHolder;
     uint256 public SLIPPAGE_BPS = 9900;
 
-    function setUp() public override {
+    function setUp() public virtual override {
         super.setUp();
 
         _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 16535240);
@@ -55,6 +56,7 @@ contract CurveLevSwapper3TokensWithBPBaseTest is BaseTest {
         coreBorrow = new MockCoreBorrow();
         coreBorrow.toggleGuardian(_GUARDIAN);
         coreBorrow.toggleGovernor(_GOVERNOR);
+        tokenHolder = asset;
 
         stakerImplementation = new MockBorrowStaker();
         staker = MockBorrowStaker(
@@ -69,10 +71,6 @@ contract CurveLevSwapper3TokensWithBPBaseTest is BaseTest {
             _ANGLE_ROUTER,
             IBorrowStaker(address(staker))
         );
-
-        assertEq(staker.name(), "Angle Curve.fi Factory USD Metapool: Liquity Mock Staker");
-        assertEq(staker.symbol(), "agstk-mock-LUSD3CRV-f");
-        assertEq(staker.decimals(), 18);
 
         vm.startPrank(_GOVERNOR);
         IERC20[] memory tokens = new IERC20[](1);
@@ -93,12 +91,18 @@ contract CurveLevSwapper3TokensWithBPBaseTest is BaseTest {
         vm.stopPrank();
     }
 
+    function testInitialise() public virtual {
+        assertEq(staker.name(), "Angle Curve.fi Factory USD Metapool: Liquity Mock Staker");
+        assertEq(staker.symbol(), "agstk-mock-LUSD3CRV-f");
+        assertEq(staker.decimals(), 18);
+    }
+
     function testLeverageNoUnderlyingTokensDeposited(uint256 amount) public {
         amount = bound(amount, 1, 10**27);
         _depositDirect(amount);
 
         assertEq(staker.balanceOf(_alice), amount);
-        assertEq(asset.balanceOf(address(staker)), amount);
+        assertEq(tokenHolder.balanceOf(address(staker)), amount);
         assertEq(staker.balanceOf(_alice), staker.totalSupply());
         _assertCommonLeverage();
     }
@@ -107,7 +111,7 @@ contract CurveLevSwapper3TokensWithBPBaseTest is BaseTest {
         uint256 minAmountOut = _depositSwapAndAddLiquidity(amounts);
 
         assertGe(staker.balanceOf(_alice), minAmountOut);
-        assertGe(asset.balanceOf(address(staker)), minAmountOut);
+        assertGe(tokenHolder.balanceOf(address(staker)), minAmountOut);
         assertEq(staker.balanceOf(_alice), staker.totalSupply());
         _assertCommonLeverage();
     }
@@ -133,7 +137,7 @@ contract CurveLevSwapper3TokensWithBPBaseTest is BaseTest {
     }
 
     function testNoDepositDeleverageBalance(uint256 amount) public {
-        amount = bound(amount, 10**20, 10**24);
+        amount = bound(amount, 1, 10**24);
         _depositDirect(amount);
         uint256[2] memory minAmounts = _deleverageBalance();
 
@@ -661,7 +665,7 @@ contract CurveLevSwapper3TokensWithBPBaseTest is BaseTest {
         assertEq(staker.balanceOf(address(swapper)), 0);
         assertEq(asset.balanceOf(address(_alice)), 0);
         assertEq(asset.balanceOf(address(swapper)), 0);
-        assertEq(asset.balanceOf(address(staker)), staker.totalSupply());
+        assertEq(tokenHolder.balanceOf(address(staker)), staker.totalSupply());
         assertEq(_USDC.balanceOf(address(swapper)), 0);
         assertEq(_LUSD.balanceOf(address(swapper)), 0);
         assertEq(_DAI.balanceOf(address(swapper)), 0);
@@ -675,7 +679,7 @@ contract CurveLevSwapper3TokensWithBPBaseTest is BaseTest {
     function _assertCommonDeleverage() internal {
         _assertCommonLeverage();
         assertEq(staker.balanceOf(_alice), 0);
-        assertEq(asset.balanceOf(address(staker)), 0);
+        assertEq(tokenHolder.balanceOf(address(staker)), 0);
         assertEq(staker.totalSupply(), 0);
     }
 }
