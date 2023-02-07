@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../swapper/LevSwapper/curve/implementations/mainnet/CurveLevSwapperLUSDv3CRV.sol";
+import "../swapper/LevSwapper/curve/implementations/mainnet/CurveLevSwapperFullLUSDv3CRV.sol";
 
 /// @title MockCurveLevSwapper2TokensWithBP
 /// @author Angle Labs, Inc.
 /// @notice Implements a leverage swapper to gain/reduce exposure to the LUSD-3CRV Curve LP token
-contract MockCurveLevSwapper2TokensWithBP is CurveLevSwapperLUSDv3CRV {
+contract MockCurveLevSwapper2TokensWithBP is CurveLevSwapperFullLUSDv3CRV {
     IBorrowStaker internal _angleStaker;
 
     constructor(
@@ -15,7 +15,7 @@ contract MockCurveLevSwapper2TokensWithBP is CurveLevSwapperLUSDv3CRV {
         address _oneInch,
         IAngleRouterSidechain _angleRouter,
         IBorrowStaker angleStaker_
-    ) CurveLevSwapperLUSDv3CRV(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) CurveLevSwapperFullLUSDv3CRV(_core, _uniV3Router, _oneInch, _angleRouter) {
         _angleStaker = angleStaker_;
     }
 

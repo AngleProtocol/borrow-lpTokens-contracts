@@ -2,10 +2,10 @@
 pragma solidity ^0.8.17;
 
 import "../../swapper/curve/CurveLevSwapper2TokensWithBPBaseTest.test.sol";
-import { MockCurveLevSwapperLUSDv3CRV } from "../../../../contracts/mock/implementations/swapper/mainnet/MockCurveLevSwapperLUSDv3CRV.sol";
+import { MockCurveLevSwapperFullLUSDv3CRV } from "../../../../contracts/mock/implementations/swapper/mainnet/MockCurveLevSwapperFullLUSDv3CRV.sol";
 import { StakeDAOLUSDv3CRVStaker, IStakeCurveVault } from "../../../../contracts/staker/curve/implementations/mainnet/pools/StakeDAOLUSDv3CRVStaker.sol";
 
-contract StakeDAOLUSDv3CRVTest is CurveLevSwapper2TokensWithBPBaseTest {
+contract StakeDAOFullLUSDv3CRVTest is CurveLevSwapper2TokensWithBPBaseTest {
     using stdStorage for StdStorage;
     using SafeERC20 for IERC20;
 
@@ -26,7 +26,7 @@ contract StakeDAOLUSDv3CRVTest is CurveLevSwapper2TokensWithBPBaseTest {
 
         swapper = MockCurveLevSwapper2TokensWithBP(
             address(
-                new MockCurveLevSwapperLUSDv3CRV(
+                new MockCurveLevSwapperFullLUSDv3CRV(
                     coreBorrow,
                     _UNI_V3_ROUTER,
                     _ONE_INCH,
