@@ -6,7 +6,7 @@ import { IMetaPool2WithReturn } from "../../../../../interfaces/external/curve/I
 
 /// @author Angle Labs, Inc.
 /// @notice Template leverage swapper on Curve LP tokens
-/// @dev This implementation is for Curve pools with 3 tokens
+/// @dev This implementation is for Curve pools with 2 tokens with one LP token
 contract CurveLevSwapperFullLUSDv3CRV is CurveLevSwapper2TokensWithBP {
     constructor(
         ICoreBorrow _core,
