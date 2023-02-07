@@ -9,7 +9,7 @@ import "../../../interfaces/external/curve/ICurveCryptoSwapPool.sol";
 /// @author Angle Labs, Inc.
 /// @notice Gives a lower bound of the price of Curve 3CRV in Euro in base 18
 contract Oracle3CRVEURChainlink is BaseOracleChainlinkMulti {
-    string public constant DESCRIPTION = "3CRV/EUR Oracle";
+    string public constant DESCRIPTION = "3Crv/EUR Oracle";
     ICurveCryptoSwapPool public constant USDBP = ICurveCryptoSwapPool(0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7);
 
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
