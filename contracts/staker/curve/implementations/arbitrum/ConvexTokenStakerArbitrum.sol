@@ -22,6 +22,11 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
     }
 
     /// @inheritdoc BorrowStaker
+    function _withdrawFromProtocol(uint256 amount) internal virtual override {
+        baseRewardPool().withdraw(amount, false);
+    }
+
+    /// @inheritdoc BorrowStaker
     /// @dev If there are child rewards better to claim via Convex Zap Reward
     function _claimGauges() internal virtual override {
         // Claim on Convex
@@ -37,7 +42,7 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
 
     /// @inheritdoc ConvexTokenStaker
     function _crv() internal pure override returns (IERC20) {
-        return IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
+        return IERC20(0x11cDb42B0EB46D95f990BeDD4695A6e3fA034978);
     }
 
     // ========================== CONVEX-RELATED CONSTANTS =========================
@@ -49,7 +54,7 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
 
     /// @inheritdoc ConvexTokenStaker
     function _convexClaimZap() internal pure override returns (IConvexClaimZap) {
-        return IConvexClaimZap(0xDd49A93FDcae579AE50B4b9923325e9e335ec82B);
+        return IConvexClaimZap(address(0));
     }
 
     /// @inheritdoc ConvexTokenStaker

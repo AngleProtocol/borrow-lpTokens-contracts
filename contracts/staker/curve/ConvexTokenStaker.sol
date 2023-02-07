@@ -39,7 +39,7 @@ abstract contract ConvexTokenStaker is BorrowStaker {
     }
 
     /// @inheritdoc BorrowStaker
-    function _withdrawFromProtocol(uint256 amount) internal override {
+    function _withdrawFromProtocol(uint256 amount) internal virtual override {
         baseRewardPool().withdrawAndUnwrap(amount, false);
     }
 

@@ -40,8 +40,7 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     function _withdrawFromProtocol(uint256 amount) internal override {
-        uint256 withdrawalFee = _vault().withdrawalFee();
-        if (withdrawalFee > 0) revert WithdrawFeeTooLarge();
+        if (_withdrawalFee() > 0) revert WithdrawFeeTooLarge();
         _vault().withdraw(amount);
     }
 
@@ -57,6 +56,12 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
     }
 
     // ============================= VIRTUAL FUNCTIONS =============================
+
+    /// @notice Get withdrawal fee from Vault (if any)
+    function _withdrawalFee() internal view virtual returns (uint256) {
+        return _vault().withdrawalFee();
+    }
+
     /// @notice StakeDAO Vault address
     function _vault() internal pure virtual returns (IStakeCurveVault);
 

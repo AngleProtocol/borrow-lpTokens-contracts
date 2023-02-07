@@ -16,6 +16,6 @@ abstract contract CurveTokenStakerArbitrum is CurveTokenStaker {
 
     /// @notice Address of the CRV token
     function _crv() internal pure returns (IERC20) {
-        return IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
+        return IERC20(0x11cDb42B0EB46D95f990BeDD4695A6e3fA034978);
     }
 }
