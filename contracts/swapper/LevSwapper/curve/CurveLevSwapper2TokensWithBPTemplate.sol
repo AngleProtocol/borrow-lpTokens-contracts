@@ -6,7 +6,7 @@ import "./CurveLevSwapper2TokensWithBP.sol";
 /// @author Angle Labs, Inc.
 /// @notice Template leverage swapper on Curve LP tokens
 /// @dev This implementation is for Curve pools with 2 tokens with one another Curve pool
-contract CurveLevSwapper3TokensWithBPTemplate is CurveLevSwapper2TokensWithBP {
+contract CurveLevSwapper2TokensWithBPTemplate is CurveLevSwapper2TokensWithBP {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,

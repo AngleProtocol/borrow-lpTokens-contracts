@@ -29,7 +29,6 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
     /// @inheritdoc BorrowStaker
     /// @dev If there are child rewards better to claim via Convex Zap Reward
     function _claimGauges() internal virtual override {
-        // Claim on Convex
         baseRewardPool().getReward(address(this));
     }
 
@@ -53,12 +52,13 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
     }
 
     /// @inheritdoc ConvexTokenStaker
+    /// @dev Unused on Arbitrum
     function _convexClaimZap() internal pure override returns (IConvexClaimZap) {
         return IConvexClaimZap(address(0));
     }
 
     /// @inheritdoc ConvexTokenStaker
-    /// @dev No CVX tokens on Arbitrum/ no rewards in CVX
+    /// @dev No CVX tokens on Arbitrum / no rewards in CVX
     function _cvx() internal pure override returns (IConvexToken) {
         return IConvexToken(address(0));
     }
