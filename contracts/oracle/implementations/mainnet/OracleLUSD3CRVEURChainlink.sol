@@ -14,9 +14,6 @@ contract OracleLUSD3CRVEURChainlink is BaseOracleChainlinkMulti {
     ITricryptoPool public constant LUSD_3CRV_POOL = ITricryptoPool(0xEd279fDD11cA84bEef15AF5D39BB4d4bEE23F0cA);
     ICurveCryptoSwapPool public constant USDBP = ICurveCryptoSwapPool(0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7);
 
-    /// @notice Constructor of the contract
-    /// @param _stalePeriod Minimum feed update frequency for the oracle to not revert
-    /// @param _treasury Treasury associated to the `VaultManager` which reads from this feed
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
 
     function circuitChainlink() public pure override returns (AggregatorV3Interface[] memory) {
@@ -36,17 +33,16 @@ contract OracleLUSD3CRVEURChainlink is BaseOracleChainlinkMulti {
 
     /// @inheritdoc IOracle
     function read() external view override returns (uint256 quoteAmount) {
-        AggregatorV3Interface[] memory _circuitChainlink = circuitChainlink();
-        quoteAmount = _readChainlinkFeed(_lpPrice(), _circuitChainlink[4], 0, 0);
+        quoteAmount = _readChainlinkFeed(_lpPrice(), circuitChainlink()[4], 0, 0);
     }
 
-    /// @notice Get the global LP token price
+    /// @notice Gets the global LP token price
     function _lpPrice() internal view returns (uint256 lpMetaPrice) {
         uint256 lp3CRVPrice = _lpPriceBase();
         lpMetaPrice = _lpPriceMeta(lp3CRVPrice);
     }
 
-    /// @notice Get the meta LP token price
+    /// @notice Gets the meta LP token price
     function _lpPriceMeta(uint256 lower3CRVPrice) internal view returns (uint256 quoteAmount) {
         AggregatorV3Interface[] memory _circuitChainlink = circuitChainlink();
         // We use 0 decimals when reading fees through `readChainlinkFeed` since all feeds have 8 decimals
@@ -61,9 +57,6 @@ contract OracleLUSD3CRVEURChainlink is BaseOracleChainlinkMulti {
     /// @notice Get the underlying LP token price
     function _lpPriceBase() internal view returns (uint256 quoteAmount) {
         AggregatorV3Interface[] memory _circuitChainlink = circuitChainlink();
-        // We use 0 decimals when reading fees through `readChainlinkFeed` since all feeds have 8 decimals
-        // and the virtual price of the Curve pool is given in 18 decimals, just like the amount of decimals
-        // of the 3CRV token
         uint256 daiPrice = _readChainlinkFeed(1, _circuitChainlink[0], 1, 0);
         uint256 usdcPrice = _readChainlinkFeed(1, _circuitChainlink[1], 1, 0);
         uint256 usdtPrice = _readChainlinkFeed(1, _circuitChainlink[2], 1, 0);

@@ -12,9 +12,6 @@ contract OracleBalancerSTETHChainlink is BaseOracleChainlinkMulti {
     string public constant DESCRIPTION = "B-stETH-STABLE/EUR Oracle";
     IBalancerStablePool public constant STETHBPT = IBalancerStablePool(0x32296969Ef14EB0c6d29669C550D4a0449130230);
 
-    /// @notice Constructor of the contract
-    /// @param _stalePeriod Minimum feed update frequency for the oracle to not revert
-    /// @param _treasury Treasury associated to the `VaultManager` which reads from this feed
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
 
     function circuitChainlink() public pure override returns (AggregatorV3Interface[] memory) {

@@ -9,12 +9,9 @@ import "../../../interfaces/external/curve/ICurveCryptoSwapPool.sol";
 /// @author Angle Labs, Inc.
 /// @notice Gives a lower bound of the price of Curve 3CRV in Euro in base 18
 contract Oracle3CRVEURChainlink is BaseOracleChainlinkMulti {
-    string public constant DESCRIPTION = "3Crv/EUR Oracle";
+    string public constant DESCRIPTION = "3CRV/EUR Oracle";
     ICurveCryptoSwapPool public constant USDBP = ICurveCryptoSwapPool(0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7);
 
-    /// @notice Constructor of the contract
-    /// @param _stalePeriod Minimum feed update frequency for the oracle to not revert
-    /// @param _treasury Treasury associated to the `VaultManager` which reads from this feed
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
 
     function circuitChainlink() public pure override returns (AggregatorV3Interface[] memory) {
@@ -43,6 +40,6 @@ contract Oracle3CRVEURChainlink is BaseOracleChainlinkMulti {
         usdcPrice = usdcPrice >= daiPrice ? (daiPrice >= usdtPrice ? usdtPrice : daiPrice) : usdcPrice >= usdtPrice
             ? usdtPrice
             : usdcPrice;
-        quoteAmount = _readChainlinkFeed((USDBP.get_virtual_price() * usdcPrice), _circuitChainlink[2], 0, 0);
+        quoteAmount = _readChainlinkFeed((USDBP.get_virtual_price() * usdcPrice), _circuitChainlink[3], 0, 0);
     }
 }
