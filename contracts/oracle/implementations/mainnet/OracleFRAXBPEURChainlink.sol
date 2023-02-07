@@ -12,9 +12,6 @@ contract OracleFRAXBPEURChainlink is BaseOracleChainlinkMulti {
     string public constant DESCRIPTION = "crvFRAX/EUR Oracle";
     ICurveCryptoSwapPool public constant FRAXBP = ICurveCryptoSwapPool(0xDcEF968d416a41Cdac0ED8702fAC8128A64241A2);
 
-    /// @notice Constructor of the contract
-    /// @param _stalePeriod Minimum feed update frequency for the oracle to not revert
-    /// @param _treasury Treasury associated to the `VaultManager` which reads from this feed
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
 
     function circuitChainlink() public pure override returns (AggregatorV3Interface[] memory) {

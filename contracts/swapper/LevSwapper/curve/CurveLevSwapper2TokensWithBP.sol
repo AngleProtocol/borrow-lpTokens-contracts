@@ -17,7 +17,6 @@ enum CurveRemovalType {
 /// @author Angle Labs, Inc.
 /// @dev Leverage swapper on Curve LP tokens
 /// @dev This implementation is for Curve pools with 2 tokens and 1 token is a Curve (3 token) LP token
-/// @dev The implementation suppose that the LP `basepool` token is at index 0
 abstract contract CurveLevSwapper2TokensWithBP is BaseLevSwapper {
     using SafeERC20 for IERC20;
 

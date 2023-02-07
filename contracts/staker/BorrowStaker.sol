@@ -348,7 +348,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @notice Underlying token to be staked
     function asset() public virtual returns (IERC20);
 
-    /// @notice Do the actual reward call on the Staker contract
+    /// @notice Performs the actual call to claim rewards accumulated on the staking contract
     function _claimGauges() internal virtual;
 
     /// @notice Returns a list of all reward tokens supported by this contract
