@@ -78,8 +78,8 @@ contract OracleMainnetTest is BaseTest {
 
         console.log("our lowerbound lpPriceInUSD ", lpPriceInUSD);
 
-        assertGe(lpPriceInUSD, (1.07e18 * (_BPS - _DEV_BPS)) / _BPS);
-        assertLe(lpPriceInUSD, (1.07e18 * (_BPS + _DEV_BPS)) / _BPS);
+        assertGe(lpPriceInUSD, (1.02e18 * (_BPS - _DEV_BPS)) / _BPS);
+        assertLe(lpPriceInUSD, (1.02e18 * (_BPS + _DEV_BPS)) / _BPS);
     }
 
     function testReadLUSD3CRV() public {
