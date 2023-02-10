@@ -255,30 +255,30 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
         _assertCommonDeleverage();
     }
 
-    // function testDeleverageImbalance(
-    //     uint256[4] memory amounts,
-    //     uint256 swapAmount,
-    //     int128 coinSwap,
-    //     uint256 proportionWithdrawToken
-    // ) public {
-    //     proportionWithdrawToken = bound(proportionWithdrawToken, 5 * 10**8, 5 * 10**8);
-    //     _depositSwapAndAddLiquidity(amounts);
-    //     _swapToImbalance(coinSwap, coinSwap, swapAmount);
+    function testDeleverageImbalance(
+        uint256[4] memory amounts,
+        uint256 swapAmount,
+        int128 coinSwap,
+        uint256 proportionWithdrawToken
+    ) public {
+        proportionWithdrawToken = bound(proportionWithdrawToken, 0, 10**9);
+        _depositSwapAndAddLiquidity(amounts);
+        _swapToImbalance(coinSwap, coinSwap, swapAmount);
 
-    //     (uint256[2] memory amountOut, uint256 keptLPToken) = _deleverageImbalance(proportionWithdrawToken);
-    //     if (amountOut[0] < 10 wei && amountOut[1] < 10 wei) return;
+        (uint256[2] memory amountOut, uint256 keptLPToken) = _deleverageImbalance(proportionWithdrawToken);
+        if (amountOut[0] < 10 wei && amountOut[1] < 10 wei) return;
 
-    //     // Aave balances have rounding issues as they are corrected by an index
-    //     assertEq(_LUSD.balanceOf(_alice), amountOut[0]);
-    //     assertEq(_BPToken.balanceOf(_alice), amountOut[1]);
-    //     assertEq(_DAI.balanceOf(_bob), 0);
-    //     assertEq(_USDC.balanceOf(_bob), 0);
-    //     assertEq(_USDT.balanceOf(_bob), 0);
-    //     assertLe(staker.balanceOf(_bob), keptLPToken);
-    //     assertLe(staker.totalSupply(), keptLPToken);
-    //     assertLe(asset.balanceOf(address(staker)), keptLPToken);
-    //     _assertCommonLeverage();
-    // }
+        // Aave balances have rounding issues as they are corrected by an index
+        assertEq(_LUSD.balanceOf(_alice), amountOut[0]);
+        assertEq(_BPToken.balanceOf(_alice), amountOut[1]);
+        assertEq(_DAI.balanceOf(_bob), 0);
+        assertEq(_USDC.balanceOf(_bob), 0);
+        assertEq(_USDT.balanceOf(_bob), 0);
+        assertLe(staker.balanceOf(_bob), keptLPToken);
+        assertLe(staker.totalSupply(), keptLPToken);
+        assertLe(asset.balanceOf(address(staker)), keptLPToken);
+        _assertCommonLeverage();
+    }
 
     // ============================== HELPER FUNCTIONS =============================
 
@@ -648,11 +648,11 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
         coinSwapFrom = int128(uint128(bound(uint256(uint128(coinSwapFrom)), 0, 1)));
         // do a swap to change the pool state and withdraw womething different than what has been deposited
         if (coinSwapFrom == 1) {
-            swapAmount = bound(swapAmount, 10**18, 10**26);
+            swapAmount = bound(swapAmount, 10**18, 5 * 10**24);
             deal(address(_BPToken), address(_dylan), swapAmount);
             _BPToken.approve(address(_METAPOOL), type(uint256).max);
         } else {
-            swapAmount = bound(swapAmount, 10**18, 10**(18 + 8));
+            swapAmount = bound(swapAmount, 10**18, 5 * 10**(18 + 6));
             deal(address(_LUSD), address(_dylan), swapAmount);
             _LUSD.approve(address(_METAPOOL), type(uint256).max);
         }
