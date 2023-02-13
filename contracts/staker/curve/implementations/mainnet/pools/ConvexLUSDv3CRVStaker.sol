@@ -14,7 +14,7 @@ contract ConvexLUSDv3CRVStaker is ConvexTokenStakerMainnet {
         return IERC20(0xEd279fDD11cA84bEef15AF5D39BB4d4bEE23F0cA);
     }
 
-    /// @inheritdoc ConvexTokenStaker
+    /// @inheritdoc ConvexTokenStakerMainnet
     function baseRewardPool() public pure override returns (IConvexBaseRewardPool) {
         return IConvexBaseRewardPool(0x2ad92A7aE036a038ff02B96c88de868ddf3f8190);
     }

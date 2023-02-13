@@ -14,7 +14,7 @@ contract ConvexTricrypto2Staker is ConvexTokenStakerMainnet {
         return IERC20(0xc4AD29ba4B3c580e6D59105FFf484999997675Ff);
     }
 
-    /// @inheritdoc ConvexTokenStaker
+    /// @inheritdoc ConvexTokenStakerMainnet
     function baseRewardPool() public pure override returns (IConvexBaseRewardPool) {
         return IConvexBaseRewardPool(0x9D5C5E364D81DaB193b72db9E9BE9D8ee669B652);
     }

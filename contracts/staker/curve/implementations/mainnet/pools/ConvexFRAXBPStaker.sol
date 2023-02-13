@@ -14,7 +14,7 @@ contract ConvexFRAXBPStaker is ConvexTokenStakerMainnet {
         return IERC20(0x3175Df0976dFA876431C2E9eE6Bc45b65d3473CC);
     }
 
-    /// @inheritdoc ConvexTokenStaker
+    /// @inheritdoc ConvexTokenStakerMainnet
     function baseRewardPool() public pure override returns (IConvexBaseRewardPool) {
         return IConvexBaseRewardPool(0x7e880867363A7e321f5d260Cade2B0Bb2F717B02);
     }

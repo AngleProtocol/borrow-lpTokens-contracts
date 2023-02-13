@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
-import "../../../../contracts/interfaces/external/convex/IBaseRewardPool.sol";
+import { IConvexBaseRewardPoolSideChain, EarnedData } from "../../../../contracts/interfaces/external/convex/IBaseRewardPool.sol";
 import "../../../../contracts/interfaces/external/convex/IBooster.sol";
 import "../../../../contracts/interfaces/external/convex/IConvexToken.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
@@ -19,13 +19,15 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
     IConvexBooster public convexBooster = IConvexBooster(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
     // To be changed for different pools
     IERC20 public asset = IERC20(0x7f90122BF0700F9E7e1F688fe926940E8839F353);
-    IConvexBaseRewardPool public baseRewardPool = IConvexBaseRewardPool(0x63F00F688086F0109d586501E783e33f2C950e78);
+    IConvexBaseRewardPoolSideChain public baseRewardPool =
+        IConvexBaseRewardPoolSideChain(0x63F00F688086F0109d586501E783e33f2C950e78);
     uint256 public POOL_ID = 1;
     Convex2PoolStaker public stakerImplementation;
     Convex2PoolStaker public staker;
 
     uint8 public decimalToken;
     uint256 public maxTokenAmount;
+    uint256 public minTokenAmount;
     uint8[] public decimalReward;
     uint256[] public rewardAmount;
 
@@ -34,7 +36,7 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
     function setUp() public override {
         super.setUp();
 
-        _arbitrum = vm.createFork(vm.envString("ETH_NODE_URI_ARBITRUM"), 58827502);
+        _arbitrum = vm.createFork(vm.envString("ETH_NODE_URI_ARBITRUM"), 58545851);
         vm.selectFork(_arbitrum);
 
         stakerImplementation = new Convex2PoolStaker();
@@ -45,7 +47,8 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
             )
         );
         decimalToken = IERC20Metadata(address(asset)).decimals();
-        maxTokenAmount = 10**15 * 10**decimalToken;
+        maxTokenAmount = 10**5 * 10**decimalToken;
+        minTokenAmount = 10**decimalToken;
         decimalReward = new uint8[](rewardToken.length);
         rewardAmount = new uint256[](rewardToken.length);
         for (uint256 i; i < rewardToken.length; ++i) {
@@ -62,7 +65,7 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
         uint256[WITHDRAW_LENGTH] memory accounts,
         uint256[WITHDRAW_LENGTH] memory elapseTimes
     ) public {
-        amounts[0] = bound(amounts[0], 1, maxTokenAmount);
+        amounts[0] = bound(amounts[0], minTokenAmount, maxTokenAmount);
         deal(address(asset), _alice, amounts[0]);
         vm.startPrank(_alice);
         asset.approve(address(staker), amounts[0]);
@@ -107,7 +110,7 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
                 uint256 amount;
                 vm.startPrank(account);
                 if (depositWithdrawRewards[i] % 3 == 0) {
-                    amount = bound(amounts[i], 1, maxTokenAmount);
+                    amount = bound(amounts[i], minTokenAmount, maxTokenAmount);
                     deal(address(asset), account, amount);
                     asset.approve(address(staker), amount);
 
@@ -176,6 +179,9 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
     }
 
     function _rewardsToBeClaimed(IERC20 _rewardToken) internal view returns (uint256 amount) {
-        amount = baseRewardPool.earned(address(staker));
+        EarnedData[] memory earnings = baseRewardPool.earned(address(staker));
+        uint256 earningsLength = earnings.length;
+        for (uint256 i; i < earningsLength; ++i)
+            if (earnings[i].token == address(_rewardToken)) return earnings[i].amount;
     }
 }

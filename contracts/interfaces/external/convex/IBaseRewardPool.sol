@@ -2,6 +2,11 @@
 
 pragma solidity ^0.8.17;
 
+struct EarnedData {
+    address token;
+    uint256 amount;
+}
+
 //solhint-disable
 interface IConvexBaseRewardPool {
     function balanceOf(address account) external view returns (uint256);
@@ -51,8 +56,20 @@ interface IConvexBaseRewardPool {
     function withdrawAllAndUnwrap(bool claim) external;
 
     function withdrawAndUnwrap(uint256 amount, bool claim) external returns (bool);
+}
 
-    // ============================= ARBITRUM INTERFACE ============================
+interface IConvexBaseRewardPoolSideChain {
+    function getReward(address) external;
 
-    function getReward(address _account) external;
+    function rewardLength() external view returns (uint256);
+
+    function earnedView(address _account) external view returns (EarnedData[] memory claimable);
+
+    function earned(address _account) external view returns (EarnedData[] memory claimable);
+
+    function stakeFor(address _for, uint256 _amount) external returns (bool);
+
+    function withdraw(uint256 amount, bool claim) external returns (bool);
+
+    function withdrawAll(bool claim) external;
 }

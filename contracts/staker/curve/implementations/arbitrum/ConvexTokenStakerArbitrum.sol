@@ -2,6 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "../../ConvexTokenStaker.sol";
+import { IConvexBaseRewardPoolSideChain, EarnedData } from "../../../../interfaces/external/convex/IBaseRewardPool.sol";
 
 /// @title ConvexTokenStakerArbitrum
 /// @author Angle Labs, Inc.
@@ -22,7 +23,7 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
     }
 
     /// @inheritdoc BorrowStaker
-    function _withdrawFromProtocol(uint256 amount) internal virtual override {
+    function _withdrawFromProtocol(uint256 amount) internal override {
         baseRewardPool().withdraw(amount, false);
     }
 
@@ -33,9 +34,19 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
     }
 
     /// @inheritdoc BorrowStaker
+    /// @dev If the token is not found in the `earned` list it will return 0 anyway
+    function _rewardsToBeClaimed(IERC20 rewardToken) internal view override returns (uint256 amount) {
+        EarnedData[] memory earnings = baseRewardPool().earned(address(this));
+        uint256 earningsLength = earnings.length;
+        for (uint256 i; i < earningsLength; ++i)
+            if (earnings[i].token == address(rewardToken)) return earnings[i].amount;
+    }
+
+    /// @inheritdoc BorrowStaker
     function _getRewards() internal pure override returns (IERC20[] memory rewards) {
-        rewards = new IERC20[](1);
+        rewards = new IERC20[](2);
         rewards[0] = _crv();
+        rewards[1] = _cvx();
         return rewards;
     }
 
@@ -60,6 +71,11 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
     /// @inheritdoc ConvexTokenStaker
     /// @dev No CVX tokens on Arbitrum / no rewards in CVX
     function _cvx() internal pure override returns (IConvexToken) {
-        return IConvexToken(address(0));
+        return IConvexToken(address(0xb952A807345991BD529FDded05009F5e80Fe8F45));
     }
+
+    // ============================= VIRTUAL FUNCTIONS =============================
+
+    /// @notice Address of the Convex contract on which to claim rewards
+    function baseRewardPool() public pure virtual returns (IConvexBaseRewardPoolSideChain);
 }

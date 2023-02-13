@@ -2,9 +2,6 @@
 pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
-import "../../../../contracts/interfaces/external/convex/IBaseRewardPool.sol";
-import "../../../../contracts/interfaces/external/convex/IBooster.sol";
-import "../../../../contracts/interfaces/external/convex/IConvexToken.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../../contracts/mock/MockTokenPermit.sol";
 import { StakeDAO2PoolStaker, BorrowStakerStorage, IERC20Metadata, IStakeCurveVault, ILiquidityGauge } from "../../../../contracts/staker/curve/implementations/arbitrum/pools/StakeDAO2PoolStaker.sol";

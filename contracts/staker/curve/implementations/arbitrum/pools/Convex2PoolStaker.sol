@@ -14,9 +14,9 @@ contract Convex2PoolStaker is ConvexTokenStakerArbitrum {
         return IERC20(0x7f90122BF0700F9E7e1F688fe926940E8839F353);
     }
 
-    /// @inheritdoc ConvexTokenStaker
-    function baseRewardPool() public pure override returns (IConvexBaseRewardPool) {
-        return IConvexBaseRewardPool(0x63F00F688086F0109d586501E783e33f2C950e78);
+    /// @inheritdoc ConvexTokenStakerArbitrum
+    function baseRewardPool() public pure override returns (IConvexBaseRewardPoolSideChain) {
+        return IConvexBaseRewardPoolSideChain(0x63F00F688086F0109d586501E783e33f2C950e78);
     }
 
     /// @inheritdoc ConvexTokenStaker
