@@ -5,7 +5,6 @@ import "../../SanTokenStaker.sol";
 
 /// @title ConvexTokenStaker
 /// @author Angle Labs, Inc.
-/// @dev Implementation of `ConvexTokenStaker` for the agEUR-EUROC pool
 contract SanTokenUSDCvAgEURStaker is SanTokenStaker {
     // ============================= VIRTUAL FUNCTIONS =============================
 

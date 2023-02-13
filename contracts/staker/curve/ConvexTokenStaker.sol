@@ -12,13 +12,35 @@ import "../BorrowStaker.sol";
 /// @author Angle Labs, Inc.
 /// @dev Borrow staker adapted to Curve LP tokens deposited on Convex
 abstract contract ConvexTokenStaker is BorrowStaker {
-    /// @notice Initializes the `BorrowStaker` for Stake DAO
+    /// @notice Initializes the `BorrowStaker` for Convex
     function initialize(ICoreBorrow _coreBorrow) external {
         string memory erc20Name = string(
             abi.encodePacked("Angle ", IERC20Metadata(address(asset())).name(), " Convex Staker")
         );
         string memory erc20Symbol = string(abi.encodePacked("agstk-cvx-", IERC20Metadata(address(asset())).symbol()));
         _initialize(_coreBorrow, erc20Name, erc20Symbol);
+    }
+
+    /// @inheritdoc ERC20Upgradeable
+    function _afterTokenTransfer(
+        address from,
+        address,
+        uint256 amount
+    ) internal override {
+        // Stake on Convex if it is a deposit
+        if (from == address(0)) {
+            // Deposit the Curve LP tokens into the convex contract and stake
+            _changeAllowance(asset(), address(_convexBooster()), amount);
+            _convexBooster().deposit(poolPid(), amount, true);
+        }
+    }
+
+    /// @inheritdoc BorrowStaker
+    function _getRewards() internal pure override returns (IERC20[] memory rewards) {
+        rewards = new IERC20[](2);
+        rewards[0] = _crv();
+        rewards[1] = _cvx();
+        return rewards;
     }
 
     // ============================= VIRTUAL FUNCTIONS =============================
@@ -28,9 +50,6 @@ abstract contract ConvexTokenStaker is BorrowStaker {
 
     /// @notice Address of the Convex contract that routes deposits
     function _convexBooster() internal pure virtual returns (IConvexBooster);
-
-    /// @notice Address of the Convex contract that routes claim rewards
-    function _convexClaimZap() internal pure virtual returns (IConvexClaimZap);
 
     /// @notice Address of the CRV token
     function _crv() internal pure virtual returns (IERC20);
