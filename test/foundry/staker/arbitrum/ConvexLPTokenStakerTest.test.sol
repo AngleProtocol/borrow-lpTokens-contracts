@@ -14,8 +14,9 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
 
     address internal _hacker = address(uint160(uint256(keccak256(abi.encodePacked("hacker")))));
     IERC20 private _CRV = IERC20(0x11cDb42B0EB46D95f990BeDD4695A6e3fA034978);
-    IERC20[] public rewardToken = [_CRV];
-    uint256 public constant NBR_REWARD = 1;
+    IERC20 private _CVX = IERC20(0xb952A807345991BD529FDded05009F5e80Fe8F45);
+    IERC20[] public rewardToken = [_CRV, _CVX];
+    uint256 public constant NBR_REWARD = 2;
     IConvexBooster public convexBooster = IConvexBooster(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
     // To be changed for different pools
     IERC20 public asset = IERC20(0x7f90122BF0700F9E7e1F688fe926940E8839F353);
@@ -78,7 +79,8 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
             elapseTimes[i] = bound(elapseTimes[i], 1, 180 days);
             vm.warp(block.timestamp + elapseTimes[i]);
             if (depositWithdrawRewards[i] % 3 == 2) {
-                _depositRewards(rewardAmount[0]);
+                _depositRewards(rewardAmount[0], _CRV);
+                _depositRewards(rewardAmount[1], _CVX);
             } else {
                 uint256 randomIndex = bound(accounts[i], 0, 3);
                 address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
@@ -172,13 +174,13 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
 
     // ================================== INTERNAL =================================
 
-    function _depositRewards(uint256 amount) internal {
+    function _depositRewards(uint256 amount, IERC20 token) internal {
         amount = bound(amount, 0, 10_000_000 ether);
-        deal(address(_CRV), address(baseRewardPool), _CRV.balanceOf(address(baseRewardPool)) + amount);
+        deal(address(token), address(baseRewardPool), token.balanceOf(address(baseRewardPool)) + amount);
         // fake a non null incentives program on Convex
     }
 
-    function _rewardsToBeClaimed(IERC20 _rewardToken) internal view returns (uint256 amount) {
+    function _rewardsToBeClaimed(IERC20 _rewardToken) internal returns (uint256 amount) {
         EarnedData[] memory earnings = baseRewardPool.earned(address(staker));
         uint256 earningsLength = earnings.length;
         for (uint256 i; i < earningsLength; ++i)

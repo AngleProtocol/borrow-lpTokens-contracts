@@ -65,7 +65,7 @@ interface IConvexBaseRewardPoolSideChain {
 
     function earnedView(address _account) external view returns (EarnedData[] memory claimable);
 
-    function earned(address _account) external view returns (EarnedData[] memory claimable);
+    function earned(address _account) external returns (EarnedData[] memory claimable);
 
     function stakeFor(address _for, uint256 _amount) external returns (bool);
 

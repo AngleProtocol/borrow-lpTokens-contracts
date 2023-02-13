@@ -35,7 +35,7 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev If the token is not found in the `earned` list it will return 0 anyway
-    function _rewardsToBeClaimed(IERC20 rewardToken) internal view override returns (uint256 amount) {
+    function _rewardsToBeClaimed(IERC20 rewardToken) internal override returns (uint256 amount) {
         EarnedData[] memory earnings = baseRewardPool().earned(address(this));
         uint256 earningsLength = earnings.length;
         for (uint256 i; i < earningsLength; ++i)

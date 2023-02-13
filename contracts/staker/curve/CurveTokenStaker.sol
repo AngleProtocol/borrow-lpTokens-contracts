@@ -21,6 +21,16 @@ abstract contract CurveTokenStaker is BorrowStaker {
         _initialize(_coreBorrow, erc20Name, erc20Symbol);
     }
 
+    /// @inheritdoc BorrowStaker
+    function claimableRewards(address from, IERC20 _rewardToken) external view override returns (uint256) {
+        uint256 _totalSupply = totalSupply();
+        uint256 newIntegral = _totalSupply != 0
+            ? integral[_rewardToken] + (_rewardsToBeClaimed(_rewardToken) * BASE_36) / _totalSupply
+            : integral[_rewardToken];
+        uint256 newClaimable = (totalBalanceOf(from) * (newIntegral - integralOf[_rewardToken][from])) / BASE_36;
+        return pendingRewardsOf[_rewardToken][from] + newClaimable;
+    }
+
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable

@@ -174,7 +174,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @notice Returns the exact amount that will be received if calling `claim_rewards(from)` for a specific reward token
     /// @param from Address to claim for
     /// @param _rewardToken Token to get rewards for
-    function claimableRewards(address from, IERC20 _rewardToken) external view returns (uint256) {
+    function claimableRewards(address from, IERC20 _rewardToken) external virtual returns (uint256) {
         uint256 _totalSupply = totalSupply();
         uint256 newIntegral = _totalSupply != 0
             ? integral[_rewardToken] + (_rewardsToBeClaimed(_rewardToken) * BASE_36) / _totalSupply
@@ -359,5 +359,5 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
 
     /// @notice Checks all unclaimed rewards by this contract in `rewardToken`
     /// @dev For some `rewardToken` this may not be precise (i.e lower bound) on what can be claimed
-    function _rewardsToBeClaimed(IERC20 rewardToken) internal view virtual returns (uint256 amount);
+    function _rewardsToBeClaimed(IERC20 rewardToken) internal virtual returns (uint256 amount);
 }
