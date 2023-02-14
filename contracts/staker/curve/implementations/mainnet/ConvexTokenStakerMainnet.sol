@@ -19,6 +19,7 @@ abstract contract ConvexTokenStakerMainnet is ConvexTokenStaker {
     }
 
     // ============================= INTERNAL FUNCTIONS ============================
+
     /// @inheritdoc ERC20Upgradeable
     function _afterTokenTransfer(
         address from,
