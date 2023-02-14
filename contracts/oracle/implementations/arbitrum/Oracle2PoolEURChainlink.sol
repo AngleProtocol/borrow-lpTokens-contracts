@@ -5,10 +5,10 @@ pragma solidity ^0.8.17;
 import "borrow/oracle/BaseOracleChainlinkMulti.sol";
 import "../../../interfaces/external/curve/ICurveCryptoSwapPool.sol";
 
-/// @title Oracle2PoolEURChainlink
+/// @title Oracle2PoolEURChainlinkArbitrum
 /// @author Angle Labs, Inc.
-/// @notice Gives a lower bound of the price of Curve 2Pool in Euro in base 18
-contract Oracle2PoolEURChainlink is BaseOracleChainlinkMulti {
+/// @notice Gives a lower bound of the price of Curve 2Pool (Arbitrum) in Euro in base 18
+contract Oracle2PoolEURChainlinkArbitrum is BaseOracleChainlinkMulti {
     string public constant DESCRIPTION = "2CRV/EUR Oracle";
     ICurveCryptoSwapPool public constant TwoPool = ICurveCryptoSwapPool(0x7f90122BF0700F9E7e1F688fe926940E8839F353);
 

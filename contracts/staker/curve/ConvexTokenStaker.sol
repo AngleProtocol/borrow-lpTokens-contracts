@@ -12,7 +12,7 @@ import "../BorrowStaker.sol";
 /// @author Angle Labs, Inc.
 /// @dev Borrow staker adapted to Curve LP tokens deposited on Convex
 abstract contract ConvexTokenStaker is BorrowStaker {
-    /// @notice Initializes the `BorrowStaker` for Stake DAO
+    /// @notice Initializes the `BorrowStaker` for Convex
     function initialize(ICoreBorrow _coreBorrow) external {
         string memory erc20Name = string(
             abi.encodePacked("Angle ", IERC20Metadata(address(asset())).name(), " Convex Staker")
