@@ -7,16 +7,21 @@ import "../../CurveLevSwapper3Tokens.sol";
 /// @notice Template leverage swapper on Curve LP tokens
 /// @dev This implementation is for Curve pools with 3 tokens
 contract CurveLevSwapper3CRV is CurveLevSwapper3Tokens {
+    IBorrowStaker internal _angleStaker;
+
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
         address _oneInch,
-        IAngleRouterSidechain _angleRouter
-    ) CurveLevSwapper3Tokens(_core, _uniV3Router, _oneInch, _angleRouter) {}
+        IAngleRouterSidechain _angleRouter,
+        IBorrowStaker angleStaker_
+    ) CurveLevSwapper3Tokens(_core, _uniV3Router, _oneInch, _angleRouter) {
+        _angleStaker = angleStaker_;
+    }
 
     /// @inheritdoc BaseLevSwapper
-    function angleStaker() public view virtual override returns (IBorrowStaker) {
-        return IBorrowStaker(address(0));
+    function angleStaker() public view override returns (IBorrowStaker) {
+        return _angleStaker;
     }
 
     /// @inheritdoc CurveLevSwapper3Tokens
