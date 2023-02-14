@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
 import { SafeERC20, IERC20 } from "../../../contracts/mock/MockTokenPermit.sol";
-import { Oracle2PoolEURChainlink, IOracle, AggregatorV3Interface } from "../../../contracts/oracle/implementations/arbitrum/Oracle2PoolEURChainlink.sol";
+import { Oracle2PoolEURChainlinkArbitrum, IOracle, AggregatorV3Interface } from "../../../contracts/oracle/implementations/arbitrum/Oracle2PoolEURChainlinkArbitrum.sol";
 
 interface IMockOracle {
     function circuitChainlink() external pure returns (AggregatorV3Interface[] memory);
@@ -28,7 +28,7 @@ contract OracleArbitrumTest is BaseTest {
         _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_ARBITRUM"), 58545851);
         vm.selectFork(_ethereum);
 
-        oracle2Pool = new Oracle2PoolEURChainlink(STALE_PERIOD, address(TREASURY));
+        oracle2Pool = new Oracle2PoolEURChainlinkArbitrum(STALE_PERIOD, address(TREASURY));
     }
 
     // ================================== READ ==================================
