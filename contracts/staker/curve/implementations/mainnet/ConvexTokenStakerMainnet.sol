@@ -8,6 +8,20 @@ import { IConvexBaseRewardPool } from "../../../../interfaces/external/convex/IB
 /// @author Angle Labs, Inc.
 /// @dev Constants for borrow staker adapted to Curve LP tokens deposited on Convex Mainnet
 abstract contract ConvexTokenStakerMainnet is ConvexTokenStaker {
+    /// @inheritdoc ERC20Upgradeable
+    function _afterTokenTransfer(
+        address from,
+        address,
+        uint256 amount
+    ) internal override {
+        // Stake on Convex if it is a deposit
+        if (from == address(0)) {
+            // Deposit the Curve LP tokens into the convex contract and stake
+            _changeAllowance(asset(), address(_convexBooster()), amount);
+            _convexBooster().deposit(poolPid(), amount, true);
+        }
+    }
+
     /// @inheritdoc BorrowStaker
     function claimableRewards(address from, IERC20 _rewardToken) external view override returns (uint256) {
         uint256 _totalSupply = totalSupply();

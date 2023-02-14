@@ -21,22 +21,8 @@ abstract contract ConvexTokenStaker is BorrowStaker {
         _initialize(_coreBorrow, erc20Name, erc20Symbol);
     }
 
-    /// @inheritdoc ERC20Upgradeable
-    function _afterTokenTransfer(
-        address from,
-        address,
-        uint256 amount
-    ) internal override {
-        // Stake on Convex if it is a deposit
-        if (from == address(0)) {
-            // Deposit the Curve LP tokens into the convex contract and stake
-            _changeAllowance(asset(), address(_convexBooster()), amount);
-            _convexBooster().deposit(poolPid(), amount, true);
-        }
-    }
-
     /// @inheritdoc BorrowStaker
-    function _getRewards() internal pure override returns (IERC20[] memory rewards) {
+    function _getRewards() internal pure virtual override returns (IERC20[] memory rewards) {
         rewards = new IERC20[](2);
         rewards[0] = _crv();
         rewards[1] = _cvx();
