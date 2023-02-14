@@ -3,9 +3,9 @@ pragma solidity ^0.8.17;
 
 import "../../CurveLevSwapper3Tokens.sol";
 
+/// @title CurveLevSwapper3CRV
 /// @author Angle Labs, Inc.
-/// @notice Template leverage swapper on Curve LP tokens
-/// @dev This implementation is for Curve pools with 3 tokens
+/// @dev Implementation of `CurveLevSwapper3Tokens` for the 3CRV pool
 contract CurveLevSwapper3CRV is CurveLevSwapper3Tokens {
     IBorrowStaker internal _angleStaker;
 
