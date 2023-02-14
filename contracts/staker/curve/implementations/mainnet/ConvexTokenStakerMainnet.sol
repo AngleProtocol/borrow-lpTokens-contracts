@@ -79,14 +79,6 @@ abstract contract ConvexTokenStakerMainnet is ConvexTokenStaker {
         }
     }
 
-    /// @inheritdoc BorrowStaker
-    function _getRewards() internal pure override returns (IERC20[] memory rewards) {
-        rewards = new IERC20[](2);
-        rewards[0] = _crv();
-        rewards[1] = _cvx();
-        return rewards;
-    }
-
     /// @inheritdoc ConvexTokenStaker
     function _crv() internal pure override returns (IERC20) {
         return IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
@@ -99,8 +91,8 @@ abstract contract ConvexTokenStakerMainnet is ConvexTokenStaker {
         return IConvexBooster(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
     }
 
-    /// @inheritdoc ConvexTokenStaker
-    function _convexClaimZap() internal pure override returns (IConvexClaimZap) {
+    /// @notice Address of the Convex contract that routes claim rewards
+    function _convexClaimZap() internal pure returns (IConvexClaimZap) {
         return IConvexClaimZap(0xDd49A93FDcae579AE50B4b9923325e9e335ec82B);
     }
 

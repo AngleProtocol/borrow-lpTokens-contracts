@@ -42,14 +42,6 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
             if (earnings[i].token == address(rewardToken)) return earnings[i].amount;
     }
 
-    /// @inheritdoc BorrowStaker
-    function _getRewards() internal pure override returns (IERC20[] memory rewards) {
-        rewards = new IERC20[](2);
-        rewards[0] = _crv();
-        rewards[1] = _cvx();
-        return rewards;
-    }
-
     /// @inheritdoc ConvexTokenStaker
     function _crv() internal pure override returns (IERC20) {
         return IERC20(0x11cDb42B0EB46D95f990BeDD4695A6e3fA034978);
@@ -63,13 +55,6 @@ abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
     }
 
     /// @inheritdoc ConvexTokenStaker
-    /// @dev Unused on Arbitrum
-    function _convexClaimZap() internal pure override returns (IConvexClaimZap) {
-        return IConvexClaimZap(address(0));
-    }
-
-    /// @inheritdoc ConvexTokenStaker
-    /// @dev No CVX tokens on Arbitrum / no rewards in CVX
     function _cvx() internal pure override returns (IConvexToken) {
         return IConvexToken(address(0xb952A807345991BD529FDded05009F5e80Fe8F45));
     }

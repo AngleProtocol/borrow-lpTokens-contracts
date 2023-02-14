@@ -3,14 +3,7 @@ pragma solidity ^0.8.17;
 
 import "../BaseLevSwapper.sol";
 import { IMetaPool3 } from "../../../interfaces/external/curve/IMetaPool3.sol";
-
-/// @notice All possible removals on Curve
-enum CurveRemovalType {
-    oneCoin,
-    balance,
-    imbalance,
-    none
-}
+import "../../../utils/Enums.sol";
 
 /// @title CurveLevSwapper3Tokens
 /// @author Angle Labs, Inc.

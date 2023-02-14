@@ -63,8 +63,18 @@ abstract contract CurveTokenStaker is BorrowStaker {
         amount = liquidityGauge().claimable_reward(address(this), address(rewardToken));
     }
 
+    /// @inheritdoc BorrowStaker
+    function _getRewards() internal pure virtual override returns (IERC20[] memory rewards) {
+        rewards = new IERC20[](1);
+        rewards[0] = _crv();
+        return rewards;
+    }
+
     // ============================= VIRTUAL FUNCTIONS =============================
 
     /// @notice Address of the liquidity gauge contract on which to deposit the tokens to get the rewards
     function liquidityGauge() public view virtual returns (ILiquidityGauge);
+
+    /// @notice Address of the CRV token
+    function _crv() internal pure virtual returns (IERC20);
 }

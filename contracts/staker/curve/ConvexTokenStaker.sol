@@ -21,6 +21,14 @@ abstract contract ConvexTokenStaker is BorrowStaker {
         _initialize(_coreBorrow, erc20Name, erc20Symbol);
     }
 
+    /// @inheritdoc BorrowStaker
+    function _getRewards() internal pure virtual override returns (IERC20[] memory rewards) {
+        rewards = new IERC20[](2);
+        rewards[0] = _crv();
+        rewards[1] = _cvx();
+        return rewards;
+    }
+
     // ============================= VIRTUAL FUNCTIONS =============================
 
     /// @notice ID of the pool associated to the LP token on Convex
@@ -28,9 +36,6 @@ abstract contract ConvexTokenStaker is BorrowStaker {
 
     /// @notice Address of the Convex contract that routes deposits
     function _convexBooster() internal pure virtual returns (IConvexBooster);
-
-    /// @notice Address of the Convex contract that routes claim rewards
-    function _convexClaimZap() internal pure virtual returns (IConvexClaimZap);
 
     /// @notice Address of the CRV token
     function _crv() internal pure virtual returns (IERC20);
