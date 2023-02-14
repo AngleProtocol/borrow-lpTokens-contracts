@@ -8,21 +8,16 @@ import "../../CurveLevSwapper2Tokens.sol";
 /// @notice Implements a leverage swapper to gain/reduce exposure to the LUSD-3CRV Curve LP token
 /// with no granularity on 3CRV
 contract CurveLevSwapperLUSDv3CRV is CurveLevSwapper2Tokens {
-    IBorrowStaker internal _angleStaker;
-
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
         address _oneInch,
-        IAngleRouterSidechain _angleRouter,
-        IBorrowStaker angleStaker_
-    ) CurveLevSwapper2Tokens(_core, _uniV3Router, _oneInch, _angleRouter) {
-        _angleStaker = angleStaker_;
-    }
+        IAngleRouterSidechain _angleRouter
+    ) CurveLevSwapper2Tokens(_core, _uniV3Router, _oneInch, _angleRouter) {}
 
     /// @inheritdoc BaseLevSwapper
-    function angleStaker() public view override returns (IBorrowStaker) {
-        return _angleStaker;
+    function angleStaker() public view virtual override returns (IBorrowStaker) {
+        return IBorrowStaker(address(0));
     }
 
     /// @inheritdoc CurveLevSwapper2Tokens
