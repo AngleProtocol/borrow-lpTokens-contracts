@@ -32,10 +32,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
     MockCurveLevSwapper2Tokens public swapper;
     MockBorrowStaker public stakerImplementation;
     MockBorrowStaker public staker;
-    uint8 public decimalToken = 18;
-    uint8 public decimalReward = 6;
-    uint256 public rewardAmount = 10**2 * 10**(decimalReward);
-    uint256 public maxTokenAmount = 10**15 * 10**decimalToken;
+    IERC20 public tokenHolder;
     uint256 public SLIPPAGE_BPS = 9900;
 
     // payload to swap 10000 FRAX for USDC on 1inch
@@ -52,7 +49,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
     uint256 public constant CLAIMABLE_LENGTH = 50;
     uint256 public constant CLAIM_LENGTH = 50;
 
-    function setUp() public override {
+    function setUp() public virtual override {
         super.setUp();
 
         _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 15824909);
@@ -62,6 +59,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         coreBorrow = new MockCoreBorrow();
         coreBorrow.toggleGuardian(_GUARDIAN);
         coreBorrow.toggleGovernor(_GOVERNOR);
+        tokenHolder = asset;
 
         stakerImplementation = new MockBorrowStaker();
         staker = MockBorrowStaker(
@@ -76,10 +74,6 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
             _ANGLE_ROUTER,
             IBorrowStaker(address(staker))
         );
-
-        assertEq(staker.name(), "Angle Curve.fi FRAX/USDC Mock Staker");
-        assertEq(staker.symbol(), "agstk-mock-crvFRAX");
-        assertEq(staker.decimals(), 18);
 
         vm.startPrank(_GOVERNOR);
         IERC20[] memory tokens = new IERC20[](3);
@@ -104,13 +98,19 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         vm.stopPrank();
     }
 
+    function testInitialise() public virtual {
+        assertEq(staker.name(), "Angle Curve.fi FRAX/USDC Mock Staker");
+        assertEq(staker.symbol(), "agstk-mock-crvFRAX");
+        assertEq(staker.decimals(), 18);
+    }
+
     function testLeverageNoUnderlyingTokensDeposited(uint256 amount) public {
-        amount = bound(amount, 0, 10**27);
+        amount = bound(amount, 1, 10**27);
 
         _depositDirect(amount);
 
         assertEq(staker.balanceOf(_alice), amount);
-        assertEq(asset.balanceOf(address(staker)), amount);
+        assertEq(tokenHolder.balanceOf(address(staker)), amount);
         assertEq(staker.balanceOf(_alice), staker.totalSupply());
         assertEq(_USDC.balanceOf(_alice), 0);
         assertEq(_FRAX.balanceOf(_alice), 0);
@@ -121,7 +121,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         uint256 minAmountOut = _depositSwapAndAddLiquidity(amounts, true);
 
         assertGt(staker.balanceOf(_alice), minAmountOut);
-        assertGt(asset.balanceOf(address(staker)), minAmountOut);
+        assertGt(tokenHolder.balanceOf(address(staker)), minAmountOut);
         assertEq(staker.balanceOf(_alice), staker.totalSupply());
         assertEq(_USDC.balanceOf(_alice), 0);
         assertEq(_FRAX.balanceOf(_alice), 0);
@@ -385,7 +385,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         assertEq(staker.balanceOf(address(swapper)), 0);
         assertEq(asset.balanceOf(address(_alice)), 0);
         assertEq(asset.balanceOf(address(swapper)), 0);
-        assertEq(asset.balanceOf(address(staker)), staker.totalSupply());
+        assertEq(tokenHolder.balanceOf(address(staker)), staker.totalSupply());
         assertEq(_USDT.balanceOf(_alice), 0);
         assertEq(_USDC.balanceOf(address(swapper)), 0);
         assertEq(_FRAX.balanceOf(address(swapper)), 0);
@@ -398,7 +398,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
     function _assertCommonDeleverage() internal {
         _assertCommonLeverage();
         assertEq(staker.balanceOf(_alice), 0);
-        assertEq(asset.balanceOf(address(staker)), 0);
+        assertEq(tokenHolder.balanceOf(address(staker)), 0);
         assertEq(staker.totalSupply(), 0);
     }
 }

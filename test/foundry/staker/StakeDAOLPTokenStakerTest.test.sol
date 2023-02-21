@@ -7,7 +7,7 @@ import "../../../contracts/interfaces/external/stakeDAO/IClaimerRewards.sol";
 import "../../../contracts/interfaces/external/stakeDAO/ILiquidityGauge.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
-import { StakeDAOAgEURvEUROCStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/StakeDAOAgEURvEUROCStaker.sol";
+import { StakeDAOLUSDv3CRVStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/pools/StakeDAOLUSDv3CRVStaker.sol";
 
 contract StakeDAOLPTokenStakerTest is BaseTest {
     using stdStorage for StdStorage;
@@ -15,16 +15,18 @@ contract StakeDAOLPTokenStakerTest is BaseTest {
     address internal _hacker = address(uint160(uint256(keccak256(abi.encodePacked("hacker")))));
     IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
     IERC20 private constant _SDT = IERC20(0x73968b9a57c6E53d41345FD57a6E6ae27d6CDB2F);
-    IERC20 public asset = IERC20(0xBa3436Fd341F2C8A928452Db3C5A3670d1d5Cc73);
     IERC20[] public rewardToken = [_CRV, _SDT];
     uint256 public constant NBR_REWARD = 2;
-    IStakeCurveVault internal constant _vault = IStakeCurveVault(0xDe46532a49c88af504594F488822F452b7FBc7BD);
-    ILiquidityGauge internal constant _gauge = ILiquidityGauge(0x63f222079608EEc2DDC7a9acdCD9344a21428Ce7);
     address public constant sdtDistributor = 0x9C99dffC1De1AfF7E7C1F36fCdD49063A281e18C;
     address public constant curveStrategy = 0x20F1d4Fed24073a9b9d388AfA2735Ac91f079ED6;
 
-    StakeDAOAgEURvEUROCStaker public stakerImplementation;
-    StakeDAOAgEURvEUROCStaker public staker;
+    // To be changed
+    IERC20 public asset = IERC20(0xEd279fDD11cA84bEef15AF5D39BB4d4bEE23F0cA);
+    IStakeCurveVault internal constant _vault = IStakeCurveVault(0xfB5312107c4150c86228e8fd719b8b0Ae2db581d);
+    ILiquidityGauge internal constant _gauge = ILiquidityGauge(0x3794C7C69B9c761ede266A9e8B8bb0f6cdf4E3E5);
+    StakeDAOLUSDv3CRVStaker public stakerImplementation;
+    StakeDAOLUSDv3CRVStaker public staker;
+
     uint8 public decimalToken;
     uint256 public maxTokenAmount;
     uint8[2] public decimalReward;
@@ -37,8 +39,8 @@ contract StakeDAOLPTokenStakerTest is BaseTest {
         vm.selectFork(_ethereum);
 
         super.setUp();
-        stakerImplementation = new StakeDAOAgEURvEUROCStaker();
-        staker = StakeDAOAgEURvEUROCStaker(
+        stakerImplementation = new StakeDAOLUSDv3CRVStaker();
+        staker = StakeDAOLUSDv3CRVStaker(
             deployUpgradeable(
                 address(stakerImplementation),
                 abi.encodeWithSelector(staker.initialize.selector, coreBorrow)

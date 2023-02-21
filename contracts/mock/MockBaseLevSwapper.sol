@@ -33,5 +33,5 @@ contract MockBaseLevSwapper is BaseLevSwapper {
     }
 
     /// @inheritdoc BaseLevSwapper
-    function _remove(uint256, bytes memory) internal override returns (uint256 amountOut) {}
+    function _remove(uint256, bytes memory) internal override {}
 }

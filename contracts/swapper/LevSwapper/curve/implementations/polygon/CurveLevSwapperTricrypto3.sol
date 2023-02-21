@@ -32,6 +32,11 @@ contract CurveLevSwapperTricrypto3 is CurveLevSwapper3TokensWithBP {
     }
 
     /// @inheritdoc CurveLevSwapper3TokensWithBP
+    function indexBPToken() public pure override returns (uint256) {
+        return 0;
+    }
+
+    /// @inheritdoc CurveLevSwapper3TokensWithBP
     function metapool() public pure override returns (IMetaPool3) {
         return IMetaPool3(0x92215849c439E1f8612b6646060B4E3E5ef822cC);
     }

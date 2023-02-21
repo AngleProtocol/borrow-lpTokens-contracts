@@ -21,6 +21,11 @@ contract CurveLevSwapper3TokensWithBPTemplate is CurveLevSwapper3TokensWithBP {
     }
 
     /// @inheritdoc CurveLevSwapper3TokensWithBP
+    function indexBPToken() public pure override returns (uint256) {
+        return 0;
+    }
+
+    /// @inheritdoc CurveLevSwapper3TokensWithBP
     function tokens() public pure override returns (IERC20[3] memory) {
         return [IERC20(address(0)), IERC20(address(0)), IERC20(address(0))];
     }

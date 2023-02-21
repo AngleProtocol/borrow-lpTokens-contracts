@@ -177,8 +177,8 @@ contract CurveLevSwapper3TokensTest is BaseTest {
     }
 
     function testNoDepositDeleverageCollatAndOneCoinToken1(uint256 amount, uint256 propToRemove) public {
-        amount = bound(amount, 10**20, 10**24);
-        propToRemove = bound(propToRemove, 0, BASE_PARAMS);
+        amount = bound(amount, BASE_PARAMS, 10**24);
+        propToRemove = bound(propToRemove, 1, BASE_PARAMS);
         int128 coinIndex = 1;
         IERC20 outToken = IERC20(address(_amUSDC));
 

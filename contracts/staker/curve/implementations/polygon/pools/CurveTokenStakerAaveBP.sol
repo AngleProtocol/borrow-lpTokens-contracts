@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../CurveTokenStaker.sol";
+import "../CurveTokenStakerPolygon.sol";
 
 /// @title CurveTokenStakerAaveBP
 /// @author Angle Labs, INc
 /// @dev Implementation of `CurveTokenStaker` for the Aave BP pool
-contract CurveTokenStakerAaveBP is CurveTokenStaker {
+contract CurveTokenStakerAaveBP is CurveTokenStakerPolygon {
     // ============================= VIRTUAL FUNCTIONS =============================
 
     /// @inheritdoc BorrowStaker

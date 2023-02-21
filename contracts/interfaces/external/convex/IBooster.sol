@@ -47,4 +47,8 @@ interface IConvexBooster {
         uint256 _amount,
         address _to
     ) external returns (bool);
+
+    // ============================= ARBITRUM INTERFACE ============================
+
+    function deposit(uint256 _pid, uint256 _amount) external returns (bool);
 }

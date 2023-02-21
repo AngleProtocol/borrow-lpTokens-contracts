@@ -3,16 +3,9 @@ pragma solidity ^0.8.17;
 
 import "../BaseLevSwapper.sol";
 import { IMetaPool3 } from "../../../interfaces/external/curve/IMetaPool3.sol";
+import "../../../utils/Enums.sol";
 
-/// @notice All possible removals on Curve
-enum CurveRemovalType {
-    oneCoin,
-    balance,
-    imbalance,
-    none
-}
-
-/// @title CurveLevSwapper2Tokens
+/// @title CurveLevSwapper3Tokens
 /// @author Angle Labs, Inc.
 /// @dev Leverage swapper on Curve LP tokens
 /// @dev This implementation is for Curve pools with 3 tokens
@@ -49,21 +42,22 @@ abstract contract CurveLevSwapper3Tokens is BaseLevSwapper {
     }
 
     /// @inheritdoc BaseLevSwapper
-    function _remove(uint256 burnAmount, bytes memory data) internal override returns (uint256 amountOut) {
+    function _remove(uint256 burnAmount, bytes memory data) internal override {
         CurveRemovalType removalType;
         (removalType, data) = abi.decode(data, (CurveRemovalType, bytes));
         if (removalType == CurveRemovalType.oneCoin) {
             (int128 whichCoin, uint256 minAmountOut) = abi.decode(data, (int128, uint256));
-            amountOut = metapool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
+            metapool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
         } else if (removalType == CurveRemovalType.balance) {
             uint256[3] memory minAmountOuts = abi.decode(data, (uint256[3]));
-            minAmountOuts = metapool().remove_liquidity(burnAmount, minAmountOuts);
+            metapool().remove_liquidity(burnAmount, minAmountOuts);
         } else if (removalType == CurveRemovalType.imbalance) {
             (address to, uint256[3] memory amountOuts) = abi.decode(data, (address, uint256[3]));
-            uint256 actualBurnAmount = metapool().remove_liquidity_imbalance(amountOuts, burnAmount);
+            metapool().remove_liquidity_imbalance(amountOuts, burnAmount);
+            uint256 keptAmount = lpToken().balanceOf(address(this));
             // We may have withdrawn more than needed: maybe not optimal because a user may not want to have
             // lp tokens staked. Solution is to do a sweep on all tokens in the `BaseLevSwapper` contract
-            if (burnAmount > actualBurnAmount) angleStaker().deposit(burnAmount - actualBurnAmount, to);
+            if (keptAmount > 0) angleStaker().deposit(keptAmount, to);
         }
     }
 

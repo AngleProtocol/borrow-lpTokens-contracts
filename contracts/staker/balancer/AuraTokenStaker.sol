@@ -50,17 +50,8 @@ abstract contract AuraTokenStaker is BorrowStaker {
     }
 
     /// @inheritdoc BorrowStaker
-    function _claimContractRewards() internal virtual override {
-        IERC20[] memory rewards = _getRewards();
-        uint256 numRewardTokens = rewards.length;
-        uint256[] memory claimedBalances = new uint256[](numRewardTokens);
-        for (uint256 i; i < numRewardTokens; ++i) {
-            claimedBalances[i] = rewards[i].balanceOf(address(this));
-        }
+    function _claimGauges() internal virtual override {
         baseRewardPool().getReward(address(this), true);
-        for (uint256 i; i < numRewardTokens; ++i) {
-            _updateRewards(rewards[i], rewards[i].balanceOf(address(this)) - claimedBalances[i]);
-        }
     }
 
     /// @inheritdoc BorrowStaker

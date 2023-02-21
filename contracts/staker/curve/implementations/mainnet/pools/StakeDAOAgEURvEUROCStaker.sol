@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../StakeDAOTokenStaker.sol";
+import "../StakeDAOTokenStakerMainnet.sol";
 
 /// @title StakeDAOAgEURvEUROCStaker
 /// @author Angle Labs, Inc.
-/// @dev Implementation of `StakeDAOTokenStaker` for the agEUR-EUROC pool
-contract StakeDAOAgEURvEUROCStaker is StakeDAOTokenStaker {
+/// @dev Implementation of `StakeDAOTokenStakerMainnet` for the agEUR-EUROC pool
+contract StakeDAOAgEURvEUROCStaker is StakeDAOTokenStakerMainnet {
     // ============================= VIRTUAL FUNCTIONS =============================
     /// @inheritdoc BorrowStaker
     function asset() public pure override returns (IERC20) {

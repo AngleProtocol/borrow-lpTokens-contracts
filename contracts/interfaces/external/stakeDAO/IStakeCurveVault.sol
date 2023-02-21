@@ -23,7 +23,11 @@ interface IStakeCurveVault {
 
     function setWithdrawnFee(uint256 _newFee) external;
 
-    function withdrawalFee() external returns (uint256);
+    function withdrawalFee() external view returns (uint256);
 
     function accumulatedFee() external returns (uint256);
+
+    // ============================= ARBITRUM INTERFACE ============================
+
+    function deposit(address _staker, uint256 _amount) external;
 }

@@ -78,6 +78,8 @@ contract MockBorrowStaker is BorrowStaker {
     function setRewardAmount(uint256 amount) public {
         rewardAmount = amount;
     }
+
+    function _claimGauges() internal override {}
 }
 
 /// @title MockBorrowStakerReset

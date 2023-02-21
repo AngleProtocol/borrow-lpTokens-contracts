@@ -44,12 +44,8 @@ abstract contract SanTokenStaker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by the implementation if there are more rewards
-    function _claimContractRewards() internal virtual override {
-        uint256 prevBalanceAngle = _ANGLE.balanceOf(address(this));
+    function _claimGauges() internal virtual override {
         liquidityGauge().claim_rewards(address(this), address(0));
-        uint256 angleRewards = _ANGLE.balanceOf(address(this)) - prevBalanceAngle;
-        // Do the same thing for additional rewards
-        _updateRewards(_ANGLE, angleRewards);
     }
 
     /// @inheritdoc BorrowStaker

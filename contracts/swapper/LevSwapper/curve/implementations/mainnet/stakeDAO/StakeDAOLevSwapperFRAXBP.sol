@@ -5,7 +5,7 @@ import "../CurveLevSwapperFRAXBP.sol";
 
 /// @title StakeDAOLevSwapperFRAXBP
 /// @author Angle Labs, Inc.
-/// @notice Implements CurveLevSwapperFRAXBP with a Convex staker
+/// @notice Implements CurveLevSwapperFRAXBP with a StakeDAO staker
 contract StakeDAOLevSwapperFRAXBP is CurveLevSwapperFRAXBP {
     constructor(
         ICoreBorrow _core,

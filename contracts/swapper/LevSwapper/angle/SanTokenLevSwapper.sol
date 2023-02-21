@@ -31,10 +31,10 @@ abstract contract SanTokenLevSwapper is BaseLevSwapper {
     }
 
     /// @inheritdoc BaseLevSwapper
-    function _remove(uint256 amount, bytes memory data) internal override returns (uint256 amountOut) {
+    function _remove(uint256 amount, bytes memory data) internal override {
         uint256 minAmountOut = abi.decode(data, (uint256));
         stableMaster().withdraw(amount, address(this), address(this), poolManager());
-        amountOut = collateral().balanceOf(address(this));
+        uint256 amountOut = collateral().balanceOf(address(this));
         // We let this check because the caller may swap part of the tokens received and therefore
         // the check in the base swapper will only be for the out token
         if (amountOut < minAmountOut) revert TooSmallAmountOut();

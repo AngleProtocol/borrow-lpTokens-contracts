@@ -10,9 +10,6 @@ import "../BorrowStaker.sol";
 /// @author Angle Labs, Inc.
 /// @dev Borrow staker adapted to Curve LP tokens deposited on StakeDAO
 abstract contract StakeDAOTokenStaker is BorrowStaker {
-    IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
-    IERC20 private constant _SDT = IERC20(0x73968b9a57c6E53d41345FD57a6E6ae27d6CDB2F);
-
     error WithdrawFeeTooLarge();
 
     /// @notice Initializes the `BorrowStaker` for Stake DAO
@@ -24,6 +21,16 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
         _initialize(_coreBorrow, erc20Name, erc20Symbol);
     }
 
+    /// @inheritdoc BorrowStaker
+    function claimableRewards(address from, IERC20 _rewardToken) external view override returns (uint256) {
+        uint256 _totalSupply = totalSupply();
+        uint256 newIntegral = _totalSupply != 0
+            ? integral[_rewardToken] + (_rewardsToBeClaimed(_rewardToken) * BASE_36) / _totalSupply
+            : integral[_rewardToken];
+        uint256 newClaimable = (totalBalanceOf(from) * (newIntegral - integralOf[_rewardToken][from])) / BASE_36;
+        return pendingRewardsOf[_rewardToken][from] + newClaimable;
+    }
+
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable
@@ -31,7 +38,7 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
         address from,
         address,
         uint256 amount
-    ) internal override {
+    ) internal virtual override {
         // Stake on StakeDAO if it is a deposit
         if (from == address(0)) {
             // Approve the vault contract for the Curve LP tokens
@@ -43,33 +50,14 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     function _withdrawFromProtocol(uint256 amount) internal override {
-        uint256 withdrawalFee = _vault().withdrawalFee();
-        if (withdrawalFee > 0) revert WithdrawFeeTooLarge();
+        if (_withdrawalFee() > 0) revert WithdrawFeeTooLarge();
         _vault().withdraw(amount);
     }
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by implementation if there are more rewards
-    function _claimContractRewards() internal override {
-        uint256 prevBalanceCRV = _CRV.balanceOf(address(this));
-        uint256 prevBalanceSDT = _SDT.balanceOf(address(this));
-
+    function _claimGauges() internal override {
         _gauge().claim_rewards(address(this));
-
-        uint256 crvRewards = _CRV.balanceOf(address(this)) - prevBalanceCRV;
-        uint256 sdtRewards = _SDT.balanceOf(address(this)) - prevBalanceSDT;
-
-        // do the same thing for additional rewards
-        _updateRewards(_CRV, crvRewards);
-        _updateRewards(_SDT, sdtRewards);
-    }
-
-    /// @inheritdoc BorrowStaker
-    function _getRewards() internal pure override returns (IERC20[] memory rewards) {
-        rewards = new IERC20[](2);
-        rewards[0] = _CRV;
-        rewards[1] = _SDT;
-        return rewards;
     }
 
     /// @inheritdoc BorrowStaker
@@ -78,6 +66,12 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
     }
 
     // ============================= VIRTUAL FUNCTIONS =============================
+
+    /// @notice Get withdrawal fee from Vault (if any)
+    function _withdrawalFee() internal view virtual returns (uint256) {
+        return _vault().withdrawalFee();
+    }
+
     /// @notice StakeDAO Vault address
     function _vault() internal pure virtual returns (IStakeCurveVault);
 

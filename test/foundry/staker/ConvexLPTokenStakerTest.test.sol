@@ -7,7 +7,7 @@ import "../../../contracts/interfaces/external/convex/IBooster.sol";
 import "../../../contracts/interfaces/external/convex/IConvexToken.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../contracts/mock/MockTokenPermit.sol";
-import { ConvexAgEURvEUROCStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/ConvexAgEURvEUROCStaker.sol";
+import { ConvexLUSDv3CRVStaker, BorrowStakerStorage, IERC20Metadata } from "../../../contracts/staker/curve/implementations/mainnet/pools/ConvexLUSDv3CRVStaker.sol";
 
 contract ConvexLPTokenStakerTest is BaseTest {
     using stdStorage for StdStorage;
@@ -15,29 +15,30 @@ contract ConvexLPTokenStakerTest is BaseTest {
     address internal _hacker = address(uint160(uint256(keccak256(abi.encodePacked("hacker")))));
     IERC20 private constant _CRV = IERC20(0xD533a949740bb3306d119CC777fa900bA034cd52);
     IConvexToken private constant _CVX = IConvexToken(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
-    IERC20 public asset = IERC20(0xBa3436Fd341F2C8A928452Db3C5A3670d1d5Cc73);
     IERC20[] public rewardToken = [_CRV, _CVX];
     uint256 public constant NBR_REWARD = 2;
     IConvexBooster public convexBooster = IConvexBooster(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
-    IConvexBaseRewardPool public baseRewardPool = IConvexBaseRewardPool(0xA91fccC1ec9d4A2271B7A86a7509Ca05057C1A98);
-    uint256 public constant POOL_ID = 113;
+    // To be changed for different pools
+    IERC20 public asset = IERC20(0xEd279fDD11cA84bEef15AF5D39BB4d4bEE23F0cA);
+    IConvexBaseRewardPool public baseRewardPool = IConvexBaseRewardPool(0x2ad92A7aE036a038ff02B96c88de868ddf3f8190);
+    uint256 public constant POOL_ID = 33;
+    ConvexLUSDv3CRVStaker public stakerImplementation;
+    ConvexLUSDv3CRVStaker public staker;
 
-    ConvexAgEURvEUROCStaker public stakerImplementation;
-    ConvexAgEURvEUROCStaker public staker;
     uint8 public decimalToken;
     uint256 public maxTokenAmount;
     uint8[] public decimalReward;
     uint256[] public rewardAmount;
 
-    uint256 public constant WITHDRAW_LENGTH = 3;
+    uint256 public constant WITHDRAW_LENGTH = 10;
 
     function setUp() public override {
         _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 15775969);
         vm.selectFork(_ethereum);
 
         super.setUp();
-        stakerImplementation = new ConvexAgEURvEUROCStaker();
-        staker = ConvexAgEURvEUROCStaker(
+        stakerImplementation = new ConvexLUSDv3CRVStaker();
+        staker = ConvexLUSDv3CRVStaker(
             deployUpgradeable(
                 address(stakerImplementation),
                 abi.encodeWithSelector(staker.initialize.selector, coreBorrow)

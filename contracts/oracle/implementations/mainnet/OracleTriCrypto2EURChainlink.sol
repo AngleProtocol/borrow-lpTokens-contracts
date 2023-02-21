@@ -12,9 +12,6 @@ contract OracleTriCrypto2EURChainlink is BaseOracleChainlinkMulti {
     string public constant DESCRIPTION = "crv3crypto/EUR Oracle";
     ICurveOracle public constant TRI_CRYPTO_ORACLE = ICurveOracle(0xE8b2989276E2Ca8FDEA2268E3551b2b4B2418950);
 
-    /// @notice Constructor of the contract
-    /// @param _stalePeriod Minimum feed update frequency for the oracle to not revert
-    /// @param _treasury Treasury associated to the `VaultManager` which reads from this feed
     constructor(uint32 _stalePeriod, address _treasury) BaseOracleChainlinkMulti(_stalePeriod, _treasury) {}
 
     function circuitChainlink() public pure override returns (AggregatorV3Interface[] memory) {

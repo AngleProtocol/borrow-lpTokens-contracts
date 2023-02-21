@@ -100,21 +100,21 @@ interface IMetaPool is IERC20 {
         address _receiver
     ) external returns (uint256);
 
-    function remove_liquidity(uint256 _burn_amount, uint256[] memory _min_amounts) external returns (uint256[] memory);
+    function remove_liquidity(uint256 _burn_amount, uint256[] memory _min_amounts) external;
 
     function remove_liquidity(
         uint256 _burn_amount,
         uint256[] memory _min_amounts,
         address _receiver
-    ) external returns (uint256[] memory);
+    ) external;
 
-    function remove_liquidity_imbalance(uint256[] memory _amounts, uint256 _max_burn_amount) external returns (uint256);
+    function remove_liquidity_imbalance(uint256[] memory _amounts, uint256 _max_burn_amount) external;
 
     function remove_liquidity_imbalance(
         uint256[] memory _amounts,
         uint256 _max_burn_amount,
         address _receiver
-    ) external returns (uint256);
+    ) external;
 
     function calc_withdraw_one_coin(uint256 _burn_amount, int128 i) external view returns (uint256);
 
@@ -128,14 +128,14 @@ interface IMetaPool is IERC20 {
         uint256 _burn_amount,
         int128 i,
         uint256 _min_received
-    ) external returns (uint256);
+    ) external;
 
     function remove_liquidity_one_coin(
         uint256 _burn_amount,
         int128 i,
         uint256 _min_received,
         address _receiver
-    ) external returns (uint256);
+    ) external;
 
     function admin_balances(uint256 i) external view returns (uint256);
 

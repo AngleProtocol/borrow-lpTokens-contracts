@@ -2,12 +2,13 @@
 pragma solidity ^0.8.17;
 
 import "borrow/interfaces/ILiquidityGauge.sol";
-import "../../../../BorrowStaker.sol";
+import "../../../../../BorrowStaker.sol";
 
-/// @title MockCurveTokenStakerAaveBP
+/// @title CurveTokenTricrypto3Staker
 /// @author Angle Labs, Inc.
-/// @dev Implements CurveTokenStaker for the Aave BP pool (amDAI - amUSDC - amUSDT)
-contract MockCurveTokenStakerAaveBP is BorrowStaker {
+/// @dev Implements CurveTokenStaker for the Tricrypto pool (amUSD - amWBTC - amWETH)
+contract MockCurveTokenTricrypto3Staker is BorrowStaker {
+    /// @notice Curve-related constants
     IERC20 private constant _FAKE_REWARD = IERC20(0x02Cb0586F9252626e992B2C6c1B792d9751f2Ede);
 
     /// @notice Initializes the `BorrowStaker` for Curve
@@ -42,12 +43,8 @@ contract MockCurveTokenStakerAaveBP is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by the implementation if there are more rewards
-    function _claimContractRewards() internal virtual override {
-        uint256 prevBalanceCRV = _FAKE_REWARD.balanceOf(address(this));
+    function _claimGauges() internal virtual override {
         liquidityGauge().claim_rewards(address(this), address(0));
-        uint256 crvRewards = _FAKE_REWARD.balanceOf(address(this)) - prevBalanceCRV;
-        // Do the same thing for additional rewards
-        _updateRewards(_FAKE_REWARD, crvRewards);
     }
 
     /// @inheritdoc BorrowStaker
@@ -63,10 +60,10 @@ contract MockCurveTokenStakerAaveBP is BorrowStaker {
     }
 
     function asset() public pure override returns (IERC20) {
-        return IERC20(0xE7a24EF0C5e95Ffb0f6684b813A78F2a3AD7D171);
+        return IERC20(0xdAD97F7713Ae9437fa9249920eC8507e5FbB23d3);
     }
 
     function liquidityGauge() public pure returns (ILiquidityGauge) {
-        return ILiquidityGauge(0x0f9F2B056Eb2Cc1661fD078F60793F8B0951BDf1);
+        return ILiquidityGauge(0xCD04f35105c2E696984c512Af3CB37f2b3F354b0);
     }
 }

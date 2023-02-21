@@ -31,7 +31,7 @@ interface IMetaPoolBase is IERC20 {
         int128 j,
         uint256 dx,
         uint256 min_dy
-    ) external returns (uint256);
+    ) external;
 
     function exchange(
         int128 i,
@@ -39,7 +39,7 @@ interface IMetaPoolBase is IERC20 {
         uint256 dx,
         uint256 min_dy,
         address _receiver
-    ) external returns (uint256);
+    ) external;
 
     function exchange_underlying(
         int128 i,
@@ -67,15 +67,9 @@ interface IMetaPoolBase is IERC20 {
     function remove_liquidity_one_coin(
         uint256 _burn_amount,
         int128 i,
-        uint256 _min_received
-    ) external returns (uint256);
-
-    function remove_liquidity_one_coin(
-        uint256 _burn_amount,
-        int128 i,
         uint256 _min_received,
         address _receiver
-    ) external returns (uint256);
+    ) external;
 
     function admin_balances(uint256 i) external view returns (uint256);
 

@@ -21,6 +21,16 @@ abstract contract CurveTokenStaker is BorrowStaker {
         _initialize(_coreBorrow, erc20Name, erc20Symbol);
     }
 
+    /// @inheritdoc BorrowStaker
+    function claimableRewards(address from, IERC20 _rewardToken) external view override returns (uint256) {
+        uint256 _totalSupply = totalSupply();
+        uint256 newIntegral = _totalSupply != 0
+            ? integral[_rewardToken] + (_rewardsToBeClaimed(_rewardToken) * BASE_36) / _totalSupply
+            : integral[_rewardToken];
+        uint256 newClaimable = (totalBalanceOf(from) * (newIntegral - integralOf[_rewardToken][from])) / BASE_36;
+        return pendingRewardsOf[_rewardToken][from] + newClaimable;
+    }
+
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable
@@ -44,19 +54,8 @@ abstract contract CurveTokenStaker is BorrowStaker {
 
     /// @inheritdoc BorrowStaker
     /// @dev Should be overriden by the implementation if there are more rewards
-    function _claimContractRewards() internal virtual override {
-        uint256 prevBalanceCRV = _CRV.balanceOf(address(this));
+    function _claimGauges() internal virtual override {
         liquidityGauge().claim_rewards(address(this), address(0));
-        uint256 crvRewards = _CRV.balanceOf(address(this)) - prevBalanceCRV;
-        // Do the same thing for additional rewards
-        _updateRewards(_CRV, crvRewards);
-    }
-
-    /// @inheritdoc BorrowStaker
-    function _getRewards() internal pure override returns (IERC20[] memory rewards) {
-        rewards = new IERC20[](1);
-        rewards[0] = _CRV;
-        return rewards;
     }
 
     /// @inheritdoc BorrowStaker
@@ -64,8 +63,18 @@ abstract contract CurveTokenStaker is BorrowStaker {
         amount = liquidityGauge().claimable_reward(address(this), address(rewardToken));
     }
 
+    /// @inheritdoc BorrowStaker
+    function _getRewards() internal pure virtual override returns (IERC20[] memory rewards) {
+        rewards = new IERC20[](1);
+        rewards[0] = _crv();
+        return rewards;
+    }
+
     // ============================= VIRTUAL FUNCTIONS =============================
 
     /// @notice Address of the liquidity gauge contract on which to deposit the tokens to get the rewards
     function liquidityGauge() public view virtual returns (ILiquidityGauge);
+
+    /// @notice Address of the CRV token
+    function _crv() internal pure virtual returns (IERC20);
 }
