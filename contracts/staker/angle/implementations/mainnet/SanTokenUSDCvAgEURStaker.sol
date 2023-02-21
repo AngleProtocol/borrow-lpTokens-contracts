@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import "../../SanTokenStaker.sol";
 
-/// @title ConvexTokenStaker
+/// @title SanTokenUSDCvAgEURStaker
 /// @author Angle Labs, Inc.
 contract SanTokenUSDCvAgEURStaker is SanTokenStaker {
     // ============================= VIRTUAL FUNCTIONS =============================
