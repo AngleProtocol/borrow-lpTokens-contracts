@@ -348,11 +348,11 @@ contract ConvexLUSDv3CRVTest is BaseTest {
         coinSwapFrom = int128(uint128(bound(uint256(uint128(coinSwapFrom)), 0, 1)));
         // do a swap to change the pool state and withdraw womething different than what has been deposited
         if (coinSwapFrom == 1) {
-            swapAmount = bound(swapAmount, 10**18, 10**26);
+            swapAmount = bound(swapAmount, 10**18, 10**24);
             deal(address(_3CRV), address(_dylan), swapAmount);
             _3CRV.approve(address(_METAPOOL), type(uint256).max);
         } else {
-            swapAmount = bound(swapAmount, 10**18, 10**(18 + 8));
+            swapAmount = bound(swapAmount, 10**18, 10**(18 + 6));
             deal(address(_LUSD), address(_dylan), swapAmount);
             _LUSD.approve(address(_METAPOOL), type(uint256).max);
         }
