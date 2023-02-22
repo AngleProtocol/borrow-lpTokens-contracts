@@ -3,14 +3,14 @@ pragma solidity ^0.8.17;
 
 // import { Test } from "forge-std/Test.sol";
 // import { console } from "forge-std/console.sol";
-// import "../../../contracts/interfaces/IOracle.sol";
-// import "../../../contracts/interfaces/ITreasury.sol";
+// import "borrow/interfaces/IOracle.sol";
+// import "borrow/interfaces/ITreasury.sol";
 // import { VaultManagerListing, VaultParameters, IERC20 } from "../../../contracts/vaultManager/VaultManagerListing.sol";
 // import { OracleAaveUSDBPEUR } from "../../../contracts/oracle/implementations/polygon/OracleAaveUSDBPEUR.sol";
-// import { IAngleRouterSidechain } from "../../../contracts/interfaces/IAngleRouterSidechain.sol";
-// import { IUniswapV3Router } from "../../../contracts/interfaces/external/uniswap/IUniswapRouter.sol";
+// import { IAngleRouterSidechain } from "borrow/interfaces/IAngleRouterSidechain.sol";
+// import { IUniswapV3Router } from "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
 // import { MockCurveLevSwapperAaveBP } from "../../../contracts/swapper/LevSwapper/curve/implementations/polygon/polygonTest/MockCurveLevSwapperAaveBP.sol";
-// import { MockCurveTokenStakerAaveBP } from "../../../contracts/staker/curve/implementations/polygon/polygonTest/MockCurveTokenStakerAaveBP.sol";
+// import { MockCurveTokenStakerAaveBP } from "borrow/staker/curve/implementations/polygon/polygonTest/MockCurveTokenStakerAaveBP.sol";
 // import "../../../scripts/foundry/polygon/PolygonConstants.s.sol";
 
 // contract DeployLPVaultManagerFullTest is Test, PolygonConstants {

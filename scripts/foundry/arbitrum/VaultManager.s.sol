@@ -4,29 +4,29 @@ pragma solidity ^0.8.17;
 import "forge-std/Script.sol";
 import "borrow/interfaces/IOracle.sol";
 import { IERC20, VaultParameters, VaultManagerListing } from "../../../contracts/vaultManager/VaultManagerListing.sol";
-import "./MainnetConstants.s.sol";
+import "./ArbitrumConstants.s.sol";
 
-contract DeployVaultManagerMainnet is Script, MainnetConstants {
-    VaultManagerListing public constant VAULT_MANAGER_IMPL =
-        VaultManagerListing(0xCe43220f72A7060F34BC242630D6B96434105Ae4);
+contract DeployVaultManagerArbitrum is Script, ArbitrumConstants {
     // TODO to be changed at deployment depending on the vaultManager
-    IOracle public constant ORACLE = IOracle(address(0));
+    VaultManagerListing public constant VAULT_MANAGER_IMPL =
+        VaultManagerListing(0xecb3F3CBdB0bE5D226D04C1b37139eDD16Ef5376);
+    IOracle public constant ORACLE = IOracle(0x834787f9728A2797Df987AEEDb6d3D7446E93282);
     // the staker address
-    IERC20 public constant COLLATERAL_CONVEX = IERC20(address(0));
-    IERC20 public constant COLLATERAL_STAKEDAO = IERC20(address(0));
+    IERC20 public constant COLLATERAL_CONVEX = IERC20(0xb7263cAD66A05f71875c4C4d2fB7A30DDE9b5656);
+    IERC20 public constant COLLATERAL_STAKEDAO = IERC20(0xC9E4e9605c836a5647C87594f2b91725aE184b1A);
 
-    string public constant SYMBOL_CONVEX = "cvx-crvLUSD3CRV";
-    string public constant SYMBOL_STAKEDAO = "sd-crvLUSD3CRV";
-    uint256 public constant DEBT_CEILING = 100_000 ether;
+    string public constant SYMBOL_CONVEX = "cvx-crvUSDCUSDT";
+    string public constant SYMBOL_STAKEDAO = "sd-crvUSDCUSDT";
+    uint256 public constant DEBT_CEILING = 50000 ether;
     uint64 public constant CF = (8 * BASE_PARAMS) / 10;
-    uint64 public constant THF = (105 * BASE_PARAMS) / 100;
+    uint64 public constant THF = (11 * BASE_PARAMS) / 10;
     uint64 public constant BORROW_FEE = 0;
     uint64 public constant REPAY_FEE = 0;
     uint64 public constant INTEREST_RATE = 158153934393112649;
     uint64 public constant LIQUIDATION_SURCHARGE = (98 * BASE_PARAMS) / 100;
     uint64 public constant MAX_LIQUIDATION_DISCOUNT = (9 * BASE_PARAMS) / 100;
     bool public constant WHITELISTING_ACTIVATED = false;
-    uint256 public constant BASE_BOOST = (20 * BASE_PARAMS) / 10;
+    uint256 public constant BASE_BOOST = (15 * BASE_PARAMS) / 10;
 
     VaultManagerListing public vaultManagerConvex;
     VaultManagerListing public vaultManagerStakeDAO;
@@ -44,6 +44,7 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
             whitelistingActivated: WHITELISTING_ACTIVATED,
             baseBoost: BASE_BOOST
         });
+
         VaultParameters memory paramsStakedao = VaultParameters({
             debtCeiling: DEBT_CEILING,
             collateralFactor: CF,
@@ -55,7 +56,7 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
             baseBoost: BASE_BOOST
         });
 
-        uint256 deployerPrivateKey = vm.deriveKey(vm.envString("MNEMONIC_MAINNET"), 0);
+        uint256 deployerPrivateKey = vm.deriveKey(vm.envString("MNEMONIC_ARBITRUM"), 0);
         vm.startBroadcast(deployerPrivateKey);
 
         if (
@@ -78,7 +79,7 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
             )
         );
 
-        console.log("Successfully deployed vaultManager Convex LUSD3CRV at the address: ", address(vaultManagerConvex));
+        console.log("Successfully deployed vaultManager Convex 2 Pool at the address: ", address(vaultManagerConvex));
 
         if (
             address(VAULT_MANAGER_IMPL) == address(0) ||
@@ -101,7 +102,7 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
         );
 
         console.log(
-            "Successfully deployed vaultManager StakeDAO LUSD3CRV at the address: ",
+            "Successfully deployed vaultManager StakeDAO 2 Pool at the address: ",
             address(vaultManagerStakeDAO)
         );
 
