@@ -10,10 +10,10 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
     VaultManagerListing public constant VAULT_MANAGER_IMPL =
         VaultManagerListing(0xCe43220f72A7060F34BC242630D6B96434105Ae4);
     // TODO to be changed at deployment depending on the vaultManager
-    IOracle public constant ORACLE = IOracle(address(0));
+    IOracle public constant ORACLE = IOracle(0x85a2a9EDa073bd489392e8D4Ea71461fD99EF6A6);
     // the staker address
-    IERC20 public constant COLLATERAL_CONVEX = IERC20(address(0));
-    IERC20 public constant COLLATERAL_STAKEDAO = IERC20(address(0));
+    IERC20 public constant COLLATERAL_CONVEX = IERC20(0x9650821B3555Fe6318586BE997cc0Fb163C35976);
+    IERC20 public constant COLLATERAL_STAKEDAO = IERC20(0x97F0A7954904a7357D814ACE2896021496e5f321);
 
     string public constant SYMBOL_CONVEX = "cvx-crvLUSD3CRV";
     string public constant SYMBOL_STAKEDAO = "sd-crvLUSD3CRV";
@@ -106,6 +106,8 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
         );
 
         // TODO Governor/Guardian call to add addVaultManager on the `staker`
+        // TODO add call unpaused
+        // TODO add call dust
 
         vm.stopBroadcast();
     }
