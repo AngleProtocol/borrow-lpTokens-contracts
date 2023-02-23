@@ -16,6 +16,6 @@ contract ConvexLevSwapper3CRV is CurveLevSwapper3CRV {
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {
-        return IBorrowStaker(address(0));
+        return IBorrowStaker(0xbff202E3Cb58aB0A09b2Eb1D9a50352B9aAf196c);
     }
 }

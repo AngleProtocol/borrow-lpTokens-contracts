@@ -10,10 +10,10 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
     VaultManagerListing public constant VAULT_MANAGER_IMPL =
         VaultManagerListing(0xCe43220f72A7060F34BC242630D6B96434105Ae4);
     // TODO to be changed at deployment depending on the vaultManager
-    IOracle public constant ORACLE = IOracle(address(0));
+    IOracle public constant ORACLE = IOracle(0x93A3A7ACA63415077de65c415c90A9e490825721);
     // the staker address
-    IERC20 public constant COLLATERAL_CONVEX = IERC20(address(0));
-    IERC20 public constant COLLATERAL_STAKEDAO = IERC20(address(0));
+    IERC20 public constant COLLATERAL_CONVEX = IERC20(0xbff202E3Cb58aB0A09b2Eb1D9a50352B9aAf196c);
+    IERC20 public constant COLLATERAL_STAKEDAO = IERC20(0xe80298eE8F54a5e1b0448bC2EE844901344469bc);
 
     string public constant SYMBOL_CONVEX = "cvx-3CRV";
     string public constant SYMBOL_STAKEDAO = "sd-3CRV";
