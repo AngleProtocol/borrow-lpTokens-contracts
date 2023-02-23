@@ -16,6 +16,6 @@ contract StakeDAOLevSwapper2Pool is CurveLevSwapper2Pool {
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {
-        return IBorrowStaker(0xC9E4e9605c836a5647C87594f2b91725aE184b1A);
+        return IBorrowStaker(address(0));
     }
 }
