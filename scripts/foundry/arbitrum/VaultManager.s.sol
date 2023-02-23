@@ -7,12 +7,13 @@ import { IERC20, VaultParameters, VaultManagerListing } from "../../../contracts
 import "./ArbitrumConstants.s.sol";
 
 contract DeployVaultManagerArbitrum is Script, ArbitrumConstants {
-    VaultManagerListing public constant VAULT_MANAGER_IMPL = VaultManagerListing(address(0));
+    VaultManagerListing public constant VAULT_MANAGER_IMPL =
+        VaultManagerListing(0x8928d0C942CA48Ea86F458857de61b92D6f5A564);
     // TODO to be changed at deployment depending on the vaultManager
-    IOracle public constant ORACLE = IOracle(address(0));
+    IOracle public constant ORACLE = IOracle(0x9De6Efe3454F8EFF8C8C8d1314CD019AF2432e59);
     // the staker address
-    IERC20 public constant COLLATERAL_CONVEX = IERC20(address(0));
-    IERC20 public constant COLLATERAL_STAKEDAO = IERC20(address(0));
+    IERC20 public constant COLLATERAL_CONVEX = IERC20(0x42dC54fb50dB556fA6ffBa765F1141536d4830ea);
+    IERC20 public constant COLLATERAL_STAKEDAO = IERC20(0xc8711B1206cD3e89799Ec32973f583e696Cb553C);
 
     string public constant SYMBOL_CONVEX = "cvx-crvUSDCUSDT";
     string public constant SYMBOL_STAKEDAO = "sd-crvUSDCUSDT";

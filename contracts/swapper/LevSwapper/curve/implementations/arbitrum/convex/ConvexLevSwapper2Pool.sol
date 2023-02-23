@@ -16,6 +16,6 @@ contract ConvexLevSwapper2Pool is CurveLevSwapper2Pool {
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {
-        return IBorrowStaker(address(0));
+        return IBorrowStaker(0x42dC54fb50dB556fA6ffBa765F1141536d4830ea);
     }
 }
