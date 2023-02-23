@@ -6,8 +6,8 @@ import { console } from "forge-std/console.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
-import { ConvexLevSwapperLUSDv3CRV } from "../../../contracts/swapper/LevSwapper/curve/implementations/mainnet/convex/ConvexLevSwapperLUSDv3CRV.sol";
-import { StakeDAOLevSwapperLUSDv3CRV } from "../../../contracts/swapper/LevSwapper/curve/implementations/mainnet/stakeDAO/StakeDAOLevSwapperLUSDv3CRV.sol";
+import { ConvexLevSwapper3CRV } from "../../../contracts/swapper/LevSwapper/curve/implementations/mainnet/convex/ConvexLevSwapper3CRV.sol";
+import { StakeDAOLevSwapper3CRV } from "../../../contracts/swapper/LevSwapper/curve/implementations/mainnet/stakeDAO/StakeDAOLevSwapper3CRV.sol";
 import "./MainnetConstants.s.sol";
 
 contract DeploySwapperMainnet is Script, MainnetConstants {
@@ -15,23 +15,23 @@ contract DeploySwapperMainnet is Script, MainnetConstants {
         uint256 deployerPrivateKey = vm.deriveKey(vm.envString("MNEMONIC_MAINNET"), 0);
         vm.startBroadcast(deployerPrivateKey);
 
-        ConvexLevSwapperLUSDv3CRV swapperConvex = new ConvexLevSwapperLUSDv3CRV(
+        ConvexLevSwapper3CRV swapperConvex = new ConvexLevSwapper3CRV(
             ICoreBorrow(CORE_BORROW),
             IUniswapV3Router(UNI_V3_ROUTER),
             ONE_INCH,
             IAngleRouterSidechain(ANGLE_ROUTER)
         );
 
-        console.log("Successfully deployed swapper Convex LUSD3CRV at the address: ", address(swapperConvex));
+        console.log("Successfully deployed swapper Convex 3CRV at the address: ", address(swapperConvex));
 
-        StakeDAOLevSwapperLUSDv3CRV swapperStakeDAO = new StakeDAOLevSwapperLUSDv3CRV(
+        StakeDAOLevSwapper3CRV swapperStakeDAO = new StakeDAOLevSwapper3CRV(
             ICoreBorrow(CORE_BORROW),
             IUniswapV3Router(UNI_V3_ROUTER),
             ONE_INCH,
             IAngleRouterSidechain(ANGLE_ROUTER)
         );
 
-        console.log("Successfully deployed swapper StakeDAO LUSD3CRV at the address: ", address(swapperStakeDAO));
+        console.log("Successfully deployed swapper StakeDAO 3CRV at the address: ", address(swapperStakeDAO));
 
         vm.stopBroadcast();
     }
