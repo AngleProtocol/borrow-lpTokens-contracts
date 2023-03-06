@@ -16,6 +16,6 @@ contract StakeDAOLevSwapper3CRV is CurveLevSwapper3CRV {
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {
-        return IBorrowStaker(address(0));
+        return IBorrowStaker(0xe80298eE8F54a5e1b0448bC2EE844901344469bc);
     }
 }

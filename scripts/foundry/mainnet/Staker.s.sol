@@ -3,8 +3,8 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
-import { ConvexFRAXBPStaker } from "../../../contracts/staker/curve/implementations/mainnet/pools/ConvexFRAXBPStaker.sol";
-import { StakeDAOFRAXBPStaker } from "../../../contracts/staker/curve/implementations/mainnet/pools/StakeDAOFRAXBPStaker.sol";
+import { Convex3CRVStaker } from "../../../contracts/staker/curve/implementations/mainnet/pools/Convex3CRVStaker.sol";
+import { StakeDAO3CRVStaker } from "../../../contracts/staker/curve/implementations/mainnet/pools/StakeDAO3CRVStaker.sol";
 import "./MainnetConstants.s.sol";
 
 contract DeployStakerMainnet is Script, MainnetConstants {
@@ -14,8 +14,8 @@ contract DeployStakerMainnet is Script, MainnetConstants {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        ConvexFRAXBPStaker stakerConvexImplementation = new ConvexFRAXBPStaker();
-        ConvexFRAXBPStaker stakerConvex = ConvexFRAXBPStaker(
+        Convex3CRVStaker stakerConvexImplementation = new Convex3CRVStaker();
+        Convex3CRVStaker stakerConvex = Convex3CRVStaker(
             deployUpgradeable(
                 address(stakerConvexImplementation),
                 abi.encodeWithSelector(stakerConvexImplementation.initialize.selector, CORE_BORROW)
@@ -23,13 +23,13 @@ contract DeployStakerMainnet is Script, MainnetConstants {
         );
 
         console.log(
-            "Successfully deployed staker Convex FRAXBP implementation at the address: ",
+            "Successfully deployed staker Convex 3CRV implementation at the address: ",
             address(stakerConvexImplementation)
         );
-        console.log("Successfully deployed staker Convex FRAXBP proxy at the address: ", address(stakerConvex));
+        console.log("Successfully deployed staker Convex 3CRV proxy at the address: ", address(stakerConvex));
 
-        StakeDAOFRAXBPStaker stakerStakeDAOImplementation = new StakeDAOFRAXBPStaker();
-        StakeDAOFRAXBPStaker stakerCurve = StakeDAOFRAXBPStaker(
+        StakeDAO3CRVStaker stakerStakeDAOImplementation = new StakeDAO3CRVStaker();
+        StakeDAO3CRVStaker stakerCurve = StakeDAO3CRVStaker(
             deployUpgradeable(
                 address(stakerStakeDAOImplementation),
                 abi.encodeWithSelector(stakerStakeDAOImplementation.initialize.selector, CORE_BORROW)
@@ -37,10 +37,10 @@ contract DeployStakerMainnet is Script, MainnetConstants {
         );
 
         console.log(
-            "Successfully deployed staker StakeDAO FRAXBP implementation at the address: ",
+            "Successfully deployed staker StakeDAO 3CRV implementation at the address: ",
             address(stakerStakeDAOImplementation)
         );
-        console.log("Successfully deployed staker StakeDAO FRAXBP proxy at the address: ", address(stakerCurve));
+        console.log("Successfully deployed staker StakeDAO 3CRV proxy at the address: ", address(stakerCurve));
 
         vm.stopBroadcast();
     }

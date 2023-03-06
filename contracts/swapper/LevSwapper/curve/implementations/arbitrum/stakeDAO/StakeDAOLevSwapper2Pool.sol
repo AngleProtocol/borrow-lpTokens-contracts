@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../CurveLevSwapper3CRV.sol";
+import "../CurveLevSwapper2Pool.sol";
 
-/// @title ConvexLevSwapper3CRV
+/// @title StakeDAOLevSwapper2Pool
 /// @author Angle Labs, Inc.
-/// @notice Implements CurveLevSwapper3CRV with a Convex staker
-contract ConvexLevSwapper3CRV is CurveLevSwapper3CRV {
+/// @notice Implements CurveLevSwapper2Pool with a StakeDAO staker
+contract StakeDAOLevSwapper2Pool is CurveLevSwapper2Pool {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
         address _oneInch,
         IAngleRouterSidechain _angleRouter
-    ) CurveLevSwapper3CRV(_core, _uniV3Router, _oneInch, _angleRouter) {}
+    ) CurveLevSwapper2Pool(_core, _uniV3Router, _oneInch, _angleRouter) {}
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {
-        return IBorrowStaker(0xbff202E3Cb58aB0A09b2Eb1D9a50352B9aAf196c);
+        return IBorrowStaker(0xc8711B1206cD3e89799Ec32973f583e696Cb553C);
     }
 }
