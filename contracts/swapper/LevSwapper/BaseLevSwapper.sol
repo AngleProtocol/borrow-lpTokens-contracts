@@ -53,7 +53,7 @@ abstract contract BaseLevSwapper is Swapper {
             // Hook to add liquidity to the underlying protocol
             amountOut = _add(data);
             // Deposit into the AngleStaker
-            angleStaker().deposit(amountOut, to);
+            if (address(angleStaker()) != address(0)) angleStaker().deposit(amountOut, to);
         } else {
             uint256 toUnstake;
             uint256 toRemove;
@@ -63,7 +63,7 @@ abstract contract BaseLevSwapper is Swapper {
                 (uint256, uint256, IERC20[], bytes[], bytes)
             );
             // Should transfer the token to the contract this will claim the rewards for the current owner of the wrapper
-            angleStaker().withdraw(toUnstake, address(this), address(this));
+            if (address(angleStaker()) != address(0)) angleStaker().withdraw(toUnstake, address(this), address(this));
             _remove(toRemove, data);
             // Taking the same example as in the `leverage` side, you can withdraw USDC, DAI and USDT while wanting to
             // to repay a debt in agEUR so you need to do a multiswap.

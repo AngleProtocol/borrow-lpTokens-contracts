@@ -23,7 +23,7 @@
     "size:dev": "FOUNDRY_PROFILE=dev forge build --skip test --sizes",
     "prettier": "prettier --write '**/*.sol'",
     "lint": "yarn lint:check --fix",
-    "lint:check": "solhint --max-warnings 20 \"**/*.sol\"",
+    "lint:check": "solhint --max-warnings 20 \"**/*.sol\""
   },
   "keywords": [],
   "author": "Angle Core Team",

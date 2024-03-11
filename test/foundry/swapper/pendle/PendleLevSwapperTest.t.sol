@@ -7,6 +7,10 @@ import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../../contracts/mock/MockTokenPermit.sol";
 import { SwapType, BaseLevSwapper, PendleLevSwapperRenzo, PendleLevSwapper, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/swapper/LevSwapper/pendle/implementations/PendleLevSwapperRenzo.sol";
 
+interface IStETH {
+    function submit(address) external payable returns (uint256);
+}
+
 contract PendleLevSwapperTest is BaseTest {
     using stdStorage for StdStorage;
     using SafeERC20 for IERC20;
@@ -27,7 +31,7 @@ contract PendleLevSwapperTest is BaseTest {
     function setUp() public override {
         super.setUp();
 
-        _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_ARBITRUM"), 19413820);
+        _ethereum = vm.createFork(vm.envString("ETH_NODE_URI_MAINNET"), 19413820);
         vm.selectFork(_ethereum);
 
         // reset coreBorrow because the `makePersistent()` doens't work on my end
@@ -82,9 +86,10 @@ contract PendleLevSwapperTest is BaseTest {
 
     function testLeverageSuccess(uint256 amount) public {
         amount = bound(amount, 10 ** 15, 10 ** 20);
-
         deal(address(collateral), address(_alice), amount);
+
         vm.startPrank(_alice);
+
         // intermediary variables
         bytes[] memory oneInchData = new bytes[](0);
 

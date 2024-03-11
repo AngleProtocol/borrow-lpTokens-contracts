@@ -13,28 +13,33 @@ contract PendleLevSwapperTemplate is PendleLevSwapper {
         IAngleRouterSidechain _angleRouter
     ) PendleLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {}
 
+    /// @inheritdoc BaseLevSwapper
+    function angleStaker() public pure override returns (IBorrowStaker) {
+        return IBorrowStaker(address(0));
+    }
+
     /// @inheritdoc PendleLevSwapper
-    function PT() public pure virtual returns (IERC20) {
+    function PT() public pure override returns (IERC20) {
         return IERC20(address(0));
     }
 
     /// @inheritdoc PendleLevSwapper
-    function SY() public pure virtual returns (IStandardizedYield) {
+    function SY() public pure override returns (IStandardizedYield) {
         return IStandardizedYield(address(0));
     }
 
     /// @inheritdoc PendleLevSwapper
-    function YT() public pure virtual returns (IPYieldTokenV2) {
+    function YT() public pure override returns (IPYieldTokenV2) {
         return IPYieldTokenV2(address(0));
     }
 
     /// @inheritdoc PendleLevSwapper
-    function market() public pure virtual returns (IPMarketV3) {
+    function market() public pure override returns (IPMarketV3) {
         return IPMarketV3(address(0));
     }
 
     /// @inheritdoc PendleLevSwapper
-    function collateral() public pure virtual returns (IERC20) {
+    function collateral() public pure override returns (IERC20) {
         return IERC20(address(0));
     }
 }

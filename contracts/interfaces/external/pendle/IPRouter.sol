@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.0;
 
-
 interface IPLimitOrderType {
     enum OrderType {
         SY_FOR_PT,
@@ -58,15 +57,14 @@ struct FillOrderParams {
     uint256 makingAmount;
 }
 
-
 struct SwapData {
-    SwapType swapType;
+    SwapTypePendle swapType;
     address extRouter;
     bytes extCalldata;
     bool needScale;
 }
 
-enum SwapType {
+enum SwapTypePendle {
     NONE,
     KYBERSWAP,
     ONE_INCH,
@@ -110,7 +108,6 @@ struct LimitOrderData {
     FillOrderParams[] flashFills;
     bytes optData;
 }
-
 
 interface IPRouter {
     event SwapPtAndSy(
