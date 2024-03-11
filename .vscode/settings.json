@@ -1,12 +1,14 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+{
+  "solidity.formatter": "forge",
   "[typescript]": {
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   },
   "[solidity]": {
     "editor.defaultFormatter": "JuanBlanco.solidity"
   },
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": true
+    "source.fixAll": "explicit"
   }
 }
