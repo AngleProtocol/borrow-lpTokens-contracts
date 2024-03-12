@@ -47,6 +47,7 @@ abstract contract PendleLevSwapper is BaseLevSwapper {
     function _remove(uint256 amount, bytes memory data) internal override {
         uint256 minAmountOut = abi.decode(data, (uint256));
         PT().safeTransfer(address(market()), amount);
+        // We send the SY to the contract itself as it needs a non null balance for the redeem
         (uint256 amountSy, ) = market().swapExactPtForSy(address(SY()), amount, hex"");
         SY().redeem(address(this), amountSy, address(collateral()), minAmountOut, true);
     }
