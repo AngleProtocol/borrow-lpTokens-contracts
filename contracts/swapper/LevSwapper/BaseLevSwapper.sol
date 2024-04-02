@@ -8,6 +8,8 @@ import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
 import "../../interfaces/IBorrowStaker.sol";
+import { IMorphoLiquidateCallback } from "morpho-blue/interfaces/IMorphoCallbacks.sol";
+import { MarketParamsLib } from "morpho-blue/libraries/MarketParamsLib.sol";
 
 import "borrow/swapper/Swapper.sol";
 
@@ -17,7 +19,7 @@ import "borrow/swapper/Swapper.sol";
 /// liquidation and leverage transactions
 /// @dev This base implementation is for tokens like LP tokens which are not natively supported by 1inch
 /// and need some wrapping/unwrapping
-abstract contract BaseLevSwapper is Swapper {
+abstract contract BaseLevSwapper is Swapper, IMorphoLiquidateCallback {
     using SafeERC20 for IERC20;
 
     constructor(
@@ -28,6 +30,29 @@ abstract contract BaseLevSwapper is Swapper {
     ) Swapper(_core, _uniV3Router, _oneInch, _angleRouter) {
         if (address(angleStaker()) != address(0))
             angleStaker().asset().safeIncreaseAllowance(address(angleStaker()), type(uint256).max);
+    }
+
+    /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                                    MORPHO RELATED                                                  
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+    /// @dev This function liquidate a position on Morpho Blue via a flashloan
+    /// It leverages the previous infrastructure on Angle Borrowing module to liquidate atomically
+    function liquidate(
+        address MORPHO,
+        MarketParams memory marketParams,
+        address borrower,
+        uint256 seizedAssets,
+        bytes calldata data
+    ) external {
+        MORPHO.liquidate(marketParams, borrower, seizedAssets, data);
+    }
+
+    function onMorphoLiquidate(uint256 repaidAssets, bytes calldata data) external {
+        if (msg.sender != address(MORPHO)) revert NotTrusted();
+        (IERC20 inToken, IERC20 outToken, address outTokenRecipient, uint256 inTokenObtained, bytes memory data) = abi
+            .decode(data, (IERC20, IERC20, address, uint256, uint256, bytes));
+        _swapInternal(inToken, outToken, msg.sender, repaidAssets, inTokenObtained, data);
     }
 
     // ============================= INTERNAL FUNCTIONS ============================

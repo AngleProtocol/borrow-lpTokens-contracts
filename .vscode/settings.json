@@ -1,6 +1,4 @@
 {
-{
-  "solidity.formatter": "forge",
   "[typescript]": {
     "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   },
@@ -8,7 +6,23 @@
     "editor.defaultFormatter": "JuanBlanco.solidity"
   },
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
-  }
+  "workbench.colorCustomizations": {
+    "diffEditor.insertedTextBackground": "#00bb0044",
+    "diffEditor.removedTextBackground": "#ff000044"
+  },
+  "slither.solcPath": "",
+  "slither.hiddenDetectors": [],
+  "solidity.compileUsingRemoteVersion": "v0.8.22",
+  "files.insertFinalNewline": true,
+  "solidity.remappings": [
+    "@chainlink/=node_modules/@chainlink/",
+    "@ensdomains/=node_modules/@ensdomains/",
+    "@openzeppelin/=node_modules/@openzeppelin/",
+    "@uniswap/=node_modules/@uniswap/",
+    "ds-test/=lib/forge-std/lib/ds-test/src/",
+    "forge-std/=lib/forge-std/src/",
+    "borrow/=lib/borrow-contracts/contracts",
+    "utils/=lib/utils",
+    "morpho-blue/=lib/morpho-blue/src",
+  ]
 }
