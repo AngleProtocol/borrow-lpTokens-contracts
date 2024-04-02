@@ -24,5 +24,6 @@
     "borrow/=lib/borrow-contracts/contracts",
     "utils/=lib/utils",
     "morpho-blue/=lib/morpho-blue/src",
+    "contracts/=contracts/"
   ]
 }

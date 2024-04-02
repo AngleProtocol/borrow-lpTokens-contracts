@@ -5,7 +5,7 @@ import "../../BaseTest.test.sol";
 import "../../../../contracts/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "../../../../contracts/mock/MockTokenPermit.sol";
-import { SwapType, BaseLevSwapper, PendleLevSwapperRenzo, PendleLevSwapper, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/swapper/LevSwapper/pendle/implementations/PendleLevSwapperRenzo.sol";
+import { SwapType, BaseLevSwapper, PendleLevSwapperRenzo, PendleLevSwapper, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "contracts/swapper/LevSwapper/pendle/implementations/PendleLevSwapperRenzo.sol";
 
 interface IStETH {
     function submit(address) external payable returns (uint256);
