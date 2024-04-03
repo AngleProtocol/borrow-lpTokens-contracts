@@ -5,7 +5,7 @@ import "../PendleLevSwapperMorpho.sol";
 
 /// @author Angle Labs, Inc.
 /// @notice Renzo PT ETH leverage swapper
-contract PendleLevSwapperRenzoMorpho is PendleLevSwapperMorpho {
+contract PendleLevSwapperMorphoWeETH is PendleLevSwapperMorpho {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
@@ -21,26 +21,26 @@ contract PendleLevSwapperRenzoMorpho is PendleLevSwapperMorpho {
 
     /// @inheritdoc PendleLevSwapperMorpho
     function PT() public pure override returns (IERC20) {
-        return IERC20(address(0xeEE8aED1957ca1545a0508AfB51b53cCA7e3c0d1));
+        return IERC20(0xc69Ad9baB1dEE23F4605a82b3354F8E40d1E5966);
     }
 
     /// @inheritdoc PendleLevSwapperMorpho
     function SY() public pure override returns (IStandardizedYield) {
-        return IStandardizedYield(address(0x22E12A50e3ca49FB183074235cB1db84Fe4C716D));
+        return IStandardizedYield(0xAC0047886a985071476a1186bE89222659970d65);
     }
 
     /// @inheritdoc PendleLevSwapperMorpho
     function YT() public pure override returns (IPYieldTokenV2) {
-        return IPYieldTokenV2(address(0x256Fb830945141f7927785c06b65dAbc3744213c));
+        return IPYieldTokenV2(0xfb35Fd0095dD1096b1Ca49AD44d8C5812A201677);
     }
 
     /// @inheritdoc PendleLevSwapperMorpho
     function market() public pure override returns (IPMarketV3) {
-        return IPMarketV3(address(0xDe715330043799D7a80249660d1e6b61eB3713B3));
+        return IPMarketV3(0xF32e58F92e60f4b0A37A69b95d642A471365EAe8);
     }
 
     /// @inheritdoc PendleLevSwapperMorpho
     function collateral() public pure override returns (IERC20) {
-        return IERC20(address(0xbf5495Efe5DB9ce00f80364C8B423567e58d2110));
+        return IERC20(0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee);
     }
 }

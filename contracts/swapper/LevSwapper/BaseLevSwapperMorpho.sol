@@ -68,7 +68,7 @@ abstract contract BaseLevSwapperMorpho is BaseLevSwapper, IMorphoLiquidateCallba
         uint256 outTokenBalance = outToken.balanceOf(address(this));
         if (outTokenBalance < minAmountOut) revert TooSmallAmountOut();
 
-        outToken.safeTransfer(to, outTokenBalance);
+        outToken.safeApprove(address(morpho), repaidOutToken);
         if (outTokenBalance > repaidOutToken) {
             // The `to` should keep the additional collateral
             outToken.safeTransfer(to, outTokenBalance - repaidOutToken);
