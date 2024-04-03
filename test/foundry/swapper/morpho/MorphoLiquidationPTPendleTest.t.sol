@@ -114,11 +114,10 @@ contract MorphoLiquidationPTPendleTest is BaseTest {
         vm.stopPrank();
     }
 
-    function test_Liquidate_Success(uint256 amount) public {
+    function test_Liquidate_Success() public {
         // create a position
-        amount = bound(amount, 0.001 ether, 100 ether);
+        uint256 amount = 12 ether;
         uint256 eps = 2 ether;
-        amount = 12 ether;
         uint256 borrowAmount = amount / 2;
         deal(address(asset), address(_alice), amount);
 
@@ -134,12 +133,11 @@ contract MorphoLiquidationPTPendleTest is BaseTest {
         // revert when liquidate healthy position
         vm.startPrank(_bob);
         bytes memory liquidateData;
-        console.logBytes(bytes32ToBytes(bytes32(amount)));
-        console.logBytes(abi.encodePacked(bytes32(amount)));
         {
             // intermediary variables
             bytes[] memory oneInchData = new bytes[](1);
             // swap weETH for WETH
+            // missing something to make it work for any amount
             oneInchData[0] = abi.encode(
                 address(collateral),
                 0,
@@ -169,8 +167,6 @@ contract MorphoLiquidationPTPendleTest is BaseTest {
             ++i;
         }
         result = new bytes(32 - i);
-        console.log(result.length);
-        console.log("i ", i);
         uint256 count = 0;
         while (count < result.length) {
             result[count] = data[i + count];
@@ -179,5 +175,3 @@ contract MorphoLiquidationPTPendleTest is BaseTest {
         return result;
     }
 }
-// 83800a8e000000000000000000000000cd5fe23c85820f7b72d0926fc9b05b43e359b7ee0000000000000000000000000000000000000000000000008ac7230489e800000000000000000000000000000000000000000000000000008df12dbf0ec541092800000000000000000000007a415b19932c0105c82fdb6b720bb01b0cc2cae3a20a9a94
-// 83800a8e000000000000000000000000cd5fe23c85820f7b72d0926fc9b05b43e359b7ee0000000000000000000000000000000000000000000000008ac7230489e800000000000000000000000000000000000000000000000000008df12dbf0ec541092800000000000000000000007a415b19932c0105c82fdb6b720bb01b0cc2cae3a20a9a94
