@@ -16,10 +16,10 @@ abstract contract PendleLevSwapperMorpho is BaseLevSwapperMorpho {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter,
         IMorphoBase _morpho
-    ) BaseLevSwapperMorpho(_core, _uniV3Router, _oneInch, _angleRouter, _morpho) {
+    ) BaseLevSwapperMorpho(_core, _uniV3Router, _aggregator, _angleRouter, _morpho) {
         if (address(collateral()) != address(0)) {
             collateral().safeIncreaseAllowance(address(SY()), type(uint256).max);
             IERC20(address(SY())).safeIncreaseAllowance(address(pendleRouter()), type(uint256).max);

@@ -10,9 +10,9 @@ contract StakeDAOLevSwapperLUSDv3CRV is CurveLevSwapperLUSDv3CRV {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) CurveLevSwapperLUSDv3CRV(_core, _uniV3Router, _oneInch, _angleRouter) {}
+    ) CurveLevSwapperLUSDv3CRV(_core, _uniV3Router, _aggregator, _angleRouter) {}
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {

@@ -12,10 +12,10 @@ contract MockCurveLevSwapperTricrypto2 is CurveLevSwapperTricrypto2 {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter,
         IBorrowStaker angleStaker_
-    ) CurveLevSwapperTricrypto2(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) CurveLevSwapperTricrypto2(_core, _uniV3Router, _aggregator, _angleRouter) {
         _angleStaker = angleStaker_;
     }
 

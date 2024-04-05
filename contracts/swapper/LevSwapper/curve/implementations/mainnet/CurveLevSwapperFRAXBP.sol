@@ -10,9 +10,9 @@ contract CurveLevSwapperFRAXBP is CurveLevSwapper2Tokens {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) CurveLevSwapper2Tokens(_core, _uniV3Router, _oneInch, _angleRouter) {}
+    ) CurveLevSwapper2Tokens(_core, _uniV3Router, _aggregator, _angleRouter) {}
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public view virtual override returns (IBorrowStaker) {

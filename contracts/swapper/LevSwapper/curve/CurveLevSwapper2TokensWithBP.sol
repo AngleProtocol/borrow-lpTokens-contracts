@@ -19,9 +19,9 @@ abstract contract CurveLevSwapper2TokensWithBP is BaseLevSwapper {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) BaseLevSwapper(_core, _uniV3Router, _aggregator, _angleRouter) {
         if (address(metapool()) != address(0)) {
             tokens()[0].safeIncreaseAllowance(address(metapool()), type(uint256).max);
             tokens()[1].safeIncreaseAllowance(address(metapool()), type(uint256).max);
@@ -85,11 +85,10 @@ abstract contract CurveLevSwapper2TokensWithBP is BaseLevSwapper {
     /// @dev It should be overriden if:
     /// - `metapool` return values when removing liquidity as it will be more efficient
     /// - `whichCoin` is not a `int256` but a `int128`
-    function _removeMetaLiquidityOneCoin(uint256 burnAmount, bytes memory data)
-        internal
-        virtual
-        returns (uint256 lpTokenBPReceived, bytes memory)
-    {
+    function _removeMetaLiquidityOneCoin(
+        uint256 burnAmount,
+        bytes memory data
+    ) internal virtual returns (uint256 lpTokenBPReceived, bytes memory) {
         int128 whichCoin;
         uint256 minAmountOut;
         (whichCoin, minAmountOut, data) = abi.decode(data, (int128, uint256, bytes));
@@ -102,11 +101,10 @@ abstract contract CurveLevSwapper2TokensWithBP is BaseLevSwapper {
 
     /// @notice Remove liquidity in a balance manner from `metapool`
     /// @dev It should be overriden if `metapool` return values when removing liquidity as it will be more efficient
-    function _removeMetaLiquidityBalance(uint256 burnAmount, bytes memory data)
-        internal
-        virtual
-        returns (uint256 lpTokenBPReceived, bytes memory)
-    {
+    function _removeMetaLiquidityBalance(
+        uint256 burnAmount,
+        bytes memory data
+    ) internal virtual returns (uint256 lpTokenBPReceived, bytes memory) {
         uint256[2] memory minAmountOuts;
         (minAmountOuts, data) = abi.decode(data, (uint256[2], bytes));
         metapool().remove_liquidity(burnAmount, minAmountOuts);

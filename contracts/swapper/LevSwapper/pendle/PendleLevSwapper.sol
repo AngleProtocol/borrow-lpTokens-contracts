@@ -16,9 +16,9 @@ abstract contract PendleLevSwapper is BaseLevSwapper {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) BaseLevSwapper(_core, _uniV3Router, _aggregator, _angleRouter) {
         if (address(collateral()) != address(0)) {
             collateral().safeIncreaseAllowance(address(SY()), type(uint256).max);
             IERC20(address(SY())).safeIncreaseAllowance(address(pendleRouter()), type(uint256).max);

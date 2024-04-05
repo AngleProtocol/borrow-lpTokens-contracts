@@ -9,10 +9,10 @@ contract PendleLevSwapperMorphoWeETH is PendleLevSwapperMorpho {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter,
         IMorphoBase _morpho
-    ) PendleLevSwapperMorpho(_core, _uniV3Router, _oneInch, _angleRouter, _morpho) {}
+    ) PendleLevSwapperMorpho(_core, _uniV3Router, _aggregator, _angleRouter, _morpho) {}
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {

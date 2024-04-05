@@ -17,9 +17,9 @@ abstract contract BalancerStableLevSwapper is BaseLevSwapper {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) BaseLevSwapper(_core, _uniV3Router, _aggregator, _angleRouter) {
         IAsset[] memory poolTokens = tokens();
         for (uint256 i; i < poolTokens.length; ++i) {
             IERC20(address(poolTokens[i])).safeIncreaseAllowance(address(BALANCER_VAULT), type(uint256).max);

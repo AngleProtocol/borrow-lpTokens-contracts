@@ -13,10 +13,10 @@ contract MockBaseLevSwapper is BaseLevSwapper {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter,
         IBorrowStaker staker_
-    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) BaseLevSwapper(_core, _uniV3Router, _aggregator, _angleRouter) {
         _staker = staker_;
         _asset = staker_.asset();
         _changeAllowance(_asset, address(staker_), type(uint256).max);

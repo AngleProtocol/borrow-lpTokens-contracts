@@ -10,9 +10,9 @@ contract CurveLevSwapperFullLUSDv3CRV is CurveLevSwapper2TokensWithBP {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) CurveLevSwapper2TokensWithBP(_core, _uniV3Router, _oneInch, _angleRouter) {}
+    ) CurveLevSwapper2TokensWithBP(_core, _uniV3Router, _aggregator, _angleRouter) {}
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public view virtual override returns (IBorrowStaker) {
@@ -56,11 +56,10 @@ contract CurveLevSwapperFullLUSDv3CRV is CurveLevSwapper2TokensWithBP {
     // ================================== OVERRIDE =================================
 
     /// @inheritdoc CurveLevSwapper2TokensWithBP
-    function _removeMetaLiquidityOneCoin(uint256 burnAmount, bytes memory data)
-        internal
-        override
-        returns (uint256 lpTokenBPReceived, bytes memory)
-    {
+    function _removeMetaLiquidityOneCoin(
+        uint256 burnAmount,
+        bytes memory data
+    ) internal override returns (uint256 lpTokenBPReceived, bytes memory) {
         int128 whichCoin;
         uint256 minAmountOut;
         (whichCoin, minAmountOut, data) = abi.decode(data, (int128, uint256, bytes));
@@ -75,11 +74,10 @@ contract CurveLevSwapperFullLUSDv3CRV is CurveLevSwapper2TokensWithBP {
     }
 
     /// @inheritdoc CurveLevSwapper2TokensWithBP
-    function _removeMetaLiquidityBalance(uint256 burnAmount, bytes memory data)
-        internal
-        override
-        returns (uint256 lpTokenBPReceived, bytes memory)
-    {
+    function _removeMetaLiquidityBalance(
+        uint256 burnAmount,
+        bytes memory data
+    ) internal override returns (uint256 lpTokenBPReceived, bytes memory) {
         uint256[2] memory minAmountOuts;
         (minAmountOuts, data) = abi.decode(data, (uint256[2], bytes));
         minAmountOuts = IMetaPool2WithReturn(address(metapool())).remove_liquidity(burnAmount, minAmountOuts);

@@ -11,10 +11,10 @@ contract MockSanTokenLevSwapper is SanUSDCEURLevSwapper {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter,
         IBorrowStaker angleStaker_
-    ) SanUSDCEURLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) SanUSDCEURLevSwapper(_core, _uniV3Router, _aggregator, _angleRouter) {
         _angleStaker = angleStaker_;
     }
 
