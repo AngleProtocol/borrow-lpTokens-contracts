@@ -4,3 +4,7 @@ borrow/=lib/borrow-contracts/contracts
 utils/=lib/utils
 morpho-blue/=lib/morpho-blue/src
 contracts/=contracts/
+@chainlink/=node_modules/@chainlink/
+@ensdomains/=node_modules/@ensdomains/
+@openzeppelin/=node_modules/@openzeppelin/
+@uniswap/=node_modules/@uniswap/

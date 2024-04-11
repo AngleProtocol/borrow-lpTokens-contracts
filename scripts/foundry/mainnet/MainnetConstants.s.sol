@@ -12,14 +12,15 @@ contract MainnetConstants {
     address public constant CORE_BORROW = 0x5bc6BEf80DA563EBf6Df6D6913513fa9A7ec89BE;
 
     address public constant ANGLE_ROUTER = 0x4579709627CA36BCe92f51ac975746f431890930;
-    address public constant ONE_INCH = 0x1111111254EEB25477B68fb85Ed929f73A960582;
+    address public constant ONE_INCH = 0x111111125421cA6dc452d289314280a0f8842A65;
     address public constant UNI_V3_ROUTER = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
+    address public constant MORPHO_BLUE = 0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb;
 
     // AGEUR Mainnet treasury
     address public constant AGEUR_TREASURY = 0x8667DBEBf68B0BFa6Db54f550f41Be16c4067d60;
 
-    uint256 public constant BASE_TOKENS = 10**18;
-    uint64 public constant BASE_PARAMS = 10**9;
+    uint256 public constant BASE_TOKENS = 10 ** 18;
+    uint64 public constant BASE_PARAMS = 10 ** 9;
 
     function deployUpgradeable(address implementation, bytes memory data) public returns (address) {
         return address(new TransparentUpgradeableProxy(implementation, PROXY_ADMIN, data));
