@@ -17,24 +17,9 @@ import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import { MorphoFeedPTweETH } from "borrow/oracle/morpho/mainnet/MorphoFeedPTweETH.sol";
 import { IAccessControlManager } from "borrow/interfaces/IAccessControlManager.sol";
 import "borrow-staked/mock/MockCoreBorrow.sol";
+import "borrow-staked/interfaces/external/morpho/IMorphoChainlinkOracleV2Factory.sol";
 
-interface IMorphoChainlinkOracleV2Factory {
-    function createMorphoChainlinkOracleV2(
-        address baseVault,
-        uint256 baseVaultConversionSample,
-        address baseFeed1,
-        address baseFeed2,
-        uint256 baseTokenDecimals,
-        address quoteVault,
-        uint256 quoteVaultConversionSample,
-        address quoteFeed1,
-        address quoteFeed2,
-        uint256 quoteTokenDecimals,
-        bytes32 salt
-    ) external returns (address oracle);
-}
-
-contract SwapperLevMorpho is Script, MainnetConstants, StdCheats, StdAssertions {
+contract SwapperLevMorphoPTWeETH is Script, MainnetConstants, StdCheats, StdAssertions {
     MockCoreBorrow coreBorrow;
 
     function run() external {
@@ -62,8 +47,6 @@ contract SwapperLevMorpho is Script, MainnetConstants, StdCheats, StdAssertions 
         // deploy PT market
         address oracle;
         bytes32 salt;
-        string memory marketName;
-        marketName = "PT-weETH/USDA";
         address priceFeed = address(
             new MorphoFeedPTweETH(IAccessControlManager(address(coreBorrow)), _MAX_IMPLIED_RATE, _TWAP_DURATION)
         );
