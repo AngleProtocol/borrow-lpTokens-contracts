@@ -45,12 +45,12 @@ abstract contract BaseLevSwapperMorpho is BaseLevSwapper, IMorphoLiquidateCallba
         morpho.liquidate(marketParams, borrower, seizedAssets, 0, data);
     }
 
-    function onMorphoLiquidate(uint256 repaidOutToken, bytes calldata data) external {
+    function onMorphoLiquidate(uint256 repaidOutToken, bytes memory data) external {
         if (msg.sender != address(morpho)) revert NotTrusted();
-        (IERC20 inToken, IERC20 outToken, uint256 inTokenObtained, bytes memory data) = abi.decode(
-            data,
-            (IERC20, IERC20, uint256, bytes)
-        );
+        IERC20 inToken;
+        IERC20 outToken;
+        uint256 inTokenObtained;
+        (inToken, outToken, inTokenObtained, data) = abi.decode(data, (IERC20, IERC20, uint256, bytes));
 
         // Address to receive the surplus amount of token at the end of the call
         address to;
