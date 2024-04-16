@@ -2,10 +2,10 @@
 pragma solidity ^0.8.17;
 
 import "../../../BaseTest.test.sol";
-import "../../../../../contracts/interfaces/IBorrowStaker.sol";
+import "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../../../contracts/interfaces/external/curve/IMetaPool3.sol";
-import { MockCurveLevSwapperAaveBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../../contracts/swapper/LevSwapper/curve/implementations/polygon/polygonTest/MockCurveLevSwapperAaveBP.sol";
+import "borrow-staked/interfaces/external/curve/IMetaPool3.sol";
+import { MockCurveLevSwapperAaveBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "borrow-staked/swapper/LevSwapper/curve/implementations/polygon/polygonTest/MockCurveLevSwapperAaveBP.sol";
 
 //solhint-disable
 interface ILendingPool {

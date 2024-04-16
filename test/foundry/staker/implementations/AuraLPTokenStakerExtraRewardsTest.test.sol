@@ -2,12 +2,12 @@
 pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
-import "../../../../contracts/interfaces/external/convex/IBaseRewardPool.sol";
-import "../../../../contracts/interfaces/external/convex/IBooster.sol";
-import "../../../../contracts/interfaces/external/convex/IConvexToken.sol";
+import "borrow-staked/interfaces/external/convex/IBaseRewardPool.sol";
+import "borrow-staked/interfaces/external/convex/IBooster.sol";
+import "borrow-staked/interfaces/external/convex/IConvexToken.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../../contracts/mock/MockTokenPermit.sol";
-import { AuraSTETHStaker, BorrowStakerStorage, IERC20Metadata, IVirtualBalanceRewardPool } from "../../../../contracts/staker/balancer/implementations/AuraSTETHStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { AuraSTETHStaker, BorrowStakerStorage, IERC20Metadata, IVirtualBalanceRewardPool } from "borrow-staked/staker/balancer/implementations/AuraSTETHStaker.sol";
 
 contract AuraLPTokenStakerExtraRewardsTest is BaseTest {
     using stdStorage for StdStorage;
@@ -43,7 +43,7 @@ contract AuraLPTokenStakerExtraRewardsTest is BaseTest {
             )
         );
         decimalToken = IERC20Metadata(address(asset)).decimals();
-        maxTokenAmount = 10**15 * 10**decimalToken;
+        maxTokenAmount = 10 ** 15 * 10 ** decimalToken;
     }
 
     function testBorrowStakerExtraRewards(uint256 amount) public {
@@ -65,7 +65,7 @@ contract AuraLPTokenStakerExtraRewardsTest is BaseTest {
         staker.deposit(amount, _alice);
         for (uint256 j = 0; j < rewardToken.length; j++) {
             uint256 integral = staker.integral(rewardToken[j]);
-            assertEq(integral, previousIntegrals[j] + (toBeClaimed[j] * 10**36) / totalSupply);
+            assertEq(integral, previousIntegrals[j] + (toBeClaimed[j] * 10 ** 36) / totalSupply);
             previousIntegrals[j] = integral;
         }
         vm.warp(block.timestamp + 2 days);
@@ -78,7 +78,7 @@ contract AuraLPTokenStakerExtraRewardsTest is BaseTest {
         uint256[] memory claimedRewards = staker.claim_rewards(_alice);
         for (uint256 j = 0; j < rewardToken.length; j++) {
             console.log(staker.integral(rewardToken[j]), previousIntegrals[j], toBeClaimed[j]);
-            assertEq(staker.integral(rewardToken[j]), previousIntegrals[j] + (toBeClaimed[j] * 10**36) / totalSupply);
+            assertEq(staker.integral(rewardToken[j]), previousIntegrals[j] + (toBeClaimed[j] * 10 ** 36) / totalSupply);
         }
         assertEq(functionClaimableRewards, claimedRewards[2]);
         assertEq(_LDO.balanceOf(_alice), functionClaimableRewards);

@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 import "borrow/interfaces/IOracle.sol";
-import { Oracle2PoolEURChainlinkArbitrum } from "../../../contracts/oracle/implementations/arbitrum/Oracle2PoolEURChainlinkArbitrum.sol";
+import { Oracle2PoolEURChainlinkArbitrum } from "borrow-staked/oracle/implementations/arbitrum/Oracle2PoolEURChainlinkArbitrum.sol";
 import "./ArbitrumConstants.s.sol";
 
 contract DeployOracleArbitrum is Script, ArbitrumConstants {

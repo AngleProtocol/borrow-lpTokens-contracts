@@ -5,7 +5,7 @@ import { IMorphoLiquidateCallback } from "morpho-blue/interfaces/IMorphoCallback
 import { MarketParams } from "morpho-blue/libraries/MarketParamsLib.sol";
 import { IMorphoBase } from "morpho-blue/interfaces/IMorpho.sol";
 
-import "./BaseLevSwapper.sol";
+import "borrow-staked/swapper/LevSwapper/BaseLevSwapper.sol";
 
 /// @title BaseLevSwapper
 /// @author Angle Labs, Inc.

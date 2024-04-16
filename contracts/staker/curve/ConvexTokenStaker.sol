@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../interfaces/external/convex/IBooster.sol";
-import "../../interfaces/external/convex/IClaimZap.sol";
-import "../../interfaces/external/convex/ICvxRewardPool.sol";
-import "../../interfaces/external/convex/IConvexToken.sol";
+import "borrow-staked/interfaces/external/convex/IBooster.sol";
+import "borrow-staked/interfaces/external/convex/IClaimZap.sol";
+import "borrow-staked/interfaces/external/convex/ICvxRewardPool.sol";
+import "borrow-staked/interfaces/external/convex/IConvexToken.sol";
 
-import "../BorrowStaker.sol";
+import "borrow-staked/staker/BorrowStaker.sol";
 
 /// @title ConvexTokenStaker
 /// @author Angle Labs, Inc.

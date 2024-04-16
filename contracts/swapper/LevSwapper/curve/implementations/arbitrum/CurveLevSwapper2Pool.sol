@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../CurveLevSwapper2Tokens.sol";
+import "borrow-staked/swapper/LevSwapper/curve/CurveLevSwapper2Tokens.sol";
 
 /// @title CurveLevSwapper2Pool
 /// @author Angle Labs, Inc

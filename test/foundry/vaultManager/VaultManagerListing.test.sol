@@ -3,14 +3,14 @@ pragma solidity ^0.8.17;
 
 import { stdStorage, StdStorage } from "forge-std/Test.sol";
 import "../BaseTest.test.sol";
-import { VaultManagerListing } from "../../../contracts/vaultManager/VaultManagerListing.sol";
+import { VaultManagerListing } from "borrow-staked/vaultManager/VaultManagerListing.sol";
 import { ActionType } from "borrow/interfaces/IVaultManager.sol";
-import "../../../contracts/mock/MockTreasury.sol";
-import { MockBorrowStaker, MockBorrowStakerReset, BorrowStakerStorage } from "../../../contracts/mock/MockBorrowStaker.sol";
-import "../../../contracts/mock/MockOracle.sol";
-import "../../../contracts/mock/MockTokenPermit.sol";
-import "../../../contracts/mock/MockCoreBorrow.sol";
-import { MockAgToken } from "contracts/mock/MockAgToken.sol";
+import "borrow-staked/mock/MockTreasury.sol";
+import { MockBorrowStaker, MockBorrowStakerReset, BorrowStakerStorage } from "borrow-staked/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockOracle.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { MockCoreBorrow as MockCoreBorrowTest } from "borrow-staked/mock/MockCoreBorrow.sol";
+import { MockAgToken } from "borrow-staked/mock/MockAgToken.sol";
 import { AngleBorrowHelpers } from "borrow/ui-helpers/AngleBorrowHelpers.sol";
 
 /// @notice Data stored to track someone's loan (or equivalently called position)
@@ -29,7 +29,7 @@ contract VaultManagerListingTest is BaseTest {
         address(uint160(uint256(keccak256(abi.encodePacked("_contractStableMaster")))));
 
     VaultManagerListing internal _contractVaultManager;
-    MockCoreBorrow internal _contractCoreBorrow;
+    MockCoreBorrowTest internal _contractCoreBorrow;
     MockTreasury internal _contractTreasury;
     MockAgToken internal _contractAgToken;
     MockBorrowStakerReset public stakerImplementation;
@@ -65,7 +65,7 @@ contract VaultManagerListingTest is BaseTest {
         vm.store(address(_contractAgToken), bytes32(uint256(0)), bytes32(uint256(0)));
         _contractAgToken.initialize("agEUR", "agEUR", address(_contractStableMaster));
 
-        _contractCoreBorrow = new MockCoreBorrow();
+        _contractCoreBorrow = new MockCoreBorrowTest();
         vm.store(address(_contractCoreBorrow), bytes32(uint256(0)), bytes32(uint256(0)));
         _contractCoreBorrow.toggleGovernor(_GOVERNOR);
         _contractCoreBorrow.toggleGuardian(_GUARDIAN);

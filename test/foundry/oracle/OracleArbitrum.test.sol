@@ -2,8 +2,8 @@
 pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
-import { SafeERC20, IERC20 } from "../../../contracts/mock/MockTokenPermit.sol";
-import { Oracle2PoolEURChainlinkArbitrum, IOracle, AggregatorV3Interface } from "../../../contracts/oracle/implementations/arbitrum/Oracle2PoolEURChainlinkArbitrum.sol";
+import { SafeERC20, IERC20 } from "borrow-staked/mock/MockTokenPermit.sol";
+import { Oracle2PoolEURChainlinkArbitrum, IOracle, AggregatorV3Interface } from "borrow-staked/oracle/implementations/arbitrum/Oracle2PoolEURChainlinkArbitrum.sol";
 
 interface IMockOracle {
     function circuitChainlink() external pure returns (AggregatorV3Interface[] memory);
@@ -43,7 +43,7 @@ contract OracleArbitrumTest is BaseTest {
         assertEq(address(chainlinkAddress[2]), 0xA14d53bC1F1c0F31B4aA3BD109344E5009051a84);
 
         (, int256 USDEUR, , , ) = chainlinkAddress[2].latestRoundData();
-        uint256 lpPriceInUSD = (lpPriceInEUR * uint256(USDEUR)) / 10**8;
+        uint256 lpPriceInUSD = (lpPriceInEUR * uint256(USDEUR)) / 10 ** 8;
 
         assertGe(lpPriceInUSD, (1.01e18 * (_BPS - _DEV_BPS)) / _BPS);
         assertLe(lpPriceInUSD, (1.01e18 * (_BPS + _DEV_BPS)) / _BPS);

@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
-import { MockCurveTokenStakerAaveBP } from "../../../contracts/staker/curve/implementations/polygon/pools/polygonTest/MockCurveTokenStakerAaveBP.sol";
+import { MockCurveTokenStakerAaveBP } from "borrow-staked/staker/curve/implementations/polygon/pools/polygonTest/MockCurveTokenStakerAaveBP.sol";
 import "./PolygonConstants.s.sol";
 
 contract DeployStaker is Script, PolygonConstants {

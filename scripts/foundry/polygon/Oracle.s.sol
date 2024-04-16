@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 import "borrow/interfaces/IOracle.sol";
-import { OracleAaveUSDBPEUR } from "../../../contracts/oracle/implementations/polygon/OracleAaveUSDBPEUR.sol";
+import { OracleAaveUSDBPEUR } from "borrow-staked/oracle/implementations/polygon/OracleAaveUSDBPEUR.sol";
 import "./PolygonConstants.s.sol";
 
 contract DeployOracle is Script, PolygonConstants {

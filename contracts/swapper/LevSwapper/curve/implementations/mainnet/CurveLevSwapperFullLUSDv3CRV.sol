@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../CurveLevSwapper2TokensWithBP.sol";
-import { IMetaPool2WithReturn } from "../../../../../interfaces/external/curve/IMetaPool2WithReturn.sol";
+import "borrow-staked/swapper/LevSwapper/curve/CurveLevSwapper2TokensWithBP.sol";
+import { IMetaPool2WithReturn } from "borrow-staked/interfaces/external/curve/IMetaPool2WithReturn.sol";
 
 /// @author Angle Labs, Inc.
 /// @dev This implementation is for Curve pools with 2 tokens with one LP token

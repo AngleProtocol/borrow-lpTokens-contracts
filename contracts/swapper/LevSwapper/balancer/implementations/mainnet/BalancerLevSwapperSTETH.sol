@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../BalancerStableLevSwapper.sol";
+import "borrow-staked/swapper/LevSwapper/balancer/BalancerStableLevSwapper.sol";
 
 /// @title BalancerLevSwapperSTETH
 /// @author Angle Labs, Inc

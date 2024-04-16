@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../CurveTokenStakerPolygon.sol";
+import "borrow-staked/staker/curve/implementations/polygon/CurveTokenStakerPolygon.sol";
 
 /// @title CurveTokenStakerAaveBP
 /// @author Angle Labs, INc

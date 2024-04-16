@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../BaseLevSwapper.sol";
-import "../../../interfaces/external/pendle/IPMarketV3.sol";
-import "../../../interfaces/external/pendle/IStandardizedYield.sol";
-import "../../../interfaces/external/pendle/IPYieldTokenV2.sol";
-import "../../../interfaces/external/pendle/IPRouter.sol";
+import "borrow-staked/swapper/LevSwapper/BaseLevSwapper.sol";
+import "borrow-staked/interfaces/external/pendle/IPMarketV3.sol";
+import "borrow-staked/interfaces/external/pendle/IStandardizedYield.sol";
+import "borrow-staked/interfaces/external/pendle/IPYieldTokenV2.sol";
+import "borrow-staked/interfaces/external/pendle/IPRouter.sol";
 
 /// @title SanTokenLevSwapper
 /// @author Angle Labs, Inc.

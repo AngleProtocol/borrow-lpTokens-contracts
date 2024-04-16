@@ -22,8 +22,9 @@
     "ds-test/=lib/forge-std/lib/ds-test/src/",
     "forge-std/=lib/forge-std/src/",
     "borrow/=lib/borrow-contracts/contracts",
+    "borrow-staked/=contracts/",
     "utils/=lib/utils",
     "morpho-blue/=lib/morpho-blue/src",
-    "contracts/=contracts/"
+    "borrow-staked/=contracts/"
   ]
 }

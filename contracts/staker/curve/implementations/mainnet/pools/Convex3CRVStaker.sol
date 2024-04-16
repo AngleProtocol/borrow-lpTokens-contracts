@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../ConvexTokenStakerMainnet.sol";
+import "borrow-staked/staker/curve/implementations/mainnet/ConvexTokenStakerMainnet.sol";
 
 /// @title Convex3CRVStaker
 /// @author Angle Labs, Inc.

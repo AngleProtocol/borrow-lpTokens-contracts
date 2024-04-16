@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../AuraTokenStaker.sol";
+import "borrow-staked/staker/balancer/AuraTokenStaker.sol";
 
 /// @title AuraSTETHStaker
 /// @author Angle Labs, Inc.

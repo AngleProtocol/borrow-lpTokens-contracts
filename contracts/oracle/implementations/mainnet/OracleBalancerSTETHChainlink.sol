@@ -3,7 +3,7 @@
 pragma solidity ^0.8.17;
 
 import "borrow/oracle/BaseOracleChainlinkMulti.sol";
-import "../../../interfaces/external/balancer/IBalancerStablePool.sol";
+import "borrow-staked/interfaces/external/balancer/IBalancerStablePool.sol";
 
 /// @title OracleBalancerSTETHChainlink
 /// @author Angle Labs, Inc.

@@ -3,7 +3,7 @@
 pragma solidity ^0.8.17;
 
 import "borrow/oracle/BaseOracleChainlinkMulti.sol";
-import "../../../interfaces/external/curve/ICurveCryptoSwapPool.sol";
+import "borrow-staked/interfaces/external/curve/ICurveCryptoSwapPool.sol";
 
 /// @title OracleAaveUSDBPEUR
 /// @author Angle Labs, Inc.
@@ -48,10 +48,12 @@ contract OracleAaveUSDBPEUR is BaseOracleChainlinkMulti {
         uint256 usdtPrice = _readChainlinkFeed(1, _circuitChainlink[2], 1, 0);
         // Picking the minimum price between DAI, USDC and USDT, multiplying it by the pool's virtual price
         // All oracles are in base 8
-        usdcPrice = usdcPrice >= daiPrice ? (daiPrice >= usdtPrice ? usdtPrice : daiPrice) : usdcPrice >= usdtPrice
-            ? usdtPrice
-            : usdcPrice;
+        usdcPrice = usdcPrice >= daiPrice
+            ? (daiPrice >= usdtPrice ? usdtPrice : daiPrice)
+            : usdcPrice >= usdtPrice
+                ? usdtPrice
+                : usdcPrice;
 
-        return (AaveUSDBP.get_virtual_price() * usdcPrice) / 10**8;
+        return (AaveUSDBP.get_virtual_price() * usdcPrice) / 10 ** 8;
     }
 }

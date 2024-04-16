@@ -2,10 +2,10 @@
 pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
-import "../../../../contracts/interfaces/IBorrowStaker.sol";
+import "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../../contracts/mock/MockTokenPermit.sol";
-import { SwapType, BaseLevSwapper, PendleLevSwapperMorphoWeETH, PendleLevSwapperMorpho, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "contracts/swapper/LevSwapper/morpho/implementations/PendleLevSwapperMorphoWeETH.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { SwapType, BaseLevSwapper, PendleLevSwapperMorphoWeETH, PendleLevSwapperMorpho, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "borrow-staked/swapper/LevSwapper/morpho/implementations/PendleLevSwapperMorphoWeETH.sol";
 import { IMorphoBase } from "morpho-blue/interfaces/IMorpho.sol";
 
 contract PendleLevSwapperTest is BaseTest {

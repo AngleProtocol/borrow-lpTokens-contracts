@@ -3,9 +3,9 @@ pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../contracts/mock/MockTokenPermit.sol";
-import "../../../contracts/mock/MockVaultManager.sol";
-import { MockBorrowStaker, BorrowStakerStorage } from "../../../contracts/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import "borrow-staked/mock/MockVaultManager.sol";
+import { MockBorrowStaker, BorrowStakerStorage } from "borrow-staked/mock/MockBorrowStaker.sol";
 
 contract BorrowStakerWithVaultTest is BaseTest {
     using stdStorage for StdStorage;
@@ -20,8 +20,8 @@ contract BorrowStakerWithVaultTest is BaseTest {
 
     uint8 public decimalToken = 18;
     uint8 public decimalReward = 6;
-    uint256 public rewardAmount = 10**2 * 10**(decimalReward);
-    uint256 public maxTokenAmount = 10**15 * 10**decimalToken;
+    uint256 public rewardAmount = 10 ** 2 * 10 ** (decimalReward);
+    uint256 public maxTokenAmount = 10 ** 15 * 10 ** decimalToken;
 
     uint256 public constant BALANCEOF_LENGTH = 50;
     uint256 public constant WITHDRAW_LENGTH = 50;
@@ -81,9 +81,13 @@ contract BorrowStakerWithVaultTest is BaseTest {
 
         for (uint256 i = 1; i < amounts.length; ++i) {
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
             uint256 vaultNum = bound(whichVault[i], 0, 1);
 
             if (
@@ -152,9 +156,13 @@ contract BorrowStakerWithVaultTest is BaseTest {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
 
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
             uint256 vaultNum = bound(whichVault[i], 0, 1);
 
             if (
@@ -207,7 +215,7 @@ contract BorrowStakerWithVaultTest is BaseTest {
             assertApproxEqAbs(
                 rewardToken.balanceOf(account) + staker.pendingRewardsOf(rewardToken, account),
                 pendingRewards[randomIndex],
-                10**(decimalReward - 4)
+                10 ** (decimalReward - 4)
             );
 
             // advance in time for rewards to be taken into account
@@ -247,9 +255,13 @@ contract BorrowStakerWithVaultTest is BaseTest {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             staker.setRewardAmount(rewardAmount);
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
             uint256 vaultNum = bound(whichVault[i], 0, 1);
 
             if (
@@ -312,7 +324,7 @@ contract BorrowStakerWithVaultTest is BaseTest {
             assertApproxEqAbs(
                 rewardToken.balanceOf(account) + staker.pendingRewardsOf(rewardToken, account),
                 pendingRewards[randomIndex],
-                10**(decimalReward - 4)
+                10 ** (decimalReward - 4)
             );
 
             // advance in time for rewards to be taken into account
@@ -322,11 +334,7 @@ contract BorrowStakerWithVaultTest is BaseTest {
 
     // ============================= INTERNAL FUNCTIONS ============================
 
-    function _fakeDepositVault(
-        uint256 vaultNum,
-        address owner,
-        uint256 amount
-    ) internal {
+    function _fakeDepositVault(uint256 vaultNum, address owner, uint256 amount) internal {
         // to disable new rewards when calling `transfer` in `_beforeTokenTransfer`
         uint256 prevReward = staker.rewardAmount();
         staker.setRewardAmount(0);
@@ -357,11 +365,10 @@ contract BorrowStakerWithVaultTest is BaseTest {
         staker.setRewardAmount(prevReward);
     }
 
-    function _userTotalCollatOnVaultManager(uint256 vaultNum, address owner)
-        internal
-        view
-        returns (uint256 amountOnVault)
-    {
+    function _userTotalCollatOnVaultManager(
+        uint256 vaultNum,
+        address owner
+    ) internal view returns (uint256 amountOnVault) {
         uint256[] memory vaultIDs = vaultManagers[vaultNum].getUserVaults(owner);
         for (uint256 i; i < vaultIDs.length; ++i) {
             (uint256 currentCollateralAmount, ) = vaultManagers[vaultNum].vaultData(vaultIDs[i]);

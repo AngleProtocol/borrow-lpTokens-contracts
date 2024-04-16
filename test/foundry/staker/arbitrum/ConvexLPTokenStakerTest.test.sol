@@ -2,12 +2,12 @@
 pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
-import { IConvexBaseRewardPoolSideChain, EarnedData } from "../../../../contracts/interfaces/external/convex/IBaseRewardPool.sol";
-import "../../../../contracts/interfaces/external/convex/IBooster.sol";
-import "../../../../contracts/interfaces/external/convex/IConvexToken.sol";
+import { IConvexBaseRewardPoolSideChain, EarnedData } from "borrow-staked/interfaces/external/convex/IBaseRewardPool.sol";
+import "borrow-staked/interfaces/external/convex/IBooster.sol";
+import "borrow-staked/interfaces/external/convex/IConvexToken.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../../contracts/mock/MockTokenPermit.sol";
-import { Convex2PoolStaker, BorrowStakerStorage, IERC20Metadata } from "../../../../contracts/staker/curve/implementations/arbitrum/pools/Convex2PoolStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { Convex2PoolStaker, BorrowStakerStorage, IERC20Metadata } from "borrow-staked/staker/curve/implementations/arbitrum/pools/Convex2PoolStaker.sol";
 
 contract ConvexLPTokenStakerArbitrumTest is BaseTest {
     using stdStorage for StdStorage;
@@ -48,13 +48,13 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
             )
         );
         decimalToken = IERC20Metadata(address(asset)).decimals();
-        maxTokenAmount = 10**5 * 10**decimalToken;
-        minTokenAmount = 10**decimalToken;
+        maxTokenAmount = 10 ** 5 * 10 ** decimalToken;
+        minTokenAmount = 10 ** decimalToken;
         decimalReward = new uint8[](rewardToken.length);
         rewardAmount = new uint256[](rewardToken.length);
         for (uint256 i; i < rewardToken.length; ++i) {
             decimalReward[i] = IERC20Metadata(address(rewardToken[i])).decimals();
-            rewardAmount[i] = 10**2 * 10**(decimalReward[i]);
+            rewardAmount[i] = 10 ** 2 * 10 ** (decimalReward[i]);
         }
     }
 
@@ -83,9 +83,13 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
                 _depositRewards(rewardAmount[1], _CVX);
             } else {
                 uint256 randomIndex = bound(accounts[i], 0, 3);
-                address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                    ? _charlie
-                    : _dylan;
+                address account = randomIndex == 0
+                    ? _alice
+                    : randomIndex == 1
+                        ? _bob
+                        : randomIndex == 2
+                            ? _charlie
+                            : _dylan;
                 if (staker.balanceOf(account) == 0) depositWithdrawRewards[i] = 0;
 
                 {
@@ -125,8 +129,8 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
                         assertEq(rewardToken[j].balanceOf(account), prevRewardTokenBalance[j]);
                     }
                 } else {
-                    amount = bound(amounts[i], 1, 10**9);
-                    staker.withdraw((amount * staker.balanceOf(account)) / 10**9, account, account);
+                    amount = bound(amounts[i], 1, 10 ** 9);
+                    staker.withdraw((amount * staker.balanceOf(account)) / 10 ** 9, account, account);
                     for (uint256 j = 0; j < rewardToken.length; j++) {
                         assertEq(staker.pendingRewardsOf(rewardToken[j], account), 0);
                     }
@@ -137,7 +141,7 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
                     assertApproxEqAbs(
                         rewardToken[j].balanceOf(account) + staker.pendingRewardsOf(rewardToken[j], account),
                         pendingRewards[randomIndex][j],
-                        10**(decimalReward[j] - 4)
+                        10 ** (decimalReward[j] - 4)
                     );
                 }
             }
@@ -165,7 +169,7 @@ contract ConvexLPTokenStakerArbitrumTest is BaseTest {
                         rewardToken[j].balanceOf(allAccounts[k]) +
                             staker.pendingRewardsOf(rewardToken[j], allAccounts[k]),
                         pendingRewards[k][j],
-                        10**(decimalReward[j] - 4)
+                        10 ** (decimalReward[j] - 4)
                     );
                 }
             }

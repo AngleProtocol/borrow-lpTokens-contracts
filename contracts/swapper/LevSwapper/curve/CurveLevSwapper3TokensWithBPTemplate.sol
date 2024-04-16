@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "./CurveLevSwapper3TokensWithBP.sol";
-import "../../../interfaces/external/curve/IMetaPool3.sol";
+import "borrow-staked/swapper/LevSwapper/curve/CurveLevSwapper3TokensWithBP.sol";
+import "borrow-staked/interfaces/external/curve/IMetaPool3.sol";
 
 /// @author Angle Labs, Inc.
 /// @notice Template leverage swapper on Curve LP tokens

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../../../swapper/LevSwapper/curve/implementations/mainnet/CurveLevSwapperTricrypto2.sol";
+import "borrow-staked/swapper/LevSwapper/curve/implementations/mainnet/CurveLevSwapperTricrypto2.sol";
 
 /// @title MockCurveLevSwapperTricrypto2
 /// @author Angle Labs, Inc.

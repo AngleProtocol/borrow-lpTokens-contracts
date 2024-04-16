@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../interfaces/external/stakeDAO/IStakeCurveVault.sol";
-import "../../interfaces/external/stakeDAO/ILiquidityGauge.sol";
+import "borrow-staked/interfaces/external/stakeDAO/IStakeCurveVault.sol";
+import "borrow-staked/interfaces/external/stakeDAO/ILiquidityGauge.sol";
 
-import "../BorrowStaker.sol";
+import "borrow-staked/staker/BorrowStaker.sol";
 
 /// @title StakeDAOTokenStaker
 /// @author Angle Labs, Inc.
@@ -34,11 +34,7 @@ abstract contract StakeDAOTokenStaker is BorrowStaker {
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable
-    function _afterTokenTransfer(
-        address from,
-        address,
-        uint256 amount
-    ) internal virtual override {
+    function _afterTokenTransfer(address from, address, uint256 amount) internal virtual override {
         // Stake on StakeDAO if it is a deposit
         if (from == address(0)) {
             // Approve the vault contract for the Curve LP tokens

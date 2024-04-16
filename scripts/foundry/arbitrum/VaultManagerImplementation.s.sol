@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
-import { VaultManagerListing } from "../../../contracts/vaultManager/VaultManagerListing.sol";
+import { VaultManagerListing } from "borrow-staked/vaultManager/VaultManagerListing.sol";
 import "./ArbitrumConstants.s.sol";
 
 contract DeployVaultManagerImplementationArbitrum is Script, ArbitrumConstants {

@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.17;
 
-import "../staker/BorrowStaker.sol";
+import "borrow-staked/staker/BorrowStaker.sol";
 
 /// @title MockBorrowStaker
 /// @author Angle Labs, Inc.

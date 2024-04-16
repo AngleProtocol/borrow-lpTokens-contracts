@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 import "borrow/interfaces/IOracle.sol";
-import { Oracle3CRVEURChainlink } from "../../../contracts/oracle/implementations/mainnet/Oracle3CRVEURChainlink.sol";
+import { Oracle3CRVEURChainlink } from "borrow-staked/oracle/implementations/mainnet/Oracle3CRVEURChainlink.sol";
 import "./MainnetConstants.s.sol";
 
 contract DeployOracleMainnet is Script, MainnetConstants {

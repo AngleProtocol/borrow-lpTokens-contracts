@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
-import "./IPGauge.sol";
+import "borrow-staked/interfaces/external/pendle/IPGauge.sol";
 
 struct MarketState {
     int256 totalPt;

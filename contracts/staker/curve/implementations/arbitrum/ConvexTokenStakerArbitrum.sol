@@ -1,19 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../ConvexTokenStaker.sol";
-import { IConvexBaseRewardPoolSideChain, EarnedData } from "../../../../interfaces/external/convex/IBaseRewardPool.sol";
+import "borrow-staked/staker/curve/ConvexTokenStaker.sol";
+import { IConvexBaseRewardPoolSideChain, EarnedData } from "borrow-staked/interfaces/external/convex/IBaseRewardPool.sol";
 
 /// @title ConvexTokenStakerArbitrum
 /// @author Angle Labs, Inc.
 /// @dev Constants for borrow staker adapted to Curve LP tokens deposited on Convex Arbitrum
 abstract contract ConvexTokenStakerArbitrum is ConvexTokenStaker {
     /// @inheritdoc ERC20Upgradeable
-    function _afterTokenTransfer(
-        address from,
-        address,
-        uint256 amount
-    ) internal override {
+    function _afterTokenTransfer(address from, address, uint256 amount) internal override {
         // Stake on Convex if it is a deposit
         if (from == address(0)) {
             // Deposit the Curve LP tokens into the convex contract and stake

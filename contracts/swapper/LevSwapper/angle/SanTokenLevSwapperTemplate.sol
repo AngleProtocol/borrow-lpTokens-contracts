@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "./SanTokenLevSwapper.sol";
+import "borrow-staked/swapper/LevSwapper/angle/SanTokenLevSwapper.sol";
 
 /// @author Angle Labs, Inc.
 /// @notice Template leverage swapper on sanTokens

@@ -2,12 +2,12 @@
 pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
-import { SafeERC20, IERC20 } from "../../../contracts/mock/MockTokenPermit.sol";
-import { OracleCrvUSDBTCETHEUR, IOracle, AggregatorV3Interface } from "../../../contracts/oracle/implementations/polygon/OracleCrvUSDBTCETHEUR.sol";
-import { OracleBalancerSTETHChainlink } from "../../../contracts/oracle/implementations/mainnet/OracleBalancerSTETHChainlink.sol";
-import { OracleFRAXBPEURChainlink } from "../../../contracts/oracle/implementations/mainnet/OracleFRAXBPEURChainlink.sol";
-import { Oracle3CRVEURChainlink } from "../../../contracts/oracle/implementations/mainnet/Oracle3CRVEURChainlink.sol";
-import { OracleLUSD3CRVEURChainlink } from "../../../contracts/oracle/implementations/mainnet/OracleLUSD3CRVEURChainlink.sol";
+import { SafeERC20, IERC20 } from "borrow-staked/mock/MockTokenPermit.sol";
+import { OracleCrvUSDBTCETHEUR, IOracle, AggregatorV3Interface } from "borrow-staked/oracle/implementations/polygon/OracleCrvUSDBTCETHEUR.sol";
+import { OracleBalancerSTETHChainlink } from "borrow-staked/oracle/implementations/mainnet/OracleBalancerSTETHChainlink.sol";
+import { OracleFRAXBPEURChainlink } from "borrow-staked/oracle/implementations/mainnet/OracleFRAXBPEURChainlink.sol";
+import { Oracle3CRVEURChainlink } from "borrow-staked/oracle/implementations/mainnet/Oracle3CRVEURChainlink.sol";
+import { OracleLUSD3CRVEURChainlink } from "borrow-staked/oracle/implementations/mainnet/OracleLUSD3CRVEURChainlink.sol";
 
 interface IMockOracle {
     function circuitChainlink() external pure returns (AggregatorV3Interface[] memory);
@@ -74,7 +74,7 @@ contract OracleMainnetTest is BaseTest {
         assertEq(address(chainlinkAddress[3]), 0xb49f677943BC038e9857d61E7d053CaA2C1734C1);
 
         (, int256 USDEUR, , , ) = chainlinkAddress[3].latestRoundData();
-        uint256 lpPriceInUSD = (lpPriceInEUR * uint256(USDEUR)) / 10**8;
+        uint256 lpPriceInUSD = (lpPriceInEUR * uint256(USDEUR)) / 10 ** 8;
 
         console.log("our lowerbound lpPriceInUSD ", lpPriceInUSD);
 
@@ -94,7 +94,7 @@ contract OracleMainnetTest is BaseTest {
         assertEq(address(chainlinkAddress[4]), 0xb49f677943BC038e9857d61E7d053CaA2C1734C1);
 
         (, int256 USDEUR, , , ) = chainlinkAddress[4].latestRoundData();
-        uint256 lpPriceInUSD = (lpPriceInEUR * uint256(USDEUR)) / 10**8;
+        uint256 lpPriceInUSD = (lpPriceInEUR * uint256(USDEUR)) / 10 ** 8;
 
         assertGe(lpPriceInUSD, (1.04e18 * (_BPS - _DEV_BPS)) / _BPS);
         assertLe(lpPriceInUSD, (1.04e18 * (_BPS + _DEV_BPS)) / _BPS);

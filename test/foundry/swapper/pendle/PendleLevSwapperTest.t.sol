@@ -2,10 +2,10 @@
 pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
-import "../../../../contracts/interfaces/IBorrowStaker.sol";
+import "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../../contracts/mock/MockTokenPermit.sol";
-import { SwapType, BaseLevSwapper, PendleLevSwapperRenzo, PendleLevSwapper, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "contracts/swapper/LevSwapper/pendle/implementations/PendleLevSwapperRenzo.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { SwapType, BaseLevSwapper, PendleLevSwapperRenzo, PendleLevSwapper, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "borrow-staked/swapper/LevSwapper/pendle/implementations/PendleLevSwapperRenzo.sol";
 
 interface IStETH {
     function submit(address) external payable returns (uint256);

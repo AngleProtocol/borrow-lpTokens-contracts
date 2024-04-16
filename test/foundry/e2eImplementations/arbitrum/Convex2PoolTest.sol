@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9;
 
 import "../../swapper/curve/arbitrum/CurveLevSwapper2PoolTest.test.sol";
-import { Convex2PoolStaker } from "../../../../contracts/staker/curve/implementations/arbitrum/pools/Convex2PoolStaker.sol";
+import { Convex2PoolStaker } from "borrow-staked/staker/curve/implementations/arbitrum/pools/Convex2PoolStaker.sol";
 
 contract Convex2PoolTest is CurveLevSwapper2PoolTest {
     using stdStorage for StdStorage;

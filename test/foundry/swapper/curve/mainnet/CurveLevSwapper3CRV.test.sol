@@ -2,14 +2,14 @@
 pragma solidity ^0.8.17;
 
 import "../../../BaseTest.test.sol";
-import "../../../../../contracts/interfaces/IBorrowStaker.sol";
+import "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../../../contracts/interfaces/external/curve/IMetaPool3.sol";
+import "borrow-staked/interfaces/external/curve/IMetaPool3.sol";
 import "borrow/interfaces/coreModule/IStableMaster.sol";
 import "borrow/interfaces/coreModule/IPoolManager.sol";
-import "../../../../../contracts/mock/MockTokenPermit.sol";
-import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper3CRV, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../../contracts/mock/implementations/swapper/mainnet/MockCurveLevSwapper3CRV.sol";
-import { MockBorrowStaker } from "../../../../../contracts/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper3CRV, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "borrow-staked/mock/implementations/swapper/mainnet/MockCurveLevSwapper3CRV.sol";
+import { MockBorrowStaker } from "borrow-staked/mock/MockBorrowStaker.sol";
 
 //solhint-disable
 interface ILendingPool {

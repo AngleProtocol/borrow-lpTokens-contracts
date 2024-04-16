@@ -6,8 +6,8 @@ import { console } from "forge-std/console.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
-import { ConvexLevSwapper2Pool } from "../../../contracts/swapper/LevSwapper/curve/implementations/arbitrum/convex/ConvexLevSwapper2Pool.sol";
-import { StakeDAOLevSwapper2Pool } from "../../../contracts/swapper/LevSwapper/curve/implementations/arbitrum/stakeDAO/StakeDAOLevSwapper2Pool.sol";
+import { ConvexLevSwapper2Pool } from "borrow-staked/swapper/LevSwapper/curve/implementations/arbitrum/convex/ConvexLevSwapper2Pool.sol";
+import { StakeDAOLevSwapper2Pool } from "borrow-staked/swapper/LevSwapper/curve/implementations/arbitrum/stakeDAO/StakeDAOLevSwapper2Pool.sol";
 import "./ArbitrumConstants.s.sol";
 
 contract DeploySwapperArbitrum is Script, ArbitrumConstants {

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../swapper/LevSwapper/BaseLevSwapper.sol";
-import { MockBorrowStaker } from "./MockBorrowStaker.sol";
+import "borrow-staked/swapper/LevSwapper/BaseLevSwapper.sol";
+import { MockBorrowStaker } from "borrow-staked/mock/MockBorrowStaker.sol";
 
 /// @title MockBaseLevSwapper
 /// @author Angle Labs, Inc.

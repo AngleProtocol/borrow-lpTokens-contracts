@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../BaseLevSwapper.sol";
+import "borrow-staked/swapper/LevSwapper/BaseLevSwapper.sol";
 import "borrow/interfaces/coreModule/IStableMaster.sol";
 
 /// @title SanTokenLevSwapper

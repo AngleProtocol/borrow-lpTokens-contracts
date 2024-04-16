@@ -2,15 +2,15 @@
 pragma solidity ^0.8.17;
 
 // import "../../../BaseTest.test.sol";
-// import { AToken } from "../../../../../contracts/interfaces/external/aave/AToken.sol";
-// import "../../../../../contracts/interfaces/IBorrowStaker.sol";
-// import "../../../../../contracts/interfaces/ICoreBorrow.sol";
-// import "../../../../../contracts/interfaces/external/curve/IMetaPool3.sol";
-// import "../../../../../contracts/interfaces/coreModule/IStableMaster.sol";
-// import "../../../../../contracts/interfaces/coreModule/IPoolManager.sol";
-// import "../../../../../contracts/mock/MockTokenPermit.sol";
-// import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper3TokensWithBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../../contracts/mock/MockCurveLevSwapper3TokensWithBP.sol";
-// import { MockBorrowStaker } from "../../../../../contracts/mock/MockBorrowStaker.sol";
+// import { AToken } from "../borrow-staked/interfaces/external/aave/AToken.sol";
+// import "../borrow-staked/interfaces/IBorrowStaker.sol";
+// import "../borrow-staked/interfaces/ICoreBorrow.sol";
+// import "../borrow-staked/interfaces/external/curve/IMetaPool3.sol";
+// import "../borrow-staked/interfaces/coreModule/IStableMaster.sol";
+// import "../borrow-staked/interfaces/coreModule/IPoolManager.sol";
+// import "../borrow-staked/mock/MockTokenPermit.sol";
+// import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper3TokensWithBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../borrow-staked/mock/MockCurveLevSwapper3TokensWithBP.sol";
+// import { MockBorrowStaker } from "../borrow-staked/mock/MockBorrowStaker.sol";
 
 // // @dev Testing on Polygon
 // contract CurveLevSwapperTricryptoTest is BaseTest {

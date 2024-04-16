@@ -2,12 +2,12 @@
 pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
-import "../../../contracts/interfaces/external/convex/IBaseRewardPool.sol";
-import "../../../contracts/interfaces/external/convex/IBooster.sol";
-import "../../../contracts/interfaces/external/convex/IConvexToken.sol";
+import "borrow-staked/interfaces/external/convex/IBaseRewardPool.sol";
+import "borrow-staked/interfaces/external/convex/IBooster.sol";
+import "borrow-staked/interfaces/external/convex/IConvexToken.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../contracts/mock/MockTokenPermit.sol";
-import { MockCurveStaker3TokensWithBP, BorrowStakerStorage, ILiquidityGauge } from "../../../contracts/mock/MockCurveStaker3TokensWithBP.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { MockCurveStaker3TokensWithBP, BorrowStakerStorage, ILiquidityGauge } from "borrow-staked/mock/MockCurveStaker3TokensWithBP.sol";
 
 interface IMinimalLiquidityGauge {
     // solhint-disable-next-line
@@ -61,9 +61,9 @@ contract CurveLPTokenStakerTest is BaseTest {
         vm.stopPrank();
 
         decimalReward = IERC20Metadata(address(rewardToken)).decimals();
-        rewardAmount = 10**2 * 10**(decimalReward);
+        rewardAmount = 10 ** 2 * 10 ** (decimalReward);
         decimalToken = IERC20Metadata(address(asset)).decimals();
-        maxTokenAmount = 10**15 * 10**decimalToken;
+        maxTokenAmount = 10 ** 15 * 10 ** decimalToken;
         minTokenAmount = 1;
     }
 
@@ -91,9 +91,13 @@ contract CurveLPTokenStakerTest is BaseTest {
                 _depositRewards(rewardAmount);
             } else {
                 uint256 randomIndex = bound(accounts[i], 0, 3);
-                address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                    ? _charlie
-                    : _dylan;
+                address account = randomIndex == 0
+                    ? _alice
+                    : randomIndex == 1
+                        ? _bob
+                        : randomIndex == 2
+                            ? _charlie
+                            : _dylan;
                 if (staker.balanceOf(account) == 0) depositWithdrawRewards[i] = 0;
 
                 {
@@ -126,8 +130,8 @@ contract CurveLPTokenStakerTest is BaseTest {
                     staker.deposit(amount, account);
                     assertEq(rewardToken.balanceOf(account), prevRewardTokenBalance);
                 } else {
-                    amount = bound(amounts[i], 1, 10**9);
-                    amount = (amount * staker.balanceOf(account)) / 10**9;
+                    amount = bound(amounts[i], 1, 10 ** 9);
+                    amount = (amount * staker.balanceOf(account)) / 10 ** 9;
                     amount = amount == 0 ? staker.balanceOf(account) : amount;
                     staker.withdraw(amount, account, account);
                     assertEq(staker.pendingRewardsOf(rewardToken, account), 0);
@@ -137,7 +141,7 @@ contract CurveLPTokenStakerTest is BaseTest {
                 assertApproxEqAbs(
                     rewardToken.balanceOf(account) + staker.pendingRewardsOf(rewardToken, account),
                     pendingRewards[randomIndex],
-                    10**(decimalReward - 4)
+                    10 ** (decimalReward - 4)
                 );
             }
 
@@ -156,7 +160,7 @@ contract CurveLPTokenStakerTest is BaseTest {
                 assertApproxEqAbs(
                     rewardToken.balanceOf(allAccounts[j]) + staker.pendingRewardsOf(rewardToken, allAccounts[j]),
                     pendingRewards[j],
-                    10**(decimalReward - 4)
+                    10 ** (decimalReward - 4)
                 );
             }
         }

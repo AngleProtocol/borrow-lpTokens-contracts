@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../SanTokenStaker.sol";
+import "borrow-staked/staker/angle/SanTokenStaker.sol";
 
 /// @title SanTokenUSDCvAgEURStaker
 /// @author Angle Labs, Inc.
