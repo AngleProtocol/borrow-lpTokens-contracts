@@ -16,7 +16,9 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import { IAccessControlManager } from "borrow/interfaces/IAccessControlManager.sol";
 import "borrow-staked/mock/MockCoreBorrow.sol";
+import "borrow-staked/mock/MockERC4626.sol";
 import "borrow-staked/interfaces/external/morpho/IMorphoChainlinkOracleV2Factory.sol";
+import "@openzeppelin/contracts/interfaces/IERC4626.sol";
 
 contract ERC4626SwapperLevMorphoGauntletUSDCPrime is Script, MainnetConstants, StdCheats, StdAssertions {
     MockCoreBorrow coreBorrow;
@@ -46,11 +48,16 @@ contract ERC4626SwapperLevMorphoGauntletUSDCPrime is Script, MainnetConstants, S
             address(swapperMorphoGauntletUSDCPrime)
         );
 
+        // deploy a fake vault for the oracle liquidation
+        MockERC4626 vault = new MockERC4626(
+            IERC20Metadata(GTUSDCPRIME),
+            IERC4626(GTUSDCPRIME).convertToAssets(1 ether)
+        );
         // deploy Gauntlet USDC prime market
         address oracle;
         bytes32 salt;
         oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
-            address(GTUSDCPRIME),
+            address(vault),
             1 ether,
             CHAINLINK_USDC_USD_ORACLE,
             address(0),
@@ -72,8 +79,13 @@ contract ERC4626SwapperLevMorphoGauntletUSDCPrime is Script, MainnetConstants, S
         IMorpho(MORPHO_BLUE).createMarket(params);
         IMorpho(MORPHO_BLUE).supply(params, 35 ether, 0, deployer, emptyData);
         IERC20(params.collateralToken).approve(MORPHO_BLUE, 100 ether);
-        IMorpho(MORPHO_BLUE).supplyCollateral(params, 100 ether, deployer, emptyData);
+        IMorpho(MORPHO_BLUE).supplyCollateral(params, 50 ether, deployer, emptyData);
         IMorpho(MORPHO_BLUE).borrow(params, 20 ether, 0, deployer, deployer);
+
+        // then put the position in liquidation
+        vault.setRate(IERC4626(GTUSDCPRIME).convertToAssets(1 ether) / 10);
+
+        price = IMorphoOracle(oracle).price();
 
         vm.stopBroadcast();
     }

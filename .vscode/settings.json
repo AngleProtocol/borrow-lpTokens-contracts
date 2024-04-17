@@ -25,6 +25,5 @@
     "borrow-staked/=contracts/",
     "utils/=lib/utils",
     "morpho-blue/=lib/morpho-blue/src",
-    "borrow-staked/=contracts/"
   ]
 }

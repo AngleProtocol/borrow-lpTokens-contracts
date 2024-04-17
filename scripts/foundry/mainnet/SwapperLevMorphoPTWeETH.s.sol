@@ -26,14 +26,11 @@ contract SwapperLevMorphoPTWeETH is Script, MainnetConstants, StdCheats, StdAsse
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
         vm.startBroadcast(deployerPrivateKey);
-
         coreBorrow = new MockCoreBorrow();
         coreBorrow.toggleGuardian(deployer);
-
         MarketParams memory params;
         bytes memory emptyData;
         IERC20(USDA).approve(MORPHO_BLUE, type(uint256).max);
-
         PendleLevSwapperMorphoWeETH swapperMorphoPTWeETH = new PendleLevSwapperMorphoWeETH(
             ICoreBorrow(coreBorrow),
             IUniswapV3Router(UNI_V3_ROUTER),
@@ -41,9 +38,7 @@ contract SwapperLevMorphoPTWeETH is Script, MainnetConstants, StdCheats, StdAsse
             IAngleRouterSidechain(ANGLE_ROUTER),
             IMorpho(MORPHO_BLUE)
         );
-
         console.log("Successfully deployed swapper Morpho PT-weETH Pendle: ", address(swapperMorphoPTWeETH));
-
         // deploy PT market
         address oracle;
         bytes32 salt;
@@ -75,11 +70,9 @@ contract SwapperLevMorphoPTWeETH is Script, MainnetConstants, StdCheats, StdAsse
         IERC20(params.collateralToken).approve(MORPHO_BLUE, BASE_DEPOSIT_ETH_AMOUNT);
         IMorpho(MORPHO_BLUE).supplyCollateral(params, BASE_DEPOSIT_ETH_AMOUNT, deployer, emptyData);
         IMorpho(MORPHO_BLUE).borrow(params, 20 ether, 0, deployer, deployer);
-
         (, int256 pricePT, , , ) = MorphoFeedPTweETH(priceFeed).latestRoundData();
         MorphoFeedPTweETH(priceFeed).setMaxImpliedRate(1000 ether);
         (, pricePT, , , ) = MorphoFeedPTweETH(priceFeed).latestRoundData();
-
         vm.stopBroadcast();
     }
 }
