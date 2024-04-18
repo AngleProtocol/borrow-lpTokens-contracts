@@ -26,13 +26,12 @@ contract SwapperLevMorphoPTWeETH is Script, MainnetConstants, StdCheats, StdAsse
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
         vm.startBroadcast(deployerPrivateKey);
-        coreBorrow = new MockCoreBorrow();
-        coreBorrow.toggleGuardian(deployer);
-        MarketParams memory params;
-        bytes memory emptyData;
-        IERC20(USDA).approve(MORPHO_BLUE, type(uint256).max);
+
+        // coreBorrow = new MockCoreBorrow();
+        // coreBorrow.toggleGuardian(deployer);
+
         PendleLevSwapperMorphoWeETH swapperMorphoPTWeETH = new PendleLevSwapperMorphoWeETH(
-            ICoreBorrow(coreBorrow),
+            ICoreBorrow(CORE_BORROW),
             IUniswapV3Router(UNI_V3_ROUTER),
             ONE_INCH,
             IAngleRouterSidechain(ANGLE_ROUTER),
@@ -41,6 +40,9 @@ contract SwapperLevMorphoPTWeETH is Script, MainnetConstants, StdCheats, StdAsse
         console.log("Successfully deployed swapper Morpho PT-weETH Pendle: ", address(swapperMorphoPTWeETH));
 
         // // deploy PT market
+        // MarketParams memory params;
+        // bytes memory emptyData;
+        // IERC20(USDA).approve(MORPHO_BLUE, type(uint256).max);
         // address oracle;
         // bytes32 salt;
         // address priceFeed = address(

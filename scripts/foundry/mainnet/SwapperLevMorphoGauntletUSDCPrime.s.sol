@@ -28,15 +28,11 @@ contract ERC4626SwapperLevMorphoGauntletUSDCPrime is Script, MainnetConstants, S
         address deployer = vm.addr(deployerPrivateKey);
         vm.startBroadcast(deployerPrivateKey);
 
-        coreBorrow = new MockCoreBorrow();
-        coreBorrow.toggleGuardian(deployer);
-
-        MarketParams memory params;
-        bytes memory emptyData;
-        IERC20(USDA).approve(MORPHO_BLUE, type(uint256).max);
+        // coreBorrow = new MockCoreBorrow();
+        // coreBorrow.toggleGuardian(deployer);
 
         ERC4626LevSwapperMorphoGauntletUSDCPrime swapperMorphoGauntletUSDCPrime = new ERC4626LevSwapperMorphoGauntletUSDCPrime(
-                ICoreBorrow(coreBorrow),
+                ICoreBorrow(CORE_BORROW),
                 IUniswapV3Router(UNI_V3_ROUTER),
                 ONE_INCH,
                 IAngleRouterSidechain(ANGLE_ROUTER),
@@ -49,6 +45,9 @@ contract ERC4626SwapperLevMorphoGauntletUSDCPrime is Script, MainnetConstants, S
         );
 
         // // deploy a fake vault for the oracle liquidation
+        // MarketParams memory params;
+        // bytes memory emptyData;
+        // IERC20(USDA).approve(MORPHO_BLUE, type(uint256).max);
         // MockERC4626 vault = new MockERC4626(
         //     IERC20Metadata(GTUSDCPRIME),
         //     IERC4626(GTUSDCPRIME).convertToAssets(1 ether)

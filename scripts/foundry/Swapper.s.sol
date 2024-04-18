@@ -15,14 +15,18 @@ contract SwapperDeploy is Script, CommonUtils {
         address deployer = vm.addr(deployerPrivateKey);
         vm.startBroadcast(deployerPrivateKey);
 
-        uint256 chainId = CHAIN_ARBITRUM;
+        // TODO
+        uint256 chainId = CHAIN_POLYGON;
+        ICoreBorrow corebBorrow = ICoreBorrow(0xe9f183FC656656f1F17af1F2b0dF79b8fF9ad8eD);
+        IAngleRouterSidechain angleRouter = IAngleRouterSidechain(0xf530b844fb797D2C6863D56a94777C3e411CEc86);
+        // end TODO
 
         Swapper swapper = new Swapper(
-            ICoreBorrow(_chainToContract(chainId, ContractType.CoreBorrow)),
+            corebBorrow,
             // TODO only works for Ethereum/Arbitrum/Optimism/Polygon
             IUniswapV3Router(UNI_V3_ROUTER),
             ONE_INCH,
-            IAngleRouterSidechain(_chainToContract(chainId, ContractType.AngleRouter))
+            angleRouter
         );
 
         console.log("Successfully deployed vanilla swapper: ", address(swapper));
