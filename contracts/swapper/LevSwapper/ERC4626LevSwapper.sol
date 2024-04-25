@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/interfaces/IERC4626.sol";
 
 /// @title ERC4626LevSwapper
 /// @author Angle Labs, Inc.
-/// @dev Leverage Swapper on SanTokens
+/// @dev Abstract Leverage Swapper on ERC4626
 abstract contract ERC4626LevSwapper is BaseLevSwapperMorpho {
     using SafeERC20 for IERC20;
 
@@ -27,7 +27,6 @@ abstract contract ERC4626LevSwapper is BaseLevSwapperMorpho {
     /// @inheritdoc BaseLevSwapper
     function _add(bytes memory) internal override returns (uint256 amountOut) {
         uint256 amount = asset().balanceOf(address(this));
-        // It needs to be deposited directly onto `YT`contracts to mint both PT and YT tokens
         amountOut = token().deposit(amount, address(this));
     }
 

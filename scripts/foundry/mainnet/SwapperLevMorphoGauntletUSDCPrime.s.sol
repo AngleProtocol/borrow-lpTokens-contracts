@@ -31,60 +31,60 @@ contract ERC4626SwapperLevMorphoGauntletUSDCPrime is Script, MainnetConstants, S
         // coreBorrow = new MockCoreBorrow();
         // coreBorrow.toggleGuardian(deployer);
 
-        ERC4626LevSwapperMorphoGauntletUSDCPrime swapperMorphoGauntletUSDCPrime = new ERC4626LevSwapperMorphoGauntletUSDCPrime(
-                ICoreBorrow(CORE_BORROW),
-                IUniswapV3Router(UNI_V3_ROUTER),
-                ONE_INCH,
-                IAngleRouterSidechain(ANGLE_ROUTER),
-                IMorpho(MORPHO_BLUE)
-            );
+        // ERC4626LevSwapperMorphoGauntletUSDCPrime swapperMorphoGauntletUSDCPrime = new ERC4626LevSwapperMorphoGauntletUSDCPrime(
+        //         ICoreBorrow(CORE_BORROW),
+        //         IUniswapV3Router(UNI_V3_ROUTER),
+        //         ONE_INCH,
+        //         IAngleRouterSidechain(ANGLE_ROUTER),
+        //         IMorpho(MORPHO_BLUE)
+        //     );
 
-        console.log(
-            "Successfully deployed swapper Morpho Gauntlet USDC prime: ",
-            address(swapperMorphoGauntletUSDCPrime)
+        // console.log(
+        //     "Successfully deployed swapper Morpho Gauntlet USDC prime: ",
+        //     address(swapperMorphoGauntletUSDCPrime)
+        // );
+
+        // deploy a fake vault for the oracle liquidation
+        MarketParams memory params;
+        bytes memory emptyData;
+        IERC20(USDA).approve(MORPHO_BLUE, type(uint256).max);
+        MockERC4626 vault = new MockERC4626(
+            IERC20Metadata(GTUSDCPRIME),
+            IERC4626(GTUSDCPRIME).convertToAssets(1 ether)
         );
+        // deploy Gauntlet USDC prime market
+        address oracle;
+        bytes32 salt;
+        oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
+            address(vault),
+            1 ether,
+            CHAINLINK_USDC_USD_ORACLE,
+            address(0),
+            6,
+            address(0),
+            1,
+            address(0),
+            address(0),
+            18,
+            salt
+        );
+        uint256 price = IMorphoOracle(oracle).price();
+        assertApproxEqRel(price, 10 ** 36, 12 * 10 ** 35);
+        params.collateralToken = GTUSDCPRIME;
+        params.lltv = LLTV_86;
+        params.irm = IRM_MODEL;
+        params.oracle = oracle;
+        params.loanToken = USDA;
+        IMorpho(MORPHO_BLUE).createMarket(params);
+        IMorpho(MORPHO_BLUE).supply(params, 35 ether, 0, deployer, emptyData);
+        IERC20(params.collateralToken).approve(MORPHO_BLUE, 100 ether);
+        IMorpho(MORPHO_BLUE).supplyCollateral(params, 50 ether, deployer, emptyData);
+        IMorpho(MORPHO_BLUE).borrow(params, 20 ether, 0, deployer, deployer);
 
-        // // deploy a fake vault for the oracle liquidation
-        // MarketParams memory params;
-        // bytes memory emptyData;
-        // IERC20(USDA).approve(MORPHO_BLUE, type(uint256).max);
-        // MockERC4626 vault = new MockERC4626(
-        //     IERC20Metadata(GTUSDCPRIME),
-        //     IERC4626(GTUSDCPRIME).convertToAssets(1 ether)
-        // );
-        // // deploy Gauntlet USDC prime market
-        // address oracle;
-        // bytes32 salt;
-        // oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
-        //     address(vault),
-        //     1 ether,
-        //     CHAINLINK_USDC_USD_ORACLE,
-        //     address(0),
-        //     6,
-        //     address(0),
-        //     1,
-        //     address(0),
-        //     address(0),
-        //     18,
-        //     salt
-        // );
-        // uint256 price = IMorphoOracle(oracle).price();
-        // assertApproxEqRel(price, 10 ** 36, 12 * 10 ** 35);
-        // params.collateralToken = GTUSDCPRIME;
-        // params.lltv = LLTV_86;
-        // params.irm = IRM_MODEL;
-        // params.oracle = oracle;
-        // params.loanToken = USDA;
-        // IMorpho(MORPHO_BLUE).createMarket(params);
-        // IMorpho(MORPHO_BLUE).supply(params, 35 ether, 0, deployer, emptyData);
-        // IERC20(params.collateralToken).approve(MORPHO_BLUE, 100 ether);
-        // IMorpho(MORPHO_BLUE).supplyCollateral(params, 50 ether, deployer, emptyData);
-        // IMorpho(MORPHO_BLUE).borrow(params, 20 ether, 0, deployer, deployer);
+        // then put the position in liquidation
+        vault.setRate(IERC4626(GTUSDCPRIME).convertToAssets(1 ether) / 10);
 
-        // // then put the position in liquidation
-        // vault.setRate(IERC4626(GTUSDCPRIME).convertToAssets(1 ether) / 10);
-
-        // price = IMorphoOracle(oracle).price();
+        price = IMorphoOracle(oracle).price();
 
         vm.stopBroadcast();
     }
