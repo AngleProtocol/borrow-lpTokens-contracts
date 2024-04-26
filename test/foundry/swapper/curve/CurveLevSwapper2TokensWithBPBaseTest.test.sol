@@ -2,15 +2,15 @@
 pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
-import "../../../../contracts/interfaces/IBorrowStaker.sol";
+import "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import { IMetaPool2 } from "../../../../contracts/interfaces/external/curve/IMetaPool2.sol";
-import { IMetaPool3 } from "../../../../contracts/interfaces/external/curve/IMetaPool3.sol";
+import { IMetaPool2 } from "borrow-staked/interfaces/external/curve/IMetaPool2.sol";
+import { IMetaPool3 } from "borrow-staked/interfaces/external/curve/IMetaPool3.sol";
 import "borrow/interfaces/coreModule/IStableMaster.sol";
 import "borrow/interfaces/coreModule/IPoolManager.sol";
-import "../../../../contracts/mock/MockTokenPermit.sol";
-import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper2TokensWithBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockCurveLevSwapper2TokensWithBP.sol";
-import { MockBorrowStaker } from "../../../../contracts/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper2TokensWithBP, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "borrow-staked/mock/MockCurveLevSwapper2TokensWithBP.sol";
+import { MockBorrowStaker } from "borrow-staked/mock/MockBorrowStaker.sol";
 
 // @dev Testing on Polygon
 contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
@@ -27,9 +27,9 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
     IERC20 internal constant _DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
     IERC20 internal constant _LUSD = IERC20(0x5f98805A4E8be255a32880FDeC7F6728C6568bA0);
     IERC20 internal constant _BPToken = IERC20(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
-    uint256 internal constant _DECIMAL_NORM_USDC = 10**12;
-    uint256 internal constant _DECIMAL_NORM_USDT = 10**12;
-    uint256 internal constant _DECIMAL_NORM_LUSD = 10**0;
+    uint256 internal constant _DECIMAL_NORM_USDC = 10 ** 12;
+    uint256 internal constant _DECIMAL_NORM_USDT = 10 ** 12;
+    uint256 internal constant _DECIMAL_NORM_LUSD = 10 ** 0;
 
     IMetaPool2 internal constant _METAPOOL = IMetaPool2(0xEd279fDD11cA84bEef15AF5D39BB4d4bEE23F0cA);
     IMetaPool3 internal constant _BPPOOL = IMetaPool3(0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7);
@@ -98,7 +98,7 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
     }
 
     function testLeverageNoUnderlyingTokensDeposited(uint256 amount) public {
-        amount = bound(amount, 1, 10**27);
+        amount = bound(amount, 1, 10 ** 27);
         _depositDirect(amount);
 
         assertEq(staker.balanceOf(_alice), amount);
@@ -117,7 +117,7 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
     }
 
     function testNoDepositDeleverageCollatAndOneCoinToken(uint256 amount, uint256 propToRemove) public {
-        amount = bound(amount, BASE_PARAMS, 10**24);
+        amount = bound(amount, BASE_PARAMS, 10 ** 24);
         propToRemove = bound(propToRemove, 1, BASE_PARAMS);
         int128 coinIndex = 0;
         IERC20 outToken = IERC20(address(_LUSD));
@@ -137,7 +137,7 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
     }
 
     function testNoDepositDeleverageBalance(uint256 amount) public {
-        amount = bound(amount, 1, 10**24);
+        amount = bound(amount, 1, 10 ** 24);
         _depositDirect(amount);
         uint256[2] memory minAmounts = _deleverageBalance();
 
@@ -217,8 +217,8 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
         uint256 proportionWithdrawToken2
     ) public {
         coinIndex = bound(coinIndex, 0, 2);
-        proportionWithdrawToken1 = bound(proportionWithdrawToken1, 0, 10**9);
-        proportionWithdrawToken2 = bound(proportionWithdrawToken2, 0, 10**9 - proportionWithdrawToken1);
+        proportionWithdrawToken1 = bound(proportionWithdrawToken1, 0, 10 ** 9);
+        proportionWithdrawToken2 = bound(proportionWithdrawToken2, 0, 10 ** 9 - proportionWithdrawToken1);
 
         _depositSwapAndAddLiquidity(amounts);
         _swapToImbalance(coinSwap, coinSwap, swapAmount);
@@ -240,11 +240,7 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
         _assertCommonDeleverage();
     }
 
-    function testDeleverageBalance(
-        uint256[4] memory amounts,
-        uint256 swapAmount,
-        int128 coinSwap
-    ) public {
+    function testDeleverageBalance(uint256[4] memory amounts, uint256 swapAmount, int128 coinSwap) public {
         _depositSwapAndAddLiquidity(amounts);
         _swapToImbalance(coinSwap, coinSwap, swapAmount);
 
@@ -261,7 +257,7 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
         int128 coinSwap,
         uint256 proportionWithdrawToken
     ) public {
-        proportionWithdrawToken = bound(proportionWithdrawToken, 0, 10**9);
+        proportionWithdrawToken = bound(proportionWithdrawToken, 0, 10 ** 9);
         _depositSwapAndAddLiquidity(amounts);
         _swapToImbalance(coinSwap, coinSwap, swapAmount);
 
@@ -305,10 +301,10 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
 
     function _depositSwapAndAddLiquidity(uint256[4] memory amounts) internal returns (uint256 minAmountOut) {
         // DAI - USDC - USDT - LUSD
-        amounts[0] = bound(amounts[0], 1, 10**(18 + 6));
-        amounts[1] = bound(amounts[1], 1, 10**(6 + 6));
-        amounts[2] = bound(amounts[2], 1, 10**(6 + 6));
-        amounts[3] = bound(amounts[3], 1, 10**(18 + 6));
+        amounts[0] = bound(amounts[0], 1, 10 ** (18 + 6));
+        amounts[1] = bound(amounts[1], 1, 10 ** (6 + 6));
+        amounts[2] = bound(amounts[2], 1, 10 ** (6 + 6));
+        amounts[3] = bound(amounts[3], 1, 10 ** (18 + 6));
 
         deal(address(_DAI), address(_alice), amounts[0]);
         deal(address(_USDC), address(_alice), amounts[1]);
@@ -459,10 +455,10 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
         vm.stopPrank();
     }
 
-    function _deleverageFullyBalanceFromBP(int128 coinIndex, IERC20 outToken)
-        internal
-        returns (uint256[3] memory minAmounts)
-    {
+    function _deleverageFullyBalanceFromBP(
+        int128 coinIndex,
+        IERC20 outToken
+    ) internal returns (uint256[3] memory minAmounts) {
         vm.startPrank(_alice);
         // deleverage
         uint256 amount = staker.balanceOf(_alice);
@@ -534,14 +530,14 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
             // addd a slippage on the returned amount
             amountOuts = [
                 ((minAmounts[0] + minAmounts[1] * _DECIMAL_NORM_USDC + minAmounts[2] * _DECIMAL_NORM_USDT) *
-                    (10**9 - proportionWithdrawToken1 - proportionWithdrawToken2) *
-                    SLIPPAGE_BPS) / (10**9 * _BPS),
+                    (10 ** 9 - proportionWithdrawToken1 - proportionWithdrawToken2) *
+                    SLIPPAGE_BPS) / (10 ** 9 * _BPS),
                 ((minAmounts[0] / _DECIMAL_NORM_USDC + minAmounts[1] + minAmounts[2]) *
                     proportionWithdrawToken1 *
-                    SLIPPAGE_BPS) / (10**9 * _BPS),
+                    SLIPPAGE_BPS) / (10 ** 9 * _BPS),
                 ((minAmounts[0] / _DECIMAL_NORM_USDC + minAmounts[1] + minAmounts[2]) *
                     proportionWithdrawToken2 *
-                    SLIPPAGE_BPS) / (10**9 * _BPS)
+                    SLIPPAGE_BPS) / (10 ** 9 * _BPS)
             ];
             // if we try to withdraw more than the curve balances -> rebalance
             {
@@ -549,11 +545,11 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
                 uint256 curveBalanceUSDC = _BPPOOL.balances(1);
                 uint256 curveBalanceUSDT = _BPPOOL.balances(2);
                 if (curveBalanceDAI < amountOuts[0]) {
-                    amountOuts[0] = curveBalanceDAI**99 / 100;
+                    amountOuts[0] = curveBalanceDAI ** 99 / 100;
                 } else if (curveBalanceUSDC < amountOuts[1]) {
-                    amountOuts[1] = curveBalanceUSDC**99 / 100;
+                    amountOuts[1] = curveBalanceUSDC ** 99 / 100;
                 } else if (curveBalanceUSDT < amountOuts[2]) {
-                    amountOuts[2] = curveBalanceUSDT**99 / 100;
+                    amountOuts[2] = curveBalanceUSDT ** 99 / 100;
                 }
             }
             if (amountOuts[0] < 10 wei && amountOuts[1] < 10 wei && amountOuts[2] < 10 wei) return (amountOuts, 0);
@@ -582,10 +578,9 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
         return (amountOuts, maxBurnAmount);
     }
 
-    function _deleverageImbalance(uint256 proportionWithdrawToken)
-        internal
-        returns (uint256[2] memory amountOuts, uint256 keptLPToken)
-    {
+    function _deleverageImbalance(
+        uint256 proportionWithdrawToken
+    ) internal returns (uint256[2] memory amountOuts, uint256 keptLPToken) {
         vm.startPrank(_alice);
         // deleverage
         uint256 amount = staker.balanceOf(_alice);
@@ -600,17 +595,17 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
                 // We do as if there were no slippage withdrawing in an imbalance manner vs a balance one and then
                 // add a slippage on the returned amount
                 amountOuts = [
-                    ((minAmounts[0] + minAmounts[1]) * (10**9 - proportionWithdrawToken) * SLIPPAGE_BPS) /
-                        (10**9 * _BPS),
-                    ((minAmounts[0] + minAmounts[1]) * proportionWithdrawToken * SLIPPAGE_BPS) / (10**9 * _BPS)
+                    ((minAmounts[0] + minAmounts[1]) * (10 ** 9 - proportionWithdrawToken) * SLIPPAGE_BPS) /
+                        (10 ** 9 * _BPS),
+                    ((minAmounts[0] + minAmounts[1]) * proportionWithdrawToken * SLIPPAGE_BPS) / (10 ** 9 * _BPS)
                 ];
                 // if we try to withdraw more than the curve balances -> rebalance
                 uint256 curveBalanceLUSD = _METAPOOL.balances(0);
                 uint256 curveBalance3CRV = _METAPOOL.balances(1);
                 if (curveBalanceLUSD < amountOuts[0]) {
-                    amountOuts[0] = curveBalanceLUSD**99 / 100;
+                    amountOuts[0] = curveBalanceLUSD ** 99 / 100;
                 } else if (curveBalance3CRV < amountOuts[1]) {
-                    amountOuts[1] = curveBalance3CRV**99 / 100;
+                    amountOuts[1] = curveBalance3CRV ** 99 / 100;
                 }
                 if (amountOuts[0] < 10 wei && amountOuts[1] < 10 wei) return (amountOuts, 0);
             }
@@ -639,20 +634,16 @@ contract CurveLevSwapper2TokensWithBPBaseTest is BaseTest {
         keptLPToken = amount - maxBurnAmount;
     }
 
-    function _swapToImbalance(
-        int128 coinSwapFrom,
-        int128,
-        uint256 swapAmount
-    ) internal {
+    function _swapToImbalance(int128 coinSwapFrom, int128, uint256 swapAmount) internal {
         vm.startPrank(_dylan);
         coinSwapFrom = int128(uint128(bound(uint256(uint128(coinSwapFrom)), 0, 1)));
         // do a swap to change the pool state and withdraw womething different than what has been deposited
         if (coinSwapFrom == 1) {
-            swapAmount = bound(swapAmount, 10**18, 5 * 10**24);
+            swapAmount = bound(swapAmount, 10 ** 18, 5 * 10 ** 24);
             deal(address(_BPToken), address(_dylan), swapAmount);
             _BPToken.approve(address(_METAPOOL), type(uint256).max);
         } else {
-            swapAmount = bound(swapAmount, 10**18, 5 * 10**(18 + 6));
+            swapAmount = bound(swapAmount, 10 ** 18, 5 * 10 ** (18 + 6));
             deal(address(_LUSD), address(_dylan), swapAmount);
             _LUSD.approve(address(_METAPOOL), type(uint256).max);
         }

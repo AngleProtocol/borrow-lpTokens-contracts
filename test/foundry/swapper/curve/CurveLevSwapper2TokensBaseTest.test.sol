@@ -2,14 +2,14 @@
 pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
-import "../../../../contracts/interfaces/IBorrowStaker.sol";
+import "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../../contracts/interfaces/external/curve/IMetaPool2.sol";
+import "borrow-staked/interfaces/external/curve/IMetaPool2.sol";
 import "borrow/interfaces/coreModule/IStableMaster.sol";
 import "borrow/interfaces/coreModule/IPoolManager.sol";
-import "../../../../contracts/mock/MockTokenPermit.sol";
-import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper2Tokens, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../../contracts/mock/MockCurveLevSwapper2Tokens.sol";
-import { MockBorrowStaker } from "../../../../contracts/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { CurveRemovalType, SwapType, BaseLevSwapper, MockCurveLevSwapper2Tokens, Swapper, IUniswapV3Router, IAngleRouterSidechain } from "borrow-staked/mock/MockCurveLevSwapper2Tokens.sol";
+import { MockBorrowStaker } from "borrow-staked/mock/MockBorrowStaker.sol";
 
 contract CurveLevSwapper2TokensBaseTest is BaseTest {
     using stdStorage for StdStorage;
@@ -23,8 +23,8 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
     IERC20 internal constant _USDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     IERC20 internal constant _USDT = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
     IERC20 internal constant _FRAX = IERC20(0x853d955aCEf822Db058eb8505911ED77F175b99e);
-    uint256 internal constant _DECIMAL_NORM_USDC = 10**12;
-    uint256 internal constant _DECIMAL_NORM_USDT = 10**12;
+    uint256 internal constant _DECIMAL_NORM_USDC = 10 ** 12;
+    uint256 internal constant _DECIMAL_NORM_USDT = 10 ** 12;
 
     IMetaPool2 internal constant _METAPOOL = IMetaPool2(0xDcEF968d416a41Cdac0ED8702fAC8128A64241A2);
 
@@ -105,7 +105,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
     }
 
     function testLeverageNoUnderlyingTokensDeposited(uint256 amount) public {
-        amount = bound(amount, 1, 10**27);
+        amount = bound(amount, 1, 10 ** 27);
 
         _depositDirect(amount);
 
@@ -172,7 +172,7 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         _depositSwapAndAddLiquidity(amounts, true);
         _swapToImbalance(coinSwapFrom, coinSwapTo, swapAmount);
 
-        proportionWithdrawToken = bound(proportionWithdrawToken, 0, 10**9);
+        proportionWithdrawToken = bound(proportionWithdrawToken, 0, 10 ** 9);
 
         (uint256[2] memory amountOut, uint256 keptLPToken) = _deleverageImbalance(proportionWithdrawToken);
         if (amountOut[0] < 10 wei && amountOut[1] < 10 wei) return;
@@ -208,16 +208,16 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         vm.stopPrank();
     }
 
-    function _depositSwapAndAddLiquidity(uint256[2] memory amounts, bool doSwaps)
-        internal
-        returns (uint256 minAmountOut)
-    {
+    function _depositSwapAndAddLiquidity(
+        uint256[2] memory amounts,
+        bool doSwaps
+    ) internal returns (uint256 minAmountOut) {
         // FRAX - USDC
-        amounts[0] = bound(amounts[0], 1, 10**23);
-        amounts[1] = bound(amounts[1], 1, 10**11);
+        amounts[0] = bound(amounts[0], 1, 10 ** 23);
+        amounts[1] = bound(amounts[1], 1, 10 ** 11);
 
         uint256 swappedFRAX = doSwaps ? 10000 ether : 0;
-        uint256 swappedUSDT = doSwaps ? 10000 * 10**6 : 0;
+        uint256 swappedUSDT = doSwaps ? 10000 * 10 ** 6 : 0;
 
         deal(address(_FRAX), address(_alice), swappedFRAX + amounts[0]);
         deal(address(_USDC), address(_alice), amounts[1]);
@@ -307,10 +307,9 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         vm.stopPrank();
     }
 
-    function _deleverageImbalance(uint256 proportionWithdrawToken)
-        internal
-        returns (uint256[2] memory amountOuts, uint256 keptLPToken)
-    {
+    function _deleverageImbalance(
+        uint256 proportionWithdrawToken
+    ) internal returns (uint256[2] memory amountOuts, uint256 keptLPToken) {
         vm.startPrank(_alice);
         // deleverage
         uint256 amount = staker.balanceOf(_alice);
@@ -326,18 +325,18 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
                 // addd a slippage on the returned amount
                 amountOuts = [
                     ((minAmounts[0] + minAmounts[1] * _DECIMAL_NORM_USDC) *
-                        (10**9 - proportionWithdrawToken) *
-                        SLIPPAGE_BPS) / (10**9 * _BPS),
+                        (10 ** 9 - proportionWithdrawToken) *
+                        SLIPPAGE_BPS) / (10 ** 9 * _BPS),
                     ((minAmounts[0] / _DECIMAL_NORM_USDC + minAmounts[1]) * proportionWithdrawToken * SLIPPAGE_BPS) /
-                        (10**9 * _BPS)
+                        (10 ** 9 * _BPS)
                 ];
                 // if we try to withdraw more than the curve balances -> rebalance
                 uint256 curveBalanceFRAX = _METAPOOL.balances(0);
                 uint256 curveBalanceUSDC = _METAPOOL.balances(1);
                 if (curveBalanceFRAX < amountOuts[0]) {
-                    amountOuts[0] = curveBalanceFRAX**99 / 100;
+                    amountOuts[0] = curveBalanceFRAX ** 99 / 100;
                 } else if (curveBalanceUSDC < amountOuts[1]) {
-                    amountOuts[1] = curveBalanceUSDC**99 / 100;
+                    amountOuts[1] = curveBalanceUSDC ** 99 / 100;
                 }
                 if (amountOuts[0] < 10 wei && amountOuts[1] < 10 wei) return (amountOuts, 0);
             }
@@ -359,20 +358,16 @@ contract CurveLevSwapper2TokensBaseTest is BaseTest {
         keptLPToken = amount - maxBurnAmount;
     }
 
-    function _swapToImbalance(
-        int128 coinSwapFrom,
-        int128,
-        uint256 swapAmount
-    ) internal {
+    function _swapToImbalance(int128 coinSwapFrom, int128, uint256 swapAmount) internal {
         vm.startPrank(_dylan);
         coinSwapFrom = int128(uint128(bound(uint256(uint128(coinSwapFrom)), 0, 1)));
         // do a swap to change the pool state and withdraw womething different than what has been deposited
         if (coinSwapFrom == 0) {
-            swapAmount = bound(swapAmount, 10**18, 10**26);
+            swapAmount = bound(swapAmount, 10 ** 18, 10 ** 26);
             deal(address(_FRAX), address(_dylan), swapAmount);
             _FRAX.approve(address(_METAPOOL), type(uint256).max);
         } else {
-            swapAmount = bound(swapAmount, 10**6, 10**14);
+            swapAmount = bound(swapAmount, 10 ** 6, 10 ** 14);
             deal(address(_USDC), address(_dylan), swapAmount);
             _USDC.approve(address(_METAPOOL), type(uint256).max);
         }

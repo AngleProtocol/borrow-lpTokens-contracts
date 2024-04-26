@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../CurveLevSwapperLUSDv3CRV.sol";
+import "borrow-staked/swapper/LevSwapper/curve/implementations/mainnet/CurveLevSwapperLUSDv3CRV.sol";
 
 /// @title ConvexLevSwapperLUSDv3CRV
 /// @author Angle Labs, Inc.
@@ -10,9 +10,9 @@ contract ConvexLevSwapperLUSDv3CRV is CurveLevSwapperLUSDv3CRV {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) CurveLevSwapperLUSDv3CRV(_core, _uniV3Router, _oneInch, _angleRouter) {}
+    ) CurveLevSwapperLUSDv3CRV(_core, _uniV3Router, _aggregator, _angleRouter) {}
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {

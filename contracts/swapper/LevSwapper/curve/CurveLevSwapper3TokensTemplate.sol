@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "./CurveLevSwapper3Tokens.sol";
+import "borrow-staked/swapper/LevSwapper/curve/CurveLevSwapper3Tokens.sol";
 
 /// @author Angle Labs, Inc.
 /// @notice Template leverage swapper on Curve LP tokens
@@ -10,9 +10,9 @@ contract CurveLevSwapper3TokensTemplate is CurveLevSwapper3Tokens {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) CurveLevSwapper3Tokens(_core, _uniV3Router, _oneInch, _angleRouter) {}
+    ) CurveLevSwapper3Tokens(_core, _uniV3Router, _aggregator, _angleRouter) {}
 
     /// @inheritdoc BaseLevSwapper
     function angleStaker() public pure override returns (IBorrowStaker) {

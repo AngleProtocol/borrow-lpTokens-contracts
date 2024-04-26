@@ -3,8 +3,8 @@
 pragma solidity ^0.8.17;
 
 import "borrow/oracle/BaseOracleChainlinkMulti.sol";
-import "../../../interfaces/external/curve/ITricryptoPool.sol";
-import "../../../interfaces/external/curve/ICurveCryptoSwapPool.sol";
+import "borrow-staked/interfaces/external/curve/ITricryptoPool.sol";
+import "borrow-staked/interfaces/external/curve/ICurveCryptoSwapPool.sol";
 
 /// @title OracleCrvUSDBTCETHEUR
 /// @author Angle Labs, Inc.
@@ -15,7 +15,7 @@ contract OracleCrvUSDBTCETHEUR is BaseOracleChainlinkMulti {
     //solhint-disable-next-line
     ICurveCryptoSwapPool public constant AaveBP = ICurveCryptoSwapPool(0x445FE580eF8d70FF569aB36e80c647af338db351);
     uint256 public constant GAMMA0 = 28000000000000; // 2.8e-5
-    uint256 public constant A0 = 2 * 3**3 * 10000;
+    uint256 public constant A0 = 2 * 3 ** 3 * 10000;
     uint256 public constant DISCOUNT0 = 1087460000000000; // 0.00108..
 
     error DidNotConverge();
@@ -48,7 +48,7 @@ contract OracleCrvUSDBTCETHEUR is BaseOracleChainlinkMulti {
     function _lpPrice() internal view returns (uint256) {
         uint256 lpAaveBPPrice = _lpPriceBase();
         uint256 lpMetaPrice = _lpPriceMeta();
-        return (lpMetaPrice * lpAaveBPPrice) / 10**18;
+        return (lpMetaPrice * lpAaveBPPrice) / 10 ** 18;
     }
 
     /// @notice Get the meta LP token price
@@ -57,16 +57,16 @@ contract OracleCrvUSDBTCETHEUR is BaseOracleChainlinkMulti {
         uint256 priceETH = TRI_CRYPTO_POOL.price_oracle(1);
         uint256 virtualPrice = TRI_CRYPTO_POOL.get_virtual_price();
 
-        maxPrice = (3 * virtualPrice * _cubicRoot(priceBTC * priceETH)) / 10**18;
+        maxPrice = (3 * virtualPrice * _cubicRoot(priceBTC * priceETH)) / 10 ** 18;
 
         // ((A/A0) * (gamma/gamma0)**2) ** (1/3)
-        uint256 gamma = (TRI_CRYPTO_POOL.gamma() * 10**18) / GAMMA0;
-        uint256 a = (TRI_CRYPTO_POOL.A() * 10**18) / A0;
-        uint256 discount = (gamma**2 / 10**18) * a > 10**34 ? (gamma**2 / 10**18) * a : 10**34; // handle qbrt nonconvergence
+        uint256 gamma = (TRI_CRYPTO_POOL.gamma() * 10 ** 18) / GAMMA0;
+        uint256 a = (TRI_CRYPTO_POOL.A() * 10 ** 18) / A0;
+        uint256 discount = (gamma ** 2 / 10 ** 18) * a > 10 ** 34 ? (gamma ** 2 / 10 ** 18) * a : 10 ** 34; // handle qbrt nonconvergence
         // if discount is small, we take an upper bound
-        discount = (_cubicRoot(discount) * DISCOUNT0) / 10**18;
+        discount = (_cubicRoot(discount) * DISCOUNT0) / 10 ** 18;
 
-        maxPrice -= (maxPrice * discount) / 10**18;
+        maxPrice -= (maxPrice * discount) / 10 ** 18;
     }
 
     /// @notice Get the underlying LP token price
@@ -78,11 +78,13 @@ contract OracleCrvUSDBTCETHEUR is BaseOracleChainlinkMulti {
         uint256 usdtPrice = _readChainlinkFeed(1, _circuitChainlink[2], 1, 0);
         // Picking the minimum price between DAI, USDC and USDT, multiplying it by the pool's virtual price
         // All oracles are in base 8
-        usdcPrice = usdcPrice >= daiPrice ? (daiPrice >= usdtPrice ? usdtPrice : daiPrice) : usdcPrice >= usdtPrice
-            ? usdtPrice
-            : usdcPrice;
+        usdcPrice = usdcPrice >= daiPrice
+            ? (daiPrice >= usdtPrice ? usdtPrice : daiPrice)
+            : usdcPrice >= usdtPrice
+                ? usdtPrice
+                : usdcPrice;
 
-        return (AaveBP.get_virtual_price() * usdcPrice) / 10**8;
+        return (AaveBP.get_virtual_price() * usdcPrice) / 10 ** 8;
     }
 
     /// @notice Get the global LP token price
@@ -92,14 +94,14 @@ contract OracleCrvUSDBTCETHEUR is BaseOracleChainlinkMulti {
         // Will have convergence problems when ETH*BTC is cheaper than 0.01 squared dollar
         // (for example, when BTC < $0.1 and ETH < $0.1)
         //solhint-disable-next-line
-        uint256 D = x / 10**18;
+        uint256 D = x / 10 ** 18;
         for (uint256 i; i < 255; ++i) {
             uint256 diff;
             //solhint-disable-next-line
             uint256 DPrev = D;
-            D = (D * (2 * 10**18 + ((((x / D) * 10**18) / D) * 10**18) / D)) / (3 * 10**18);
+            D = (D * (2 * 10 ** 18 + ((((x / D) * 10 ** 18) / D) * 10 ** 18) / D)) / (3 * 10 ** 18);
             diff = D > DPrev ? D - DPrev : DPrev - D;
-            if (diff <= 1 || diff * 10**18 < D) return D;
+            if (diff <= 1 || diff * 10 ** 18 < D) return D;
         }
         revert DidNotConverge();
     }

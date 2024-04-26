@@ -3,7 +3,7 @@
 pragma solidity ^0.8.17;
 
 import "borrow/oracle/BaseOracleChainlinkMulti.sol";
-import "../../../interfaces/external/curve/ICurveOracle.sol";
+import "borrow-staked/interfaces/external/curve/ICurveOracle.sol";
 
 /// @title OracleTriCrypto2EURChainlink
 /// @author Angle Labs, Inc.

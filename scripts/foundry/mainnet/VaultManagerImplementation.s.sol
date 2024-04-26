@@ -2,7 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
-import { VaultManagerListing } from "../../../contracts/vaultManager/VaultManagerListing.sol";
+import { VaultManagerListing } from "borrow-staked/vaultManager/VaultManagerListing.sol";
 import "./MainnetConstants.s.sol";
 
 contract DeployVaultManagerImplementationMainnet is Script, MainnetConstants {

@@ -3,8 +3,8 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
-import { Convex2PoolStaker } from "../../../contracts/staker/curve/implementations/arbitrum/pools/Convex2PoolStaker.sol";
-import { StakeDAO2PoolStaker } from "../../../contracts/staker/curve/implementations/arbitrum/pools/StakeDAO2PoolStaker.sol";
+import { Convex2PoolStaker } from "borrow-staked/staker/curve/implementations/arbitrum/pools/Convex2PoolStaker.sol";
+import { StakeDAO2PoolStaker } from "borrow-staked/staker/curve/implementations/arbitrum/pools/StakeDAO2PoolStaker.sol";
 import "./ArbitrumConstants.s.sol";
 
 contract DeployStakerArbitrum is Script, ArbitrumConstants {

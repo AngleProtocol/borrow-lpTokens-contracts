@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../swapper/LevSwapper/curve/CurveLevSwapper5TokensWithBP.sol";
-import "../interfaces/external/curve/ITricrypto3.sol";
+import "borrow-staked/swapper/LevSwapper/curve/CurveLevSwapper5TokensWithBP.sol";
+import "borrow-staked/interfaces/external/curve/ITricrypto3.sol";
 
 /// @title CurveLevSwapperTricrypto3
 /// @author Angle Labs, Inc.
@@ -13,10 +13,10 @@ contract MockCurveLevSwapper5TokensWithBP is CurveLevSwapper5TokensWithBP {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter,
         IBorrowStaker angleStaker_
-    ) CurveLevSwapper5TokensWithBP(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) CurveLevSwapper5TokensWithBP(_core, _uniV3Router, _aggregator, _angleRouter) {
         _angleStaker = angleStaker_;
     }
 

@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import "borrow/interfaces/ILiquidityGauge.sol";
 
-import "../BorrowStaker.sol";
+import "borrow-staked/staker/BorrowStaker.sol";
 
 /// @title SanTokenStaker
 /// @author Angle Labs, Inc.
@@ -24,11 +24,7 @@ abstract contract SanTokenStaker is BorrowStaker {
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable
-    function _afterTokenTransfer(
-        address from,
-        address,
-        uint256 amount
-    ) internal override {
+    function _afterTokenTransfer(address from, address, uint256 amount) internal override {
         // Stake on the gauge if it is a deposit
         if (from == address(0)) {
             // Deposit the sanTokens into the liquidity gauge contract

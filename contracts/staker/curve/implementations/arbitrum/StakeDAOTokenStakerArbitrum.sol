@@ -1,18 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../StakeDAOTokenStaker.sol";
+import "borrow-staked/staker/curve/StakeDAOTokenStaker.sol";
 
 /// @title StakeDAOTokenStakerArbitrum
 /// @author Angle Labs, Inc.
 /// @dev Constants for borrow staker adapted to Curve LP tokens deposited on Stake DAO Arbitrum
 abstract contract StakeDAOTokenStakerArbitrum is StakeDAOTokenStaker {
     /// @inheritdoc ERC20Upgradeable
-    function _afterTokenTransfer(
-        address from,
-        address,
-        uint256 amount
-    ) internal virtual override {
+    function _afterTokenTransfer(address from, address, uint256 amount) internal virtual override {
         // Stake on StakeDAO if it is a deposit
         if (from == address(0)) {
             // Approve the vault contract for the Curve LP tokens

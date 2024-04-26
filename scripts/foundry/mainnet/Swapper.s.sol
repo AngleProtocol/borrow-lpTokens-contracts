@@ -6,8 +6,8 @@ import { console } from "forge-std/console.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
-import { ConvexLevSwapper3CRV } from "../../../contracts/swapper/LevSwapper/curve/implementations/mainnet/convex/ConvexLevSwapper3CRV.sol";
-import { StakeDAOLevSwapper3CRV } from "../../../contracts/swapper/LevSwapper/curve/implementations/mainnet/stakeDAO/StakeDAOLevSwapper3CRV.sol";
+import { ConvexLevSwapper3CRV } from "borrow-staked/swapper/LevSwapper/curve/implementations/mainnet/convex/ConvexLevSwapper3CRV.sol";
+import { StakeDAOLevSwapper3CRV } from "borrow-staked/swapper/LevSwapper/curve/implementations/mainnet/stakeDAO/StakeDAOLevSwapper3CRV.sol";
 import "./MainnetConstants.s.sol";
 
 contract DeploySwapperMainnet is Script, MainnetConstants {

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../ConvexTokenStakerArbitrum.sol";
+import "borrow-staked/staker/curve/implementations/arbitrum/ConvexTokenStakerArbitrum.sol";
 
 /// @title Convex2PoolStaker
 /// @author Angle Labs, Inc.

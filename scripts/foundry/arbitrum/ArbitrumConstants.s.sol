@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../../contracts/external/ProxyAdmin.sol";
-import "../../../contracts/external/TransparentUpgradeableProxy.sol";
+import { ProxyAdmin } from "borrow-staked/external/ProxyAdmin.sol";
+import { TransparentUpgradeableProxy } from "borrow-staked/external/TransparentUpgradeableProxy.sol";
 
 contract ArbitrumConstants {
     address public constant GOVERNOR = 0xAA2DaCCAb539649D1839772C625108674154df0B;

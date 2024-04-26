@@ -3,9 +3,9 @@ pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../contracts/mock/MockTokenPermit.sol";
-import "../../../contracts/mock/MockVaultManager.sol";
-import { MockBorrowStaker, BorrowStakerStorage } from "../../../contracts/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import "borrow-staked/mock/MockVaultManager.sol";
+import { MockBorrowStaker, BorrowStakerStorage } from "borrow-staked/mock/MockBorrowStaker.sol";
 
 contract CoreBorrowStakerTest is BaseTest {
     using stdStorage for StdStorage;
@@ -17,8 +17,8 @@ contract CoreBorrowStakerTest is BaseTest {
     MockBorrowStaker public staker;
     uint8 public decimalToken = 18;
     uint8 public decimalReward = 6;
-    uint256 public rewardAmount = 10**2 * 10**(decimalReward);
-    uint256 public maxTokenAmount = 10**15 * 10**decimalToken;
+    uint256 public rewardAmount = 10 ** 2 * 10 ** (decimalReward);
+    uint256 public maxTokenAmount = 10 ** 15 * 10 ** decimalToken;
 
     uint256 public constant DEPOSIT_LENGTH = 10;
     uint256 public constant WITHDRAW_LENGTH = 10;
@@ -62,11 +62,7 @@ contract CoreBorrowStakerTest is BaseTest {
 
     // =============================== ACCESS CONTROL ==============================
 
-    function testStakerAccessControlInvalid(
-        address randomUser,
-        uint256 amount,
-        address newCoreBorrow
-    ) public {
+    function testStakerAccessControlInvalid(address randomUser, uint256 amount, address newCoreBorrow) public {
         vm.assume(
             randomUser != _GOVERNOR &&
                 randomUser != address(0) &&
@@ -331,9 +327,13 @@ contract CoreBorrowStakerTest is BaseTest {
         for (uint256 i = 1; i < amounts.length; ++i) {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
 
             uint256 amount = bound(amounts[i], 1, maxTokenAmount);
             deal(address(asset), account, amount);
@@ -392,9 +392,13 @@ contract CoreBorrowStakerTest is BaseTest {
         for (uint256 i = 1; i < amounts.length; ++i) {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
 
             uint256 amount = bound(amounts[i], 1, maxTokenAmount);
             deal(address(asset), account, amount);
@@ -449,9 +453,13 @@ contract CoreBorrowStakerTest is BaseTest {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
 
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
 
             uint256 amount = bound(amounts[i], 1, maxTokenAmount);
             deal(address(asset), account, amount);
@@ -470,7 +478,7 @@ contract CoreBorrowStakerTest is BaseTest {
             assertApproxEqAbs(
                 staker.pendingRewardsOf(rewardToken, account),
                 pendingRewards[randomIndex],
-                10**(decimalReward - 4)
+                10 ** (decimalReward - 4)
             );
 
             vm.warp(block.timestamp + elapseTime[i]);
@@ -488,14 +496,10 @@ contract CoreBorrowStakerTest is BaseTest {
     }
 
     /// @dev This test will go through the totalSupply = 0 branches
-    function testFirstWithdrawAllowanceLow(
-        uint256 amount,
-        uint256 allowance,
-        address to
-    ) public {
+    function testFirstWithdrawAllowanceLow(uint256 amount, uint256 allowance, address to) public {
         vm.assume(to != address(0) && to != _alice && to != address(proxyAdmin));
         amount = bound(amount, 1, maxTokenAmount);
-        allowance = bound(allowance, 0, 10**9 - 1);
+        allowance = bound(allowance, 0, 10 ** 9 - 1);
         deal(address(asset), address(_alice), amount);
         deal(address(rewardToken), address(staker), rewardAmount);
 
@@ -504,18 +508,14 @@ contract CoreBorrowStakerTest is BaseTest {
         vm.prank(_alice);
         staker.deposit(amount, to);
         vm.prank(to);
-        staker.approve(_alice, (allowance * amount) / 10**9);
+        staker.approve(_alice, (allowance * amount) / 10 ** 9);
         vm.prank(_alice);
         vm.expectRevert(BorrowStakerStorage.TransferAmountExceedsAllowance.selector);
         staker.withdraw(amount, to, _alice);
     }
 
     /// @dev This test will go through the totalSupply = 0 branches
-    function testFirstWithdrawSuccess(
-        uint256 amount,
-        address to,
-        uint64 elapseTime
-    ) public {
+    function testFirstWithdrawSuccess(uint256 amount, address to, uint64 elapseTime) public {
         vm.assume(to != address(0) && to != address(staker) && to != address(_alice) && to != address(asset));
         amount = bound(amount, 0, maxTokenAmount);
         deal(address(asset), address(_alice), amount);
@@ -536,7 +536,7 @@ contract CoreBorrowStakerTest is BaseTest {
         assertEq(staker.pendingRewardsOf(rewardToken, _alice), 0);
         assertEq(staker.pendingRewardsOf(rewardToken, to), 0);
         assertEq(rewardToken.balanceOf(to), 0);
-        assertApproxEqAbs(rewardToken.balanceOf(_alice), amount > 0 ? rewardAmount : 0, 10**(decimalReward - 4));
+        assertApproxEqAbs(rewardToken.balanceOf(_alice), amount > 0 ? rewardAmount : 0, 10 ** (decimalReward - 4));
     }
 
     function testFirstWithdrawWrapperSuccess(uint256 amount, uint64 elapseTime) public {
@@ -555,14 +555,10 @@ contract CoreBorrowStakerTest is BaseTest {
         assertEq(asset.balanceOf(_alice), amount);
         assertEq(staker.balanceOf(_alice), 0);
         assertEq(staker.pendingRewardsOf(rewardToken, _alice), 0);
-        assertApproxEqAbs(rewardToken.balanceOf(_alice), amount > 0 ? rewardAmount : 0, 10**(decimalReward - 4));
+        assertApproxEqAbs(rewardToken.balanceOf(_alice), amount > 0 ? rewardAmount : 0, 10 ** (decimalReward - 4));
     }
 
-    function testFirstWithdrawFullAllowanceSuccess(
-        uint256 amount,
-        address to,
-        uint64 elapseTime
-    ) public {
+    function testFirstWithdrawFullAllowanceSuccess(uint256 amount, address to, uint64 elapseTime) public {
         vm.assume(to != address(0) && to != _alice && to != address(staker) && to != address(proxyAdmin));
         amount = bound(amount, 1, maxTokenAmount);
         deal(address(asset), address(_alice), amount);
@@ -587,7 +583,7 @@ contract CoreBorrowStakerTest is BaseTest {
         assertEq(staker.pendingRewardsOf(rewardToken, _alice), 0);
         assertEq(staker.pendingRewardsOf(rewardToken, to), 0);
         assertEq(rewardToken.balanceOf(to), 0);
-        assertApproxEqAbs(rewardToken.balanceOf(_alice), amount > 0 ? rewardAmount : 0, 10**(decimalReward - 4));
+        assertApproxEqAbs(rewardToken.balanceOf(_alice), amount > 0 ? rewardAmount : 0, 10 ** (decimalReward - 4));
     }
 
     function testFirstWithdrawPartialAllowanceSuccess(
@@ -597,15 +593,15 @@ contract CoreBorrowStakerTest is BaseTest {
         uint64 elapseTime
     ) public {
         vm.assume(to != address(0) && to != _alice && to != address(staker));
-        amount = bound(amount, 10**4, maxTokenAmount);
-        allowance = bound(allowance, 10**9, 10**11);
+        amount = bound(amount, 10 ** 4, maxTokenAmount);
+        allowance = bound(allowance, 10 ** 9, 10 ** 11);
         deal(address(asset), address(_alice), amount);
         deal(address(rewardToken), address(staker), rewardAmount);
 
         vm.startPrank(_alice);
         asset.approve(address(staker), amount);
         staker.deposit(amount, _alice);
-        staker.approve(to, (amount * allowance) / 10**9);
+        staker.approve(to, (amount * allowance) / 10 ** 9);
         vm.stopPrank();
         // advance in time for rewards to be taken into account
         elapseTime = uint64(bound(elapseTime, 1, 86400 * 7));
@@ -613,7 +609,7 @@ contract CoreBorrowStakerTest is BaseTest {
         vm.prank(to);
         staker.withdraw(amount, _alice, to);
 
-        assertEq(staker.allowance(_alice, to), (amount * allowance) / 10**9 - amount);
+        assertEq(staker.allowance(_alice, to), (amount * allowance) / 10 ** 9 - amount);
         assertEq(asset.balanceOf(_alice), 0);
         assertEq(asset.balanceOf(to), amount);
         assertEq(staker.balanceOf(_alice), 0);
@@ -621,7 +617,7 @@ contract CoreBorrowStakerTest is BaseTest {
         assertEq(staker.pendingRewardsOf(rewardToken, _alice), 0);
         assertEq(staker.pendingRewardsOf(rewardToken, to), 0);
         assertEq(rewardToken.balanceOf(to), 0);
-        assertApproxEqAbs(rewardToken.balanceOf(_alice), amount > 0 ? rewardAmount : 0, 10**(decimalReward - 4));
+        assertApproxEqAbs(rewardToken.balanceOf(_alice), amount > 0 ? rewardAmount : 0, 10 ** (decimalReward - 4));
     }
 
     function testMultiWithdrawRewardsSuccess(
@@ -646,9 +642,13 @@ contract CoreBorrowStakerTest is BaseTest {
 
         for (uint256 i = 1; i < amounts.length; ++i) {
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
             if (staker.balanceOf(account) == 0) isDeposit[i] = true;
 
             {
@@ -672,8 +672,8 @@ contract CoreBorrowStakerTest is BaseTest {
                 staker.deposit(amount, account);
                 assertEq(rewardToken.balanceOf(account), prevRewardTokenBalance);
             } else {
-                amount = bound(amounts[i], 1, 10**9);
-                staker.withdraw((amount * staker.balanceOf(account)) / 10**9, account, account);
+                amount = bound(amounts[i], 1, 10 ** 9);
+                staker.withdraw((amount * staker.balanceOf(account)) / 10 ** 9, account, account);
                 assertEq(staker.pendingRewardsOf(rewardToken, account), 0);
             }
             vm.stopPrank();
@@ -681,7 +681,7 @@ contract CoreBorrowStakerTest is BaseTest {
             assertApproxEqAbs(
                 rewardToken.balanceOf(account) + staker.pendingRewardsOf(rewardToken, account),
                 pendingRewards[randomIndex],
-                10**(decimalReward - 4)
+                10 ** (decimalReward - 4)
             );
 
             // advance in time for rewards to be taken into account
@@ -714,9 +714,13 @@ contract CoreBorrowStakerTest is BaseTest {
 
         for (uint256 i = 1; i < amounts.length; ++i) {
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
             if (staker.balanceOf(account) == 0) isDeposit[i] = true;
 
             {
@@ -746,11 +750,11 @@ contract CoreBorrowStakerTest is BaseTest {
                 assertApproxEqAbs(
                     staker.claimableRewards(account, rewardToken) + prevRewardTokenBalance,
                     newClaimableRewards + pendingRewards[randomIndex],
-                    10**(decimalReward - 4)
+                    10 ** (decimalReward - 4)
                 );
             } else {
-                amount = bound(amounts[i], 1, 10**9);
-                staker.withdraw((amount * staker.balanceOf(account)) / 10**9, account, account);
+                amount = bound(amounts[i], 1, 10 ** 9);
+                staker.withdraw((amount * staker.balanceOf(account)) / 10 ** 9, account, account);
                 // there could be some pending rewards left because of rounding errors, see `testMultiWithdrawRewardsSuccess`
                 uint256 estimatedNewClaimableRewards = staker.totalSupply() > 0
                     ? (staker.balanceOf(account) * rewardAmount) / staker.totalSupply()
@@ -758,7 +762,7 @@ contract CoreBorrowStakerTest is BaseTest {
                 assertApproxEqAbs(
                     staker.claimableRewards(account, rewardToken),
                     estimatedNewClaimableRewards,
-                    10**(decimalReward - 4)
+                    10 ** (decimalReward - 4)
                 );
             }
 
@@ -767,7 +771,7 @@ contract CoreBorrowStakerTest is BaseTest {
             assertApproxEqAbs(
                 rewardToken.balanceOf(account) + staker.pendingRewardsOf(rewardToken, account),
                 pendingRewards[randomIndex],
-                10**(decimalReward - 4)
+                10 ** (decimalReward - 4)
             );
 
             // advance in time for rewards to be taken into account
@@ -802,9 +806,13 @@ contract CoreBorrowStakerTest is BaseTest {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             staker.setRewardAmount(rewardAmount);
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
             if (staker.balanceOf(account) == 0) isDeposit[i] = true;
 
             {
@@ -833,8 +841,8 @@ contract CoreBorrowStakerTest is BaseTest {
                 staker.checkpoint(account);
                 assertEq(functionClaimableRewards, staker.pendingRewardsOf(rewardToken, account));
             } else {
-                amount = bound(amounts[i], 1, 10**9);
-                staker.withdraw((amount * staker.balanceOf(account)) / 10**9, account, account);
+                amount = bound(amounts[i], 1, 10 ** 9);
+                staker.withdraw((amount * staker.balanceOf(account)) / 10 ** 9, account, account);
 
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
@@ -850,7 +858,7 @@ contract CoreBorrowStakerTest is BaseTest {
             assertApproxEqAbs(
                 rewardToken.balanceOf(account) + staker.pendingRewardsOf(rewardToken, account),
                 pendingRewards[randomIndex],
-                10**(decimalReward - 4)
+                10 ** (decimalReward - 4)
             );
 
             // advance in time for rewards to be taken into account
@@ -884,9 +892,13 @@ contract CoreBorrowStakerTest is BaseTest {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             staker.setRewardAmount(rewardAmount);
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
             if (staker.balanceOf(account) == 0) isDeposit[i] = true;
 
             {
@@ -917,8 +929,8 @@ contract CoreBorrowStakerTest is BaseTest {
                 assertEq(functionClaimableRewards, claimedRewards[0]);
                 assertEq(rewardToken.balanceOf(account) - prevRewardTokenBalance, functionClaimableRewards);
             } else {
-                amount = bound(amounts[i], 1, 10**9);
-                staker.withdraw((amount * staker.balanceOf(account)) / 10**9, account, account);
+                amount = bound(amounts[i], 1, 10 ** 9);
+                staker.withdraw((amount * staker.balanceOf(account)) / 10 ** 9, account, account);
 
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
@@ -937,7 +949,7 @@ contract CoreBorrowStakerTest is BaseTest {
             assertApproxEqAbs(
                 rewardToken.balanceOf(account) + staker.pendingRewardsOf(rewardToken, account),
                 pendingRewards[randomIndex],
-                10**(decimalReward - 4)
+                10 ** (decimalReward - 4)
             );
 
             // advance in time for rewards to be taken into account
@@ -969,9 +981,13 @@ contract CoreBorrowStakerTest is BaseTest {
             elapseTime[i] = uint64(bound(elapseTime[i], 1, 86400 * 7));
             staker.setRewardAmount(rewardAmount);
             uint256 randomIndex = bound(accounts[i], 0, 3);
-            address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                ? _charlie
-                : _dylan;
+            address account = randomIndex == 0
+                ? _alice
+                : randomIndex == 1
+                    ? _bob
+                    : randomIndex == 2
+                        ? _charlie
+                        : _dylan;
             if (staker.balanceOf(account) == 0) isDeposit[i] = true;
 
             {
@@ -1007,8 +1023,8 @@ contract CoreBorrowStakerTest is BaseTest {
                 staker.claimRewards(account);
                 assertEq(rewardToken.balanceOf(account) - prevRewardTokenBalance, functionClaimableRewards);
             } else {
-                amount = bound(amounts[i], 1, 10**9);
-                staker.withdraw((amount * staker.balanceOf(account)) / 10**9, account, account);
+                amount = bound(amounts[i], 1, 10 ** 9);
+                staker.withdraw((amount * staker.balanceOf(account)) / 10 ** 9, account, account);
 
                 // advance in time for rewards to be taken into account
                 vm.warp(block.timestamp + elapseTime[i]);
@@ -1032,7 +1048,7 @@ contract CoreBorrowStakerTest is BaseTest {
             assertApproxEqAbs(
                 rewardToken.balanceOf(account) + staker.pendingRewardsOf(rewardToken, account),
                 pendingRewards[randomIndex],
-                10**(decimalReward - 4)
+                10 ** (decimalReward - 4)
             );
 
             // advance in time for rewards to be taken into account

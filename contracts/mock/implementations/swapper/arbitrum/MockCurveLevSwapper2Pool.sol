@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../../../swapper/LevSwapper/curve/implementations/arbitrum/CurveLevSwapper2Pool.sol";
+import "borrow-staked/swapper/LevSwapper/curve/implementations/arbitrum/CurveLevSwapper2Pool.sol";
 
 /// @title MockCurveLevSwapper2Pool
 /// @author Angle Labs, Inc.
@@ -12,10 +12,10 @@ contract MockCurveLevSwapper2Pool is CurveLevSwapper2Pool {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter,
         IBorrowStaker angleStaker_
-    ) CurveLevSwapper2Pool(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) CurveLevSwapper2Pool(_core, _uniV3Router, _aggregator, _angleRouter) {
         _angleStaker = angleStaker_;
     }
 

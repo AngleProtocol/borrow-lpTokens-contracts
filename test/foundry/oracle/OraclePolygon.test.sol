@@ -2,11 +2,11 @@
 pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
-import { SafeERC20 } from "../../../contracts/mock/MockTokenPermit.sol";
-import { OracleCrvUSDBTCETHEUR, IOracle, AggregatorV3Interface } from "../../../contracts/oracle/implementations/polygon/OracleCrvUSDBTCETHEUR.sol";
-import { OracleAaveUSDBPEUR } from "../../../contracts/oracle/implementations/polygon/OracleAaveUSDBPEUR.sol";
-import "../../../contracts/interfaces/external/curve/ITricryptoPool.sol";
-import "../../../contracts/interfaces/external/curve/ICurveCryptoSwapPool.sol";
+import { SafeERC20 } from "borrow-staked/mock/MockTokenPermit.sol";
+import { OracleCrvUSDBTCETHEUR, IOracle, AggregatorV3Interface } from "borrow-staked/oracle/implementations/polygon/OracleCrvUSDBTCETHEUR.sol";
+import { OracleAaveUSDBPEUR } from "borrow-staked/oracle/implementations/polygon/OracleAaveUSDBPEUR.sol";
+import "borrow-staked/interfaces/external/curve/ITricryptoPool.sol";
+import "borrow-staked/interfaces/external/curve/ICurveCryptoSwapPool.sol";
 
 interface ICurvePoolBalance is IERC20 {
     function balances(uint256 index) external view returns (uint256);
@@ -65,7 +65,9 @@ contract OraclePolygonTest is BaseTest {
             uint256 usdcAmount = ICurvePoolBalance(address(AaveBP)).balances(1);
             uint256 usdtAmount = ICurvePoolBalance(address(AaveBP)).balances(2);
             uint256 totSupplyAaveBP = AAVE_BP_LP.totalSupply();
-            lpAaveBPGrossPrice = ((daiAmount + usdcAmount * 10**12 + usdtAmount * 10**12) * 10**18) / totSupplyAaveBP;
+            lpAaveBPGrossPrice =
+                ((daiAmount + usdcAmount * 10 ** 12 + usdtAmount * 10 ** 12) * 10 ** 18) /
+                totSupplyAaveBP;
 
             // console.log("lpAaveBPGrossPrice ", lpAaveBPGrossPrice);
         }
@@ -79,12 +81,12 @@ contract OraclePolygonTest is BaseTest {
             lpTriGrossPrice =
                 (_BPS *
                     (((lpAaveBPAmount * lpAaveBPGrossPrice) /
-                        10**18 +
+                        10 ** 18 +
                         wbtcAmount *
                         BTC_PRICE *
-                        10**10 +
+                        10 ** 10 +
                         ethAmount *
-                        ETH_PRICE) * 10**18)) /
+                        ETH_PRICE) * 10 ** 18)) /
                 totSupplyTri /
                 EUR_PRICE;
 
@@ -113,7 +115,9 @@ contract OraclePolygonTest is BaseTest {
             uint256 usdcAmount = ICurvePoolBalance(address(AaveBP)).balances(1);
             uint256 usdtAmount = ICurvePoolBalance(address(AaveBP)).balances(2);
             uint256 totSupplyAaveBP = AAVE_BP_LP.totalSupply();
-            lpAaveBPGrossPrice = ((daiAmount + usdcAmount * 10**12 + usdtAmount * 10**12) * 10**18) / totSupplyAaveBP;
+            lpAaveBPGrossPrice =
+                ((daiAmount + usdcAmount * 10 ** 12 + usdtAmount * 10 ** 12) * 10 ** 18) /
+                totSupplyAaveBP;
 
             console.log("lp gross price in USD:", lpAaveBPGrossPrice);
         }

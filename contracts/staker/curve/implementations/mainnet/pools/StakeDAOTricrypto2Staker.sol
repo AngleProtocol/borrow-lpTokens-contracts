@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../StakeDAOTokenStakerMainnet.sol";
+import "borrow-staked/staker/curve/implementations/mainnet/StakeDAOTokenStakerMainnet.sol";
 
 /// @title StakeDAOTricrypto2Staker
 /// @author Angle Labs, Inc.

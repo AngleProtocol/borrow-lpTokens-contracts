@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import "./IAsset.sol";
+import "borrow-staked/interfaces/external/balancer/IAsset.sol";
 
 enum JoinKindStablePool {
     INIT,
@@ -72,11 +72,7 @@ interface IBalancerVault {
      *
      * Emits a `RelayerApprovalChanged` event.
      */
-    function setRelayerApproval(
-        address sender,
-        address relayer,
-        bool approved
-    ) external;
+    function setRelayerApproval(address sender, address relayer, bool approved) external;
 
     /**
      * @dev Emitted every time a relayer is approved or disapproved by `setRelayerApproval`.
@@ -248,11 +244,7 @@ interface IBalancerVault {
      *
      * Emits a `TokensRegistered` event.
      */
-    function registerTokens(
-        bytes32 poolId,
-        IERC20[] memory tokens,
-        address[] memory assetManagers
-    ) external;
+    function registerTokens(bytes32 poolId, IERC20[] memory tokens, address[] memory assetManagers) external;
 
     /**
      * @dev Emitted when a Pool registers tokens by calling `registerTokens`.
@@ -294,15 +286,10 @@ interface IBalancerVault {
      *
      * `assetManager` is the Pool's token Asset Manager.
      */
-    function getPoolTokenInfo(bytes32 poolId, IERC20 token)
-        external
-        view
-        returns (
-            uint256 cash,
-            uint256 managed,
-            uint256 lastChangeBlock,
-            address assetManager
-        );
+    function getPoolTokenInfo(
+        bytes32 poolId,
+        IERC20 token
+    ) external view returns (uint256 cash, uint256 managed, uint256 lastChangeBlock, address assetManager);
 
     /**
      * @dev Returns a Pool's registered tokens, the total balance for each, and the latest block when *any* of
@@ -318,14 +305,9 @@ interface IBalancerVault {
      * the amounts used by joins, exits and swaps. For a detailed breakdown of token balances, use `getPoolTokenInfo`
      * instead.
      */
-    function getPoolTokens(bytes32 poolId)
-        external
-        view
-        returns (
-            IERC20[] memory tokens,
-            uint256[] memory balances,
-            uint256 lastChangeBlock
-        );
+    function getPoolTokens(
+        bytes32 poolId
+    ) external view returns (IERC20[] memory tokens, uint256[] memory balances, uint256 lastChangeBlock);
 
     /**
      * @dev Called by users to join a Pool, which transfers tokens from `sender` into the Pool's balance. This will

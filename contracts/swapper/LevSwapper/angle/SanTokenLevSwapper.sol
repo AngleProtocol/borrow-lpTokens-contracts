@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../BaseLevSwapper.sol";
+import "borrow-staked/swapper/LevSwapper/BaseLevSwapper.sol";
 import "borrow/interfaces/coreModule/IStableMaster.sol";
 
 /// @title SanTokenLevSwapper
@@ -13,9 +13,9 @@ abstract contract SanTokenLevSwapper is BaseLevSwapper {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) BaseLevSwapper(_core, _uniV3Router, _aggregator, _angleRouter) {
         if (address(collateral()) != address(0)) {
             collateral().safeIncreaseAllowance(address(stableMaster()), type(uint256).max);
         }

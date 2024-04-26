@@ -2,14 +2,14 @@
 pragma solidity ^0.8.17;
 
 import "../../BaseTest.test.sol";
-import "../../../../contracts/interfaces/IBorrowStaker.sol";
+import "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../../contracts/interfaces/external/curve/IMetaPool2.sol";
+import "borrow-staked/interfaces/external/curve/IMetaPool2.sol";
 import "borrow/interfaces/coreModule/IStableMaster.sol";
 import "borrow/interfaces/coreModule/IPoolManager.sol";
-import "../../../../contracts/mock/MockTokenPermit.sol";
-import { SwapType, BaseLevSwapper, MockBalancerStableLevSwapper, Swapper, IUniswapV3Router, IAngleRouterSidechain, IBalancerVault, IAsset } from "../../../../contracts/mock/MockBalancerStableLevSwapper.sol";
-import { MockBorrowStaker } from "../../../../contracts/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { SwapType, BaseLevSwapper, MockBalancerStableLevSwapper, Swapper, IUniswapV3Router, IAngleRouterSidechain, IBalancerVault, IAsset } from "borrow-staked/mock/MockBalancerStableLevSwapper.sol";
+import { MockBorrowStaker } from "borrow-staked/mock/MockBorrowStaker.sol";
 
 contract BalancerStableLevSwapperTest is BaseTest {
     using stdStorage for StdStorage;
@@ -30,7 +30,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
     MockBorrowStaker public stakerImplementation;
     MockBorrowStaker public staker;
     uint8 public decimalToken = 18;
-    uint256 public maxTokenAmount = 10**15 * 10**decimalToken;
+    uint256 public maxTokenAmount = 10 ** 15 * 10 ** decimalToken;
     uint256 public constant SLIPPAGE_BPS = 9900;
 
     uint256 public constant DEPOSIT_LENGTH = 10;
@@ -108,22 +108,22 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testJoinOneTokenWETH(uint256 amount) public {
-        amount = bound(amount, 10**6, 10**24);
+        amount = bound(amount, 10 ** 6, 10 ** 24);
         deal(address(_WETH), address(_alice), amount);
         _joinOneCoin(amount, _WETH);
         _assertCommonLeverage();
     }
 
     function testJoinOneTokenWSTETH(uint256 amount) public {
-        amount = bound(amount, 10**6, 10**24);
+        amount = bound(amount, 10 ** 6, 10 ** 24);
         deal(address(_WSTETH), address(_alice), amount);
         _joinOneCoin(amount, _WSTETH);
         _assertCommonLeverage();
     }
 
     function testJoinBothTokens(uint256 amount0, uint256 amount1) public {
-        amount0 = bound(amount0, 10**6, 10**24);
-        amount1 = bound(amount1, 10**6, 10**24);
+        amount0 = bound(amount0, 10 ** 6, 10 ** 24);
+        amount1 = bound(amount1, 10 ** 6, 10 ** 24);
 
         deal(address(_WETH), address(_alice), amount0);
         deal(address(_WSTETH), address(_alice), amount1);
@@ -146,7 +146,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testJoinNoUnderlyingDeposited(uint256 amount) public {
-        amount = bound(amount, 1, 10**27);
+        amount = bound(amount, 1, 10 ** 27);
         deal(address(_LP_TOKEN), address(_alice), amount);
         vm.startPrank(_alice);
         // intermediary variables
@@ -169,7 +169,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testRevertJoinOneTokenWETH(uint256 amount) public {
-        amount = bound(amount, 10**6, 10**24);
+        amount = bound(amount, 10 ** 6, 10 ** 24);
 
         deal(address(_WETH), address(_alice), amount);
         vm.startPrank(_alice);
@@ -190,7 +190,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testRevertJoinOneTokenWSTETH(uint256 amount) public {
-        amount = bound(amount, 10**6, 10**24);
+        amount = bound(amount, 10 ** 6, 10 ** 24);
 
         deal(address(_WSTETH), address(_alice), amount);
         vm.startPrank(_alice);
@@ -212,8 +212,8 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testRevertJoinBothTokens(uint256 amount0, uint256 amount1) public {
-        amount0 = bound(amount0, 10**6, 10**24);
-        amount1 = bound(amount1, 10**6, 10**24);
+        amount0 = bound(amount0, 10 ** 6, 10 ** 24);
+        amount1 = bound(amount1, 10 ** 6, 10 ** 24);
 
         deal(address(_WETH), address(_alice), amount0);
         deal(address(_WSTETH), address(_alice), amount1);
@@ -238,13 +238,13 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testExitOneTokenWETH(uint256 amount, uint256 proportion) public {
-        amount = bound(amount, 10**9, 10**24);
+        amount = bound(amount, 10 ** 9, 10 ** 24);
         deal(address(_WETH), address(_alice), amount);
         _joinOneCoin(amount, _WETH);
         vm.startPrank(_alice);
         uint256 balance = staker.balanceOf(_alice);
-        proportion = bound(proportion, 10**6, 10**9);
-        uint256 amountToRemove = (balance * proportion) / 10**9;
+        proportion = bound(proportion, 10 ** 6, 10 ** 9);
+        uint256 amountToRemove = (balance * proportion) / 10 ** 9;
         bytes memory data;
         {
             bytes memory extraData = abi.encode(1);
@@ -269,13 +269,13 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testExitOneTokenWSTETH(uint256 amount, uint256 proportion) public {
-        amount = bound(amount, 10**9, 10**23);
+        amount = bound(amount, 10 ** 9, 10 ** 23);
         deal(address(_WETH), address(_alice), amount);
         _joinOneCoin(amount, _WETH);
         vm.startPrank(_alice);
         uint256 balance = staker.balanceOf(_alice);
-        proportion = bound(proportion, 10**6, 10**9);
-        uint256 amountToRemove = (balance * proportion) / 10**9;
+        proportion = bound(proportion, 10 ** 6, 10 ** 9);
+        uint256 amountToRemove = (balance * proportion) / 10 ** 9;
         bytes memory data;
         {
             bytes memory removeData = abi.encode(0, abi.encode(0));
@@ -296,13 +296,13 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testExitMultiTokenNoSweep(uint256 amount, uint256 proportion) public {
-        amount = bound(amount, 10**18, 10**24);
+        amount = bound(amount, 10 ** 18, 10 ** 24);
         deal(address(_WETH), address(_alice), amount);
         _joinOneCoin(amount, _WETH);
         vm.startPrank(_alice);
         uint256 balance = staker.balanceOf(_alice);
-        proportion = bound(proportion, 10**8, 10**9);
-        uint256 amountToRemove = (balance * proportion) / 10**9;
+        proportion = bound(proportion, 10 ** 8, 10 ** 9);
+        uint256 amountToRemove = (balance * proportion) / 10 ** 9;
         bytes memory data;
         {
             uint256[] memory minAmountsOut = new uint256[](2);
@@ -327,13 +327,13 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testExitMultiTokenSweep(uint256 amount, uint256 proportion) public {
-        amount = bound(amount, 10**18, 10**24);
+        amount = bound(amount, 10 ** 18, 10 ** 24);
         deal(address(_WETH), address(_alice), amount);
         _joinOneCoin(amount, _WETH);
         vm.startPrank(_alice);
         uint256 balance = staker.balanceOf(_alice);
-        proportion = bound(proportion, 10**8, 10**9);
-        uint256 amountToRemove = (balance * proportion) / 10**9;
+        proportion = bound(proportion, 10 ** 8, 10 ** 9);
+        uint256 amountToRemove = (balance * proportion) / 10 ** 9;
         bytes memory data;
         {
             uint256[] memory minAmountsOut = new uint256[](2);
@@ -359,13 +359,13 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testRevertExitMultiToken(uint256 amount, uint256 proportion) public {
-        amount = bound(amount, 10**18, 10**24);
+        amount = bound(amount, 10 ** 18, 10 ** 24);
         deal(address(_WETH), address(_alice), amount);
         _joinOneCoin(amount, _WETH);
         vm.startPrank(_alice);
         uint256 balance = staker.balanceOf(_alice);
-        proportion = bound(proportion, 10**8, 10**9);
-        uint256 amountToRemove = (balance * proportion) / 10**9;
+        proportion = bound(proportion, 10 ** 8, 10 ** 9);
+        uint256 amountToRemove = (balance * proportion) / 10 ** 9;
         bytes memory data;
         {
             uint256[] memory minAmountsOut = new uint256[](2);
@@ -386,7 +386,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testExitExactTokenOut(uint256 amount, uint256 proportion) public {
-        amount = bound(amount, 10**18, 10**23);
+        amount = bound(amount, 10 ** 18, 10 ** 23);
         deal(address(_WETH), address(_alice), amount);
         _joinOneCoin(amount, _WETH);
         vm.startPrank(_alice);
@@ -411,7 +411,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
         swapper.swap(IERC20(address(staker)), IERC20(address(_WSTETH)), _alice, 0, amount, data);
         vm.stopPrank();
         assertGt(staker.balanceOf(_alice), balance - amountToRemove);
-        assertApproxEqAbs(_WSTETH.balanceOf(_alice), amountToRemove / 5, 10**(10));
+        assertApproxEqAbs(_WSTETH.balanceOf(_alice), amountToRemove / 5, 10 ** (10));
         // In this case if we don't sweep balance is 0
         assertEq(_WETH.balanceOf(_alice), 0);
         assertEq(_WETH.balanceOf(address(swapper)), amountToRemove / 5);
@@ -419,7 +419,7 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testRevertExitExactTokenOut(uint256 amount, uint256 proportion) public {
-        amount = bound(amount, 10**18, 10**23);
+        amount = bound(amount, 10 ** 18, 10 ** 23);
         deal(address(_WETH), address(_alice), amount);
         _joinOneCoin(amount, _WETH);
         vm.startPrank(_alice);
@@ -447,13 +447,13 @@ contract BalancerStableLevSwapperTest is BaseTest {
     }
 
     function testExitStakedToken(uint256 amount, uint256 proportion) public {
-        amount = bound(amount, 10**18, 10**24);
+        amount = bound(amount, 10 ** 18, 10 ** 24);
         deal(address(_WETH), address(_alice), amount);
         _joinOneCoin(amount, _WETH);
         vm.startPrank(_alice);
         uint256 balance = staker.balanceOf(_alice);
-        proportion = bound(proportion, 10**8, 10**9);
-        uint256 amountToRemove = (balance * proportion) / 10**9;
+        proportion = bound(proportion, 10 ** 8, 10 ** 9);
+        uint256 amountToRemove = (balance * proportion) / 10 ** 9;
         bytes memory data;
         {
             bytes memory extraData;

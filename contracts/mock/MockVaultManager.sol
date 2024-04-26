@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.17;
 
-import { IBorrowStakerCheckpoint } from "../interfaces/IBorrowStaker.sol";
+import { IBorrowStakerCheckpoint } from "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ITreasury.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "borrow/vaultManager/VaultManager.sol";
@@ -62,11 +62,7 @@ contract MockVaultManager {
         ownerOf[vaultID] = owner;
     }
 
-    function setVaultData(
-        uint256 normalizedDebt,
-        uint256 collateralAmount,
-        uint256 vaultID
-    ) external {
+    function setVaultData(uint256 normalizedDebt, uint256 collateralAmount, uint256 vaultID) external {
         if (vaultData[vaultID].collateralAmount > collateralAmount)
             _checkpointWrapper(ownerOf[vaultID], vaultData[vaultID].collateralAmount - collateralAmount, false);
         else _checkpointWrapper(ownerOf[vaultID], collateralAmount - vaultData[vaultID].collateralAmount, true);
@@ -78,21 +74,13 @@ contract MockVaultManager {
         return admin == governor;
     }
 
-    function setSurplusBadDebt(
-        uint256 _surplus,
-        uint256 _badDebt,
-        IAgToken _token
-    ) external {
+    function setSurplusBadDebt(uint256 _surplus, uint256 _badDebt, IAgToken _token) external {
         surplus = _surplus;
         badDebt = _badDebt;
         token = _token;
     }
 
-    function getDebtOut(
-        uint256 vaultID,
-        uint256 amountStablecoins,
-        uint256 senderBorrowFee
-    ) external {}
+    function getDebtOut(uint256 vaultID, uint256 amountStablecoins, uint256 senderBorrowFee) external {}
 
     function setTreasury(address _treasury) external {
         treasury = ITreasury(_treasury);
@@ -114,11 +102,7 @@ contract MockVaultManager {
     /// @param user Address for which balance should be updated
     /// @dev Whenever there is an internal transfer or a transfer from the `vaultManager`,
     /// we need to update the rewards to correctly track everyone's claim
-    function _checkpointWrapper(
-        address user,
-        uint256 amount,
-        bool add
-    ) internal {
+    function _checkpointWrapper(address user, uint256 amount, bool add) internal {
         IBorrowStakerCheckpoint(address(collateral)).checkpointFromVaultManager(user, amount, add);
     }
 }

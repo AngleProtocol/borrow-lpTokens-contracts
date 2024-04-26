@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../BaseLevSwapper.sol";
-import { IMetaPool3 } from "../../../interfaces/external/curve/IMetaPool3.sol";
-import "../../../utils/Enums.sol";
+import "borrow-staked/swapper/LevSwapper/BaseLevSwapper.sol";
+import { IMetaPool3 } from "borrow-staked/interfaces/external/curve/IMetaPool3.sol";
+import "borrow-staked/utils/Enums.sol";
 
 /// @title CurveLevSwapper3Tokens
 /// @author Angle Labs, Inc.
@@ -15,9 +15,9 @@ abstract contract CurveLevSwapper3Tokens is BaseLevSwapper {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) BaseLevSwapper(_core, _uniV3Router, _aggregator, _angleRouter) {
         if (address(metapool()) != address(0)) {
             tokens()[0].safeIncreaseAllowance(address(metapool()), type(uint256).max);
             tokens()[1].safeIncreaseAllowance(address(metapool()), type(uint256).max);

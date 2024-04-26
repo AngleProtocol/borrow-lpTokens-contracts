@@ -35,7 +35,7 @@
 
 pragma solidity ^0.8.17;
 
-import "./BorrowStakerStorage.sol";
+import "borrow-staked/staker/BorrowStakerStorage.sol";
 
 /// @title BorrowStaker
 /// @author Angle Labs, Inc.
@@ -113,11 +113,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param amount Amount of token to be withdrawn
     /// @param from Address from which the token will be withdrawn
     /// @param to Address which will receive the token
-    function withdraw(
-        uint256 amount,
-        address from,
-        address to
-    ) public returns (uint256) {
+    function withdraw(uint256 amount, address from, address to) public returns (uint256) {
         if (msg.sender != from) {
             uint256 currentAllowance = allowance(from, msg.sender);
             if (currentAllowance < amount) revert TransferAmountExceedsAllowance();
@@ -208,11 +204,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param tokenAddress Address of the token to recover
     /// @param to Address of the contract to send collateral to
     /// @param amountToRecover Amount of collateral to transfer
-    function recoverERC20(
-        address tokenAddress,
-        address to,
-        uint256 amountToRecover
-    ) external onlyGovernor {
+    function recoverERC20(address tokenAddress, address to, uint256 amountToRecover) external onlyGovernor {
         if (tokenAddress == address(asset())) revert InvalidToken();
         IERC20(tokenAddress).safeTransfer(to, amountToRecover);
         emit Recovered(tokenAddress, to, amountToRecover);
@@ -224,11 +216,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param from Address to checkpoint for
     /// @param amount Collateral amount balance increase/decrease for `from`
     /// @param add Whether the balance should be increased/decreased
-    function checkpointFromVaultManager(
-        address from,
-        uint256 amount,
-        bool add
-    ) external onlyVaultManagers {
+    function checkpointFromVaultManager(address from, uint256 amount, bool add) external onlyVaultManagers {
         address[] memory checkpointUser = new address[](1);
         checkpointUser[0] = address(from);
         _checkpoint(checkpointUser, false);
@@ -239,11 +227,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable
-    function _beforeTokenTransfer(
-        address _from,
-        address _to,
-        uint256 amount
-    ) internal override {
+    function _beforeTokenTransfer(address _from, address _to, uint256 amount) internal override {
         // Not claiming only if it is a deposit
         bool _claim = !(_from == address(0));
 
@@ -334,11 +318,7 @@ abstract contract BorrowStaker is BorrowStakerStorage, ERC20PermitUpgradeable {
     /// @param token Address of the token for which allowance should be changed
     /// @param spender Address to approve
     /// @param amount Amount to approve
-    function _changeAllowance(
-        IERC20 token,
-        address spender,
-        uint256 amount
-    ) internal {
+    function _changeAllowance(IERC20 token, address spender, uint256 amount) internal {
         uint256 currentAllowance = token.allowance(address(this), spender);
         if (currentAllowance < amount) token.safeIncreaseAllowance(spender, type(uint256).max - currentAllowance);
     }

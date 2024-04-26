@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../../interfaces/external/convex/IBooster.sol";
-import "../../interfaces/external/convex/IBaseRewardPool.sol";
-import "../../interfaces/external/convex/IConvexToken.sol";
-import "../../interfaces/external/convex/IVirtualBalanceRewardPool.sol";
-import "../../interfaces/external/curve/ILiquidityGaugeComplete.sol";
+import "borrow-staked/interfaces/external/convex/IBooster.sol";
+import "borrow-staked/interfaces/external/convex/IBaseRewardPool.sol";
+import "borrow-staked/interfaces/external/convex/IConvexToken.sol";
+import "borrow-staked/interfaces/external/convex/IVirtualBalanceRewardPool.sol";
+import "borrow-staked/interfaces/external/curve/ILiquidityGaugeComplete.sol";
 
-import "../BorrowStaker.sol";
+import "borrow-staked/staker/BorrowStaker.sol";
 
 /// @title AuraTokenStaker
 /// @author Angle Labs, Inc.
@@ -31,11 +31,7 @@ abstract contract AuraTokenStaker is BorrowStaker {
     // ============================= INTERNAL FUNCTIONS ============================
 
     /// @inheritdoc ERC20Upgradeable
-    function _afterTokenTransfer(
-        address from,
-        address,
-        uint256 amount
-    ) internal override {
+    function _afterTokenTransfer(address from, address, uint256 amount) internal override {
         // Stake on the gauge if it is a deposit
         if (from == address(0)) {
             // Deposit the Balance LP tokens into the Aura contract and stake

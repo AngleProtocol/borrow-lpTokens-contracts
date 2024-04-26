@@ -1,3 +1,10 @@
 ds-test/=lib/forge-std/lib/ds-test/src/
 forge-std/=lib/forge-std/src/
 borrow/=lib/borrow-contracts/contracts
+utils/=lib/utils
+morpho-blue/=lib/morpho-blue/src
+borrow-staked/=contracts/
+@chainlink/=node_modules/@chainlink/
+@ensdomains/=node_modules/@ensdomains/
+@openzeppelin/=node_modules/@openzeppelin/
+@uniswap/=node_modules/@uniswap/

@@ -3,8 +3,8 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
-import { Convex3CRVStaker } from "../../../contracts/staker/curve/implementations/mainnet/pools/Convex3CRVStaker.sol";
-import { StakeDAO3CRVStaker } from "../../../contracts/staker/curve/implementations/mainnet/pools/StakeDAO3CRVStaker.sol";
+import { Convex3CRVStaker } from "borrow-staked/staker/curve/implementations/mainnet/pools/Convex3CRVStaker.sol";
+import { StakeDAO3CRVStaker } from "borrow-staked/staker/curve/implementations/mainnet/pools/StakeDAO3CRVStaker.sol";
 import "./MainnetConstants.s.sol";
 
 contract DeployStakerMainnet is Script, MainnetConstants {

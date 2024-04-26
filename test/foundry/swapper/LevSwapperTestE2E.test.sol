@@ -2,11 +2,11 @@
 pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
-import "../../../contracts/interfaces/IBorrowStaker.sol";
+import "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../contracts/mock/MockTokenPermit.sol";
-import { SwapType, BaseLevSwapper, MockBaseLevSwapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../contracts/mock/MockBaseLevSwapper.sol";
-import { MockBorrowStakerReset } from "../../../contracts/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { SwapType, BaseLevSwapper, MockBaseLevSwapper, IUniswapV3Router, IAngleRouterSidechain } from "borrow-staked/mock/MockBaseLevSwapper.sol";
+import { MockBorrowStakerReset } from "borrow-staked/mock/MockBorrowStaker.sol";
 
 contract LevSwapperTestE2E is BaseTest {
     using stdStorage for StdStorage;
@@ -21,8 +21,8 @@ contract LevSwapperTestE2E is BaseTest {
     IERC20 internal constant _USDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     IERC20 internal constant _USDT = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
     IERC20 internal constant _FRAX = IERC20(0x853d955aCEf822Db058eb8505911ED77F175b99e);
-    uint256 internal constant _DECIMAL_NORM_USDC = 10**12;
-    uint256 internal constant _DECIMAL_NORM_USDT = 10**12;
+    uint256 internal constant _DECIMAL_NORM_USDC = 10 ** 12;
+    uint256 internal constant _DECIMAL_NORM_USDT = 10 ** 12;
 
     uint256 internal constant _BPS = 10000;
     MockBaseLevSwapper public swapper;
@@ -30,7 +30,7 @@ contract LevSwapperTestE2E is BaseTest {
     MockBorrowStakerReset public staker;
     uint8 public decimalToken = 18;
     uint8[] public decimalReward;
-    uint256 public maxTokenAmount = 10**15 * 10**decimalToken;
+    uint256 public maxTokenAmount = 10 ** 15 * 10 ** decimalToken;
 
     IERC20 public rewardToken;
     IERC20[] public listRewardTokens;
@@ -124,13 +124,17 @@ contract LevSwapperTestE2E is BaseTest {
             elapseTimes[i] = bound(elapseTimes[i], 1, 180 days);
             vm.warp(block.timestamp + elapseTimes[i]);
             if (depositWithdrawRewards[i] % 3 == 2) {
-                rewardAmounts[i] = bound(rewardAmounts[i], 0, 10**10 * 10**decimalReward[0]);
+                rewardAmounts[i] = bound(rewardAmounts[i], 0, 10 ** 10 * 10 ** decimalReward[0]);
                 staker.setRewardAmount(rewardAmounts[i]);
             } else {
                 uint256 randomIndex = bound(accounts[i], 0, 3);
-                address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2
-                    ? _charlie
-                    : _dylan;
+                address account = randomIndex == 0
+                    ? _alice
+                    : randomIndex == 1
+                        ? _bob
+                        : randomIndex == 2
+                            ? _charlie
+                            : _dylan;
                 if (staker.balanceOf(account) == 0) depositWithdrawRewards[i] = 0;
 
                 {
@@ -187,11 +191,11 @@ contract LevSwapperTestE2E is BaseTest {
                         assertEq(listRewardTokens[j].balanceOf(account), prevRewardTokenBalance[j]);
                     }
                 } else {
-                    amount = bound(amounts[i], 1, 10**9);
-                    staker.withdraw((amount * staker.balanceOf(account)) / 10**9, account, account);
+                    amount = bound(amounts[i], 1, 10 ** 9);
+                    staker.withdraw((amount * staker.balanceOf(account)) / 10 ** 9, account, account);
                     {
                         bytes memory data;
-                        uint256 toUnstake = (amount * staker.balanceOf(account)) / 10**9;
+                        uint256 toUnstake = (amount * staker.balanceOf(account)) / 10 ** 9;
                         {
                             // deleverage
                             bool leverage = false;
@@ -216,7 +220,7 @@ contract LevSwapperTestE2E is BaseTest {
                     assertApproxEqAbs(
                         listRewardTokens[j].balanceOf(account) + staker.pendingRewardsOf(listRewardTokens[j], account),
                         pendingRewards[randomIndex][j],
-                        10**(decimalReward[j] - 4)
+                        10 ** (decimalReward[j] - 4)
                     );
                 }
             }
@@ -244,7 +248,7 @@ contract LevSwapperTestE2E is BaseTest {
                         listRewardTokens[j].balanceOf(allAccounts[k]) +
                             staker.pendingRewardsOf(listRewardTokens[j], allAccounts[k]),
                         pendingRewards[k][j],
-                        10**(decimalReward[j] - 4)
+                        10 ** (decimalReward[j] - 4)
                     );
                 }
             }

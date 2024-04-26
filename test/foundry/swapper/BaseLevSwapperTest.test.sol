@@ -2,11 +2,11 @@
 pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
-import "../../../contracts/interfaces/IBorrowStaker.sol";
+import "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import "../../../contracts/mock/MockTokenPermit.sol";
-import { SwapType, BaseLevSwapper, MockBaseLevSwapper, IUniswapV3Router, IAngleRouterSidechain } from "../../../contracts/mock/MockBaseLevSwapper.sol";
-import { MockBorrowStaker } from "../../../contracts/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { SwapType, BaseLevSwapper, MockBaseLevSwapper, IUniswapV3Router, IAngleRouterSidechain } from "borrow-staked/mock/MockBaseLevSwapper.sol";
+import { MockBorrowStaker } from "borrow-staked/mock/MockBorrowStaker.sol";
 
 contract BaseLevSwapperTest is BaseTest {
     using stdStorage for StdStorage;
@@ -20,8 +20,8 @@ contract BaseLevSwapperTest is BaseTest {
     IERC20 internal constant _USDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     IERC20 internal constant _USDT = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
     IERC20 internal constant _FRAX = IERC20(0x853d955aCEf822Db058eb8505911ED77F175b99e);
-    uint256 internal constant _DECIMAL_NORM_USDC = 10**12;
-    uint256 internal constant _DECIMAL_NORM_USDT = 10**12;
+    uint256 internal constant _DECIMAL_NORM_USDC = 10 ** 12;
+    uint256 internal constant _DECIMAL_NORM_USDT = 10 ** 12;
 
     uint256 internal constant _BPS = 10000;
     MockBaseLevSwapper public swapper;
@@ -29,8 +29,8 @@ contract BaseLevSwapperTest is BaseTest {
     MockBorrowStaker public staker;
     uint8 public decimalToken = 18;
     uint8 public decimalReward = 6;
-    uint256 public rewardAmount = 10**2 * 10**(decimalReward);
-    uint256 public maxTokenAmount = 10**15 * 10**decimalToken;
+    uint256 public rewardAmount = 10 ** 2 * 10 ** (decimalReward);
+    uint256 public maxTokenAmount = 10 ** 15 * 10 ** decimalToken;
 
     uint256 public constant DEPOSIT_LENGTH = 10;
     uint256 public constant WITHDRAW_LENGTH = 10;
@@ -182,8 +182,8 @@ contract BaseLevSwapperTest is BaseTest {
         oneInchData;
         addData;
         {
-            propToRemove = bound(propToRemove, 0, 10**9);
-            uint256 amountToRemove = (amount * propToRemove) / 10**9;
+            propToRemove = bound(propToRemove, 0, 10 ** 9);
+            uint256 amountToRemove = (amount * propToRemove) / 10 ** 9;
             swapData = abi.encode(amount, amountToRemove, sweepToken, oneInchData, addData);
         }
         leverageData = abi.encode(leverage, stakeFor, swapData);
@@ -246,8 +246,8 @@ contract BaseLevSwapperTest is BaseTest {
     // ================================= SWAP 1INCH ================================
     function testDepositMulti1Inch(uint256 amount) public {
         uint256 amountFRAX = 10000 ether;
-        uint256 amountUSDT = 10000 * 10**6;
-        amount = bound(amount, 0, 10**15);
+        uint256 amountUSDT = 10000 * 10 ** 6;
+        amount = bound(amount, 0, 10 ** 15);
 
         setUpForkAndAllowance();
         deal(address(asset), address(_alice), amount);
@@ -300,8 +300,8 @@ contract BaseLevSwapperTest is BaseTest {
 
     function testRemoveMulti1Inch(uint256 amount) public {
         uint256 amountFRAX = 10000 ether;
-        uint256 amountUSDT = 10000 * 10**6;
-        amount = bound(amount, 0, 10**15);
+        uint256 amountUSDT = 10000 * 10 ** 6;
+        amount = bound(amount, 0, 10 ** 15);
 
         setUpForkAndAllowance();
         deal(address(asset), address(_alice), amount);
@@ -367,7 +367,7 @@ contract BaseLevSwapperTest is BaseTest {
         vm.stopPrank();
 
         // because of the sweep
-        assertGt(asset.balanceOf(_alice), ((amount - 19000 * 10**6) * 9900) / _BPS);
+        assertGt(asset.balanceOf(_alice), ((amount - 19000 * 10 ** 6) * 9900) / _BPS);
         assertEq(staker.balanceOf(address(swapper)), 0);
         assertEq(staker.balanceOf(_alice), 0);
         assertEq(asset.balanceOf(address(swapper)), 0);
@@ -380,8 +380,8 @@ contract BaseLevSwapperTest is BaseTest {
 
     function testRemoveSendToMulti1Inch(uint256 amount) public {
         uint256 amountFRAX = 10000 ether;
-        uint256 amountUSDT = 10000 * 10**6;
-        amount = bound(amount, 0, 10**15);
+        uint256 amountUSDT = 10000 * 10 ** 6;
+        amount = bound(amount, 0, 10 ** 15);
 
         setUpForkAndAllowance();
         deal(address(asset), address(_alice), amount);
@@ -446,7 +446,7 @@ contract BaseLevSwapperTest is BaseTest {
         vm.stopPrank();
 
         // because of the sweep
-        assertGt(asset.balanceOf(_bob), ((amount - 19000 * 10**6) * 9900) / _BPS);
+        assertGt(asset.balanceOf(_bob), ((amount - 19000 * 10 ** 6) * 9900) / _BPS);
         assertEq(asset.balanceOf(_alice), 0);
         assertEq(staker.balanceOf(address(swapper)), 0);
         assertEq(staker.balanceOf(_alice), 0);

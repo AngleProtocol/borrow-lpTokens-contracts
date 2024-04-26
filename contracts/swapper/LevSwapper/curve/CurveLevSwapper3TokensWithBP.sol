@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../BaseLevSwapper.sol";
-import "../../../interfaces/external/curve/IMetaPool3.sol";
-import "../../../utils/Enums.sol";
+import "borrow-staked/swapper/LevSwapper/BaseLevSwapper.sol";
+import "borrow-staked/interfaces/external/curve/IMetaPool3.sol";
+import "borrow-staked/utils/Enums.sol";
 
 /// @title CurveLevSwapper3TokensWithBP
 /// @author Angle Labs, Inc.
@@ -19,9 +19,9 @@ abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter
-    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) BaseLevSwapper(_core, _uniV3Router, _aggregator, _angleRouter) {
         if (address(metapool()) != address(0)) {
             tokens()[0].safeIncreaseAllowance(address(metapool()), type(uint256).max);
             tokens()[1].safeIncreaseAllowance(address(metapool()), type(uint256).max);
@@ -85,11 +85,10 @@ abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
     /// @dev It should be overriden if:
     /// - `metapool` return values when removing liquidity as it will be more efficient
     /// - `whichCoin` is not a `int256` but a `int128`
-    function _removeMetaLiquidityOneCoin(uint256 burnAmount, bytes memory data)
-        internal
-        virtual
-        returns (uint256 lpTokenBPReceived)
-    {
+    function _removeMetaLiquidityOneCoin(
+        uint256 burnAmount,
+        bytes memory data
+    ) internal virtual returns (uint256 lpTokenBPReceived) {
         (uint256 whichCoin, uint256 minAmountOut) = abi.decode(data, (uint256, uint256));
         metapool().remove_liquidity_one_coin(burnAmount, whichCoin, minAmountOut);
         // This not true for all pools some may have first the LP token first
@@ -98,11 +97,10 @@ abstract contract CurveLevSwapper3TokensWithBP is BaseLevSwapper {
 
     /// @notice Remove liquidity in a balance manner from `metapool`
     /// @dev It should be overriden if `metapool` return values when removing liquidity as it will be more efficient
-    function _removeMetaLiquidityBalance(uint256 burnAmount, bytes memory data)
-        internal
-        virtual
-        returns (uint256 lpTokenBPReceived)
-    {
+    function _removeMetaLiquidityBalance(
+        uint256 burnAmount,
+        bytes memory data
+    ) internal virtual returns (uint256 lpTokenBPReceived) {
         uint256[3] memory minAmountOuts = abi.decode(data, (uint256[3]));
         metapool().remove_liquidity(burnAmount, minAmountOuts);
         lpTokenBPReceived = tokens()[indexBPToken()].balanceOf(address(this));

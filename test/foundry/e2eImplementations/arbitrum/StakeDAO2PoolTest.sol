@@ -2,8 +2,8 @@
 pragma solidity ^0.8.17;
 
 import "../../swapper/curve/arbitrum/CurveLevSwapper2PoolTest.test.sol";
-import { MockCurveLevSwapper2Pool } from "../../../../contracts/mock/implementations/swapper/arbitrum/MockCurveLevSwapper2Pool.sol";
-import { StakeDAO2PoolStaker, IStakeCurveVault } from "../../../../contracts/staker/curve/implementations/arbitrum/pools/StakeDAO2PoolStaker.sol";
+import { MockCurveLevSwapper2Pool } from "borrow-staked/mock/implementations/swapper/arbitrum/MockCurveLevSwapper2Pool.sol";
+import { StakeDAO2PoolStaker, IStakeCurveVault } from "borrow-staked/staker/curve/implementations/arbitrum/pools/StakeDAO2PoolStaker.sol";
 
 contract StakeDAO2PoolTest is CurveLevSwapper2PoolTest {
     using stdStorage for StdStorage;

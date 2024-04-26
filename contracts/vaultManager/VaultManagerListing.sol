@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.17;
 
-import { IBorrowStakerCheckpoint } from "../interfaces/IBorrowStaker.sol";
+import { IBorrowStakerCheckpoint } from "borrow-staked/interfaces/IBorrowStaker.sol";
 import "borrow/vaultManager/VaultManager.sol";
 
 /// @title VaultManagerListing
@@ -36,11 +36,7 @@ contract VaultManagerListing is VaultManager {
     // ================= INTERNAL UTILITY STATE-MODIFYING FUNCTIONS ================
 
     /// @inheritdoc VaultManagerERC721
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 vaultID
-    ) internal override {
+    function _beforeTokenTransfer(address from, address to, uint256 vaultID) internal override {
         // If the transfer is between 2 addresses we need to checkpoint both of them.
         // If it is a burn we also need to checkpoint as the burn didn't trigger yet a change in collateral amount
         if (from != address(0)) {
@@ -52,11 +48,7 @@ contract VaultManagerListing is VaultManager {
 
     /// @inheritdoc VaultManager
     /// @dev Checkpoints the `collateral` of the contract after an update of the `collateralAmount` of vaultID
-    function _checkpointCollateral(
-        uint256 vaultID,
-        uint256 amount,
-        bool add
-    ) internal override {
+    function _checkpointCollateral(uint256 vaultID, uint256 amount, bool add) internal override {
         _checkpointWrapper(_ownerOf(vaultID), amount, add);
     }
 
@@ -66,11 +58,7 @@ contract VaultManagerListing is VaultManager {
     /// @param add Whether the collateral was added or removed from the vault
     /// @dev Whenever there is an internal transfer or a transfer from the `vaultManager`,
     /// we need to update the rewards to correctly track everyone's claim
-    function _checkpointWrapper(
-        address user,
-        uint256 amount,
-        bool add
-    ) internal {
+    function _checkpointWrapper(address user, uint256 amount, bool add) internal {
         IBorrowStakerCheckpoint(address(collateral)).checkpointFromVaultManager(user, amount, add);
     }
 }

@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.17;
 
-import "./IMetaPoolBase.sol";
+import "borrow-staked/interfaces/external/curve/IMetaPoolBase.sol";
 
 uint256 constant N_COINS = 2;
 
@@ -35,18 +35,9 @@ interface IMetaPool2 is IMetaPoolBase {
 
     function add_liquidity(uint256[N_COINS] memory _amounts, uint256 _min_mint_amount) external;
 
-    function add_liquidity(
-        uint256[N_COINS] memory _amounts,
-        uint256 _min_mint_amount,
-        address _receiver
-    ) external;
+    function add_liquidity(uint256[N_COINS] memory _amounts, uint256 _min_mint_amount, address _receiver) external;
 
-    function get_dy(
-        int128 i,
-        int128 j,
-        uint256 dx,
-        uint256[N_COINS] memory _balances
-    ) external view returns (uint256);
+    function get_dy(int128 i, int128 j, uint256 dx, uint256[N_COINS] memory _balances) external view returns (uint256);
 
     function get_dy_underlying(
         int128 i,
@@ -55,19 +46,11 @@ interface IMetaPool2 is IMetaPoolBase {
         uint256[N_COINS] memory _balances
     ) external view returns (uint256);
 
-    function remove_liquidity_one_coin(
-        uint256 _burn_amount,
-        int128 i,
-        uint256 _min_received
-    ) external;
+    function remove_liquidity_one_coin(uint256 _burn_amount, int128 i, uint256 _min_received) external;
 
     function remove_liquidity(uint256 _burn_amount, uint256[N_COINS] memory _min_amounts) external;
 
-    function remove_liquidity(
-        uint256 _burn_amount,
-        uint256[N_COINS] memory _min_amounts,
-        address _receiver
-    ) external;
+    function remove_liquidity(uint256 _burn_amount, uint256[N_COINS] memory _min_amounts, address _receiver) external;
 
     function remove_liquidity_imbalance(uint256[N_COINS] memory _amounts, uint256 _max_burn_amount) external;
 

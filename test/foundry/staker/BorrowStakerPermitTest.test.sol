@@ -2,8 +2,8 @@
 pragma solidity ^0.8.17;
 
 import "../BaseTest.test.sol";
-import "../../../contracts/mock/MockTokenPermit.sol";
-import { MockBorrowStaker, BorrowStakerStorage } from "../../../contracts/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { MockBorrowStaker, BorrowStakerStorage } from "borrow-staked/mock/MockBorrowStaker.sol";
 import { SigUtils, Permit } from "../utils/SigUtils.sol";
 
 contract BorrowStakerPermitTest is BaseTest {
@@ -14,7 +14,7 @@ contract BorrowStakerPermitTest is BaseTest {
     MockBorrowStaker public staker;
     SigUtils public sigUtils;
     uint8 public decimalstaker = 18;
-    uint256 public maxstakerAmount = 10**15 * 10**decimalstaker;
+    uint256 public maxstakerAmount = 10 ** 15 * 10 ** decimalstaker;
 
     uint256 public constant DEPOSIT_LENGTH = 10;
     uint256 public constant WITHDRAW_LENGTH = 10;
@@ -292,16 +292,10 @@ contract BorrowStakerPermitTest is BaseTest {
 
     // ================================== HELPERS ==================================
 
-    function _getAddresses(uint256 ownerPrivateKey, uint256 spenderPrivateKey)
-        internal
-        view
-        returns (
-            address owner,
-            address spender,
-            uint256,
-            uint256
-        )
-    {
+    function _getAddresses(
+        uint256 ownerPrivateKey,
+        uint256 spenderPrivateKey
+    ) internal view returns (address owner, address spender, uint256, uint256) {
         ownerPrivateKey = bound(
             ownerPrivateKey,
             1,

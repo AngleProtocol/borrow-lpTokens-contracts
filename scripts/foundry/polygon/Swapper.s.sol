@@ -6,7 +6,7 @@ import { console } from "forge-std/console.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
-import { MockCurveLevSwapperAaveBP } from "../../../contracts/swapper/LevSwapper/curve/implementations/polygon/polygonTest/MockCurveLevSwapperAaveBP.sol";
+import { MockCurveLevSwapperAaveBP } from "borrow-staked/swapper/LevSwapper/curve/implementations/polygon/polygonTest/MockCurveLevSwapperAaveBP.sol";
 import "./PolygonConstants.s.sol";
 
 contract DeploySwapper is Script, PolygonConstants {

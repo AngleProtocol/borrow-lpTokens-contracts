@@ -3,14 +3,14 @@ pragma solidity ^0.8.17;
 
 import { stdStorage, StdStorage } from "forge-std/Test.sol";
 import "../BaseTest.test.sol";
-import { VaultManagerListing } from "../../../contracts/vaultManager/VaultManagerListing.sol";
+import { VaultManagerListing } from "borrow-staked/vaultManager/VaultManagerListing.sol";
 import { ActionType } from "borrow/interfaces/IVaultManager.sol";
-import "../../../contracts/mock/MockTreasury.sol";
-import { MockBorrowStaker, MockBorrowStakerReset, BorrowStakerStorage } from "../../../contracts/mock/MockBorrowStaker.sol";
-import "../../../contracts/mock/MockOracle.sol";
-import "../../../contracts/mock/MockTokenPermit.sol";
-import "../../../contracts/mock/MockCoreBorrow.sol";
-import { MockAgToken } from "../../../contracts/mock/MockAgToken.sol";
+import "borrow-staked/mock/MockTreasury.sol";
+import { MockBorrowStaker, MockBorrowStakerReset, BorrowStakerStorage } from "borrow-staked/mock/MockBorrowStaker.sol";
+import "borrow-staked/mock/MockOracle.sol";
+import "borrow-staked/mock/MockTokenPermit.sol";
+import { MockCoreBorrow as MockCoreBorrowTest } from "borrow-staked/mock/MockCoreBorrow.sol";
+import { MockAgToken } from "borrow-staked/mock/MockAgToken.sol";
 import { AngleBorrowHelpers } from "borrow/ui-helpers/AngleBorrowHelpers.sol";
 
 /// @notice Data stored to track someone's loan (or equivalently called position)
@@ -29,7 +29,7 @@ contract VaultManagerListingTest is BaseTest {
         address(uint160(uint256(keccak256(abi.encodePacked("_contractStableMaster")))));
 
     VaultManagerListing internal _contractVaultManager;
-    MockCoreBorrow internal _contractCoreBorrow;
+    MockCoreBorrowTest internal _contractCoreBorrow;
     MockTreasury internal _contractTreasury;
     MockAgToken internal _contractAgToken;
     MockBorrowStakerReset public stakerImplementation;
@@ -48,8 +48,8 @@ contract VaultManagerListingTest is BaseTest {
     uint64 public constant CF = 0.8e9;
     uint8 public decimalToken = 18;
     uint8 public decimalReward = 6;
-    uint256 public maxTokenAmount = 10**15 * 10**decimalToken;
-    uint256 public rewardAmount = 10**2 * 10**(decimalReward);
+    uint256 public maxTokenAmount = 10 ** 15 * 10 ** decimalToken;
+    uint256 public rewardAmount = 10 ** 2 * 10 ** (decimalReward);
     uint256 public constant TRANSFER_LENGTH = 50;
     uint256 public constant REWARDS_LENGTH = 50;
 
@@ -65,7 +65,7 @@ contract VaultManagerListingTest is BaseTest {
         vm.store(address(_contractAgToken), bytes32(uint256(0)), bytes32(uint256(0)));
         _contractAgToken.initialize("agEUR", "agEUR", address(_contractStableMaster));
 
-        _contractCoreBorrow = new MockCoreBorrow();
+        _contractCoreBorrow = new MockCoreBorrowTest();
         vm.store(address(_contractCoreBorrow), bytes32(uint256(0)), bytes32(uint256(0)));
         _contractCoreBorrow.toggleGovernor(_GOVERNOR);
         _contractCoreBorrow.toggleGuardian(_GUARDIAN);
@@ -92,7 +92,7 @@ contract VaultManagerListingTest is BaseTest {
 
         // No protocol revenue for easier computation
         VaultParameters memory params = VaultParameters({
-            debtCeiling: type(uint256).max / 10**27,
+            debtCeiling: type(uint256).max / 10 ** 27,
             collateralFactor: CF,
             targetHealthFactor: 1.1e9,
             interestRate: 0,
@@ -226,9 +226,15 @@ contract VaultManagerListingTest is BaseTest {
                 collateralIdleAmounts[4] += collateralAmount;
             }
             for (uint256 k = 0; k < 5; k++) {
-                address checkedAccount = k == 0 ? _alice : k == 1 ? _bob : k == 2 ? _charlie : k == 3
-                    ? _dylan
-                    : _hacker;
+                address checkedAccount = k == 0
+                    ? _alice
+                    : k == 1
+                        ? _bob
+                        : k == 2
+                            ? _charlie
+                            : k == 3
+                                ? _dylan
+                                : _hacker;
                 assertEq(
                     collateralVaultAmounts[k] + collateralIdleAmounts[k],
                     staker.balanceOf(checkedAccount) + staker.delegatedBalanceOf(checkedAccount)
@@ -276,13 +282,19 @@ contract VaultManagerListingTest is BaseTest {
             }
 
             for (uint256 k = 0; k < 4; k++) {
-                address checkedAccount = k == 0 ? _alice : k == 1 ? _bob : k == 2 ? _charlie : k == 3
-                    ? _dylan
-                    : _hacker;
+                address checkedAccount = k == 0
+                    ? _alice
+                    : k == 1
+                        ? _bob
+                        : k == 2
+                            ? _charlie
+                            : k == 3
+                                ? _dylan
+                                : _hacker;
                 assertApproxEqAbs(
                     rewardToken.balanceOf(checkedAccount) + staker.claimableRewards(checkedAccount, rewardToken),
                     pendingRewards[k],
-                    10**(decimalReward - 4)
+                    10 ** (decimalReward - 4)
                 );
             }
         }
@@ -330,7 +342,13 @@ contract VaultManagerListingTest is BaseTest {
 
     function _getAccountByIndex(uint256 index) internal view returns (uint256, address) {
         uint256 randomIndex = bound(index, 0, 3);
-        address account = randomIndex == 0 ? _alice : randomIndex == 1 ? _bob : randomIndex == 2 ? _charlie : _dylan;
+        address account = randomIndex == 0
+            ? _alice
+            : randomIndex == 1
+                ? _bob
+                : randomIndex == 2
+                    ? _charlie
+                    : _dylan;
         return (randomIndex, account);
     }
 
@@ -374,7 +392,7 @@ contract VaultManagerListingTest is BaseTest {
             staker.checkpoint(address(0));
             // add a reward
             uint256 curBalance = rewardToken.balanceOf(address(staker));
-            amount = bound(amount, 10000, 10_000_000 * 10**decimalReward);
+            amount = bound(amount, 10000, 10_000_000 * 10 ** decimalReward);
             deal(address(rewardToken), address(staker), curBalance + amount);
             staker.setRewardAmount(amount);
         } else if (action == 3) {
@@ -440,11 +458,7 @@ contract VaultManagerListingTest is BaseTest {
         }
     }
 
-    function _openVault(
-        address spender,
-        address owner,
-        uint256 amount
-    ) internal {
+    function _openVault(address spender, address owner, uint256 amount) internal {
         uint256 numberActions = 3;
         ActionType[] memory actions = new ActionType[](numberActions);
         actions[0] = ActionType.createVault;
@@ -520,12 +534,7 @@ contract VaultManagerListingTest is BaseTest {
         }
     }
 
-    function _addToVault(
-        address owner,
-        address initiator,
-        uint256 vaultID,
-        uint256 amount
-    ) internal {
+    function _addToVault(address owner, address initiator, uint256 vaultID, uint256 amount) internal {
         uint256 numberActions = 1;
         ActionType[] memory actions = new ActionType[](numberActions);
         actions[0] = ActionType.addCollateral;
@@ -566,7 +575,7 @@ contract VaultManagerListingTest is BaseTest {
         uint256 vaultDebt = _contractVaultManager.getVaultDebt(vaultID);
         (uint256 currentCollat, ) = _contractVaultManager.vaultData(vaultID);
         // Taking a buffer when withdrawing for rounding errors
-        vaultDebt = (11 * ((((((vaultDebt * BASE_PARAMS) / CF + 1) * 10**decimalToken))) / ORACLE_VALUE + 1)) / 10;
+        vaultDebt = (11 * ((((((vaultDebt * BASE_PARAMS) / CF + 1) * 10 ** decimalToken))) / ORACLE_VALUE + 1)) / 10;
 
         if (vaultDebt >= currentCollat || vaultDebt == 0) return 0;
         amount = bound(amount, 1, currentCollat - vaultDebt);
@@ -604,7 +613,7 @@ contract VaultManagerListingTest is BaseTest {
         (uint256 currentCollat, ) = _contractVaultManager.vaultData(vaultID);
         if (currentCollat == 0) return (false, 0);
         {
-            uint256 newOracleValue = (((vaultDebt * BASE_PARAMS) / CF) * 10**decimalToken) / currentCollat / 100;
+            uint256 newOracleValue = (((vaultDebt * BASE_PARAMS) / CF) * 10 ** decimalToken) / currentCollat / 100;
             if (newOracleValue == 0) return (false, 0);
             _oracle.update(newOracleValue);
         }
@@ -620,7 +629,7 @@ contract VaultManagerListingTest is BaseTest {
         (uint256 currentCollat, ) = _contractVaultManager.vaultData(vaultID);
         if (currentCollat == 0) return (false, 0);
         {
-            uint256 newOracleValue = (((vaultDebt * BASE_PARAMS) / CF) * 10**decimalToken) / currentCollat;
+            uint256 newOracleValue = (((vaultDebt * BASE_PARAMS) / CF) * 10 ** decimalToken) / currentCollat;
             if (newOracleValue < 2) return (false, 0);
             else newOracleValue -= 1;
             _oracle.update(newOracleValue);
@@ -675,22 +684,14 @@ contract VaultManagerListingTest is BaseTest {
         vaultList.pop();
     }
 
-    function _compareLists(
-        uint256[] memory expectedVaultList,
-        uint256[] memory vaultList,
-        uint256 count
-    ) internal {
+    function _compareLists(uint256[] memory expectedVaultList, uint256[] memory vaultList, uint256 count) internal {
         assertEq(count, expectedVaultList.length);
         for (uint256 i; i < count; ++i) {
             assertEq(vaultList[i], expectedVaultList[i]);
         }
     }
 
-    function _logArray(
-        uint256[] memory list,
-        uint256 count,
-        address owner
-    ) internal view {
+    function _logArray(uint256[] memory list, uint256 count, address owner) internal view {
         console.log("owner: ", owner);
         count = count == type(uint256).max ? list.length : count;
         for (uint256 i; i < count; ++i) {

@@ -3,8 +3,8 @@
 pragma solidity ^0.8.17;
 
 import "borrow/oracle/BaseOracleChainlinkMulti.sol";
-import "../../../interfaces/external/curve/ITricryptoPool.sol";
-import "../../../interfaces/external/curve/ICurveCryptoSwapPool.sol";
+import "borrow-staked/interfaces/external/curve/ITricryptoPool.sol";
+import "borrow-staked/interfaces/external/curve/ICurveCryptoSwapPool.sol";
 
 /// @title OracleLUSD3CRVEURChainlink
 /// @author Angle Labs, Inc.
@@ -61,9 +61,11 @@ contract OracleLUSD3CRVEURChainlink is BaseOracleChainlinkMulti {
         uint256 usdcPrice = _readChainlinkFeed(1, _circuitChainlink[1], 1, 0);
         uint256 usdtPrice = _readChainlinkFeed(1, _circuitChainlink[2], 1, 0);
         // Picking the minimum price between DAI, USDC and USDT, multiplying it by the pool's virtual price
-        usdcPrice = usdcPrice >= daiPrice ? (daiPrice >= usdtPrice ? usdtPrice : daiPrice) : usdcPrice >= usdtPrice
-            ? usdtPrice
-            : usdcPrice;
-        quoteAmount = (USDBP.get_virtual_price() * usdcPrice) / 10**18;
+        usdcPrice = usdcPrice >= daiPrice
+            ? (daiPrice >= usdtPrice ? usdtPrice : daiPrice)
+            : usdcPrice >= usdtPrice
+                ? usdtPrice
+                : usdcPrice;
+        quoteAmount = (USDBP.get_virtual_price() * usdcPrice) / 10 ** 18;
     }
 }

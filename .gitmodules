@@ -1,7 +1,12 @@
 [submodule "lib/forge-std"]
 	path = lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "lib/utils"]
+	path = lib/utils
+	url = https://github.com/AngleProtocol/utils
+[submodule "lib/morpho-blue"]
+	path = lib/morpho-blue
+	url = https://github.com/morpho-org/morpho-blue
 [submodule "lib/borrow-contracts"]
 	path = lib/borrow-contracts
 	url = https://github.com/AngleProtocol/borrow-contracts
-	tags = v2.3

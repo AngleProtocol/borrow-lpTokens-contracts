@@ -3,6 +3,7 @@
 pragma solidity ^0.8.7;
 
 import "borrow/interfaces/IOracle.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract MockOracle is IOracle {
     event Update(uint256 _peg);
@@ -34,5 +35,5 @@ contract MockOracle is IOracle {
         treasury = ITreasury(_treasury);
     }
 
-    function circuitChainlink() external view override returns (AggregatorV3Interface[] memory) {}
+    function circuitChainlink() external view returns (AggregatorV3Interface[] memory) {}
 }

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import "../swapper/LevSwapper/BaseLevSwapper.sol";
-import { MockBorrowStaker } from "./MockBorrowStaker.sol";
+import "borrow-staked/swapper/LevSwapper/BaseLevSwapper.sol";
+import { MockBorrowStaker } from "borrow-staked/mock/MockBorrowStaker.sol";
 
 /// @title MockBaseLevSwapper
 /// @author Angle Labs, Inc.
@@ -13,10 +13,10 @@ contract MockBaseLevSwapper is BaseLevSwapper {
     constructor(
         ICoreBorrow _core,
         IUniswapV3Router _uniV3Router,
-        address _oneInch,
+        address _aggregator,
         IAngleRouterSidechain _angleRouter,
         IBorrowStaker staker_
-    ) BaseLevSwapper(_core, _uniV3Router, _oneInch, _angleRouter) {
+    ) BaseLevSwapper(_core, _uniV3Router, _aggregator, _angleRouter) {
         _staker = staker_;
         _asset = staker_.asset();
         _changeAllowance(_asset, address(staker_), type(uint256).max);
