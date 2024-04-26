@@ -4,10 +4,10 @@ pragma solidity ^0.8.17;
 import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 import { ERC4626LevSwapperMorphoGauntletUSDCPrime } from "borrow-staked/swapper/LevSwapper/morpho/implementations/ERC4626LevSwapperMorphoGauntletUSDCPrime.sol";
-import "./MainnetConstants.s.sol";
+import "../MainnetConstants.s.sol";
 import { MarketParams } from "morpho-blue/libraries/MarketParamsLib.sol";
 
-contract LiquidationMorpho is Script, MainnetConstants {
+contract MorphoLiquidate is Script, MainnetConstants {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("KEEPER_PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);

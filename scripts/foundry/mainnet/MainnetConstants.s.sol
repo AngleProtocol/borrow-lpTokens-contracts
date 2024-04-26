@@ -45,6 +45,7 @@ contract MainnetConstants {
     address constant MORPHO_ORACLE_FACTORY = 0x3A7bB36Ee3f3eE32A60e9f2b33c1e5f2E83ad766;
     address constant IRM_MODEL = 0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC;
 
+    uint256 constant LLTV_91 = 0.915 ether;
     uint256 constant LLTV_86 = 0.86 ether;
     uint256 constant LLTV_77 = 0.77 ether;
     uint256 constant LLTV_62 = 0.625 ether;
@@ -53,8 +54,8 @@ contract MainnetConstants {
     uint32 constant _STALE_PERIOD = 24 hours;
     uint256 constant _MAX_IMPLIED_RATE = 0.5 ether;
 
-    uint256 BASE_DEPOSIT_ETH_AMOUNT = 0.01 ether;
-    uint256 BASE_DEPOSIT_USD_AMOUNT = 5 ether;
+    uint256 constant BASE_DEPOSIT_ETH_AMOUNT = 0.01 ether;
+    uint256 constant BASE_DEPOSIT_USD_AMOUNT = 5 ether;
 
     function deployUpgradeable(address implementation, bytes memory data) public returns (address) {
         return address(new TransparentUpgradeableProxy(implementation, PROXY_ADMIN, data));
