@@ -22,7 +22,7 @@ import "borrow-staked/interfaces/external/morpho/IMorphoChainlinkOracleV2Factory
 import { MorphoBalancesLib } from "morpho-blue/libraries/periphery/MorphoBalancesLib.sol";
 import { MarketParamsLib } from "morpho-blue/libraries/MarketParamsLib.sol";
 
-contract SwapperLevMorphoPTWeETH is Script, MainnetConstants, StdCheats, StdAssertions {
+contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertions {
     using MorphoBalancesLib for IMorpho;
     using MarketParamsLib for MarketParams;
 

@@ -39,7 +39,7 @@ abstract contract PendleLevSwapperMorpho is BaseLevSwapperMorpho {
             address(market()),
             amountSharesOut,
             0,
-            ApproxParams({ guessMin: 0, guessMax: 2 * amountSharesOut, guessOffchain: 0, maxIteration: 10, eps: 1e15 }),
+            ApproxParams({ guessMin: 0, guessMax: 2 * amountSharesOut, guessOffchain: 0, maxIteration: 10, eps: 1e18 }),
             limit
         );
     }
