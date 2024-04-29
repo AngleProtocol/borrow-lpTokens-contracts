@@ -7,12 +7,13 @@ import { StdCheats, StdAssertions } from "forge-std/Test.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
-import { PendleLevSwapperMorphoUSDe } from "borrow-staked/swapper/LevSwapper/morpho/implementations/PendleLevSwapperMorphoUSDe.sol";
+import { ERC4626GenericLevSwapper } from "borrow-staked/swapper/LevSwapper/ERC4626GenericLevSwapper.sol";
 import "../MainnetConstants.s.sol";
 import { IMorpho } from "morpho-blue/interfaces/IMorpho.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
+import "@openzeppelin/contracts/interfaces/IERC4626.sol";
 
-contract SwapperLevMorphoPTUSDe is Script, MainnetConstants, StdCheats, StdAssertions {
+contract ERC4626SwapperLevMorphoGenericERC4626 is Script, MainnetConstants, StdCheats, StdAssertions {
     ICoreBorrow coreBorrow;
 
     function run() external {
@@ -21,18 +22,18 @@ contract SwapperLevMorphoPTUSDe is Script, MainnetConstants, StdCheats, StdAsser
         vm.startBroadcast(deployerPrivateKey);
 
         coreBorrow = ICoreBorrow(CORE_BORROW);
-        // If you want to modify one of the entry in the price feed
         // coreBorrow = new MockCoreBorrow();
         // coreBorrow.toggleGuardian(deployer);
 
-        PendleLevSwapperMorphoUSDe swapperMorphoPTUSDe = new PendleLevSwapperMorphoUSDe(
-            coreBorrow,
+        ERC4626GenericLevSwapper swapperGenericERC4626 = new ERC4626GenericLevSwapper(
+            ICoreBorrow(CORE_BORROW),
             IUniswapV3Router(UNI_V3_ROUTER),
             ONE_INCH,
             IAngleRouterSidechain(ANGLE_ROUTER),
             IMorpho(MORPHO_BLUE)
         );
-        console.log("Successfully deployed swapper Morpho PT-USDe Pendle: ", address(swapperMorphoPTUSDe));
+
+        console.log("Successfully deployed generic ERC4626 swapper: ", address(swapperGenericERC4626));
 
         vm.stopBroadcast();
     }
