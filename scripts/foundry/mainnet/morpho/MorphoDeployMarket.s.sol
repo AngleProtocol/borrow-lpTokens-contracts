@@ -26,7 +26,7 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
     using MorphoBalancesLib for IMorpho;
     using MarketParamsLib for MarketParams;
 
-    MockCoreBorrow coreBorrow;
+    ICoreBorrow coreBorrow;
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
@@ -35,7 +35,7 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
         vm.startBroadcast(deployerPrivateKey);
 
         // Can be changed to a new MockCoreBorrow if you want to manipulate the price
-        coreBorrow = MockCoreBorrow(CORE_BORROW);
+        coreBorrow = ICoreBorrow(CORE_BORROW);
 
         MarketParams memory params;
         bytes memory emptyData;
@@ -61,13 +61,8 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
         );
 
         // // GTUSDCPrime market
-        // // If you want to be able to manipulate the price
-        // MockERC4626 vault = new MockERC4626(
-        //     IERC20Metadata(GTUSDCPRIME),
-        //     IERC4626(GTUSDCPRIME).convertToAssets(1 ether)
-        // );
         // oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
-        //     address(vault),
+        //     address(GTUSDCPRIME),
         //     1 ether,
         //     CHAINLINK_USDC_USD_ORACLE,
         //     address(0),

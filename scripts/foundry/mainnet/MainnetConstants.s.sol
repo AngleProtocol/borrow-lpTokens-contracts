@@ -26,6 +26,7 @@ contract MainnetConstants {
     address constant USDA = 0x0000206329b97DB379d5E1Bf586BbDB969C63274;
     address constant EZETH = 0xbf5495Efe5DB9ce00f80364C8B423567e58d2110;
     address constant PTWeETH = 0xc69Ad9baB1dEE23F4605a82b3354F8E40d1E5966;
+    address constant PTUSDe = 0xa0021EF8970104c2d008F38D92f115ad56a9B8e1;
     address constant RSETH = 0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7;
     address constant GTETHPRIME = 0x2371e134e3455e0593363cBF89d3b6cf53740618;
     address constant GTUSDCPRIME = 0xdd0f28e19C1780eb6396170735D45153D261490d;
