@@ -7,7 +7,7 @@ import { StdCheats, StdAssertions } from "forge-std/Test.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
-import { PendleLevSwapperMorphoWeETH } from "borrow-staked/swapper/LevSwapper/morpho/implementations/PendleLevSwapperMorphoWeETH.sol";
+import { PendleLevSwapperMorphoWeETHDec24 } from "borrow-staked/swapper/LevSwapper/morpho/implementations/PendleLevSwapperMorphoWeETHDec24.sol";
 import "../MainnetConstants.s.sol";
 import { IMorpho } from "morpho-blue/interfaces/IMorpho.sol";
 import "borrow-staked/mock/MockCoreBorrow.sol";
@@ -25,7 +25,7 @@ contract SwapperLevMorphoPTWeETH is Script, MainnetConstants, StdCheats, StdAsse
         // coreBorrow = new MockCoreBorrow();
         // coreBorrow.toggleGuardian(deployer);
 
-        PendleLevSwapperMorphoWeETH swapperMorphoPTWeETH = new PendleLevSwapperMorphoWeETH(
+        PendleLevSwapperMorphoWeETHDec24 swapperMorphoPTWeETH = new PendleLevSwapperMorphoWeETHDec24(
             ICoreBorrow(coreBorrow),
             IUniswapV3Router(UNI_V3_ROUTER),
             ONE_INCH,
