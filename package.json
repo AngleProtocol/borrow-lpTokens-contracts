@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "increaseTime": "cast rpc anvil_increaseTime 86400 && cast rpc anvil_mine",
     "coverage": "FOUNDRY_PROFILE=dev forge coverage --report lcov && yarn lcov:clean && yarn lcov:generate-html",
     "compile": "forge build",
     "compile:dev": "FOUNDRY_PROFILE=dev forge build",
@@ -10,7 +11,9 @@
     "deploy:fork": "FOUNDRY_PROFILE=dev forge script --skip test --slow --fork-url fork --broadcast -vvvv",
     "gas": "yarn test --gas-report",
     "fork": "bash helpers/fork.sh",
+    "impersonate": "cast rpc anvil_impersonateAccount",
     "script:fork": "FOUNDRY_PROFILE=dev forge script --skip test --fork-url fork --broadcast -vvvv",
+    "script:impersonate": "FOUNDRY_PROFILE=dev forge script --skip test --fork-url fork --broadcast -vvvv --gas-price 0 --priority-gas-price 0 --unlocked --sender ",
     "test:unit": "forge test -vvv --gas-report --match-path \"test/unit/**/*.sol\"",
     "test:invariant": "forge test -vvv --gas-report --match-path \"test/invariant/**/*.sol\"",
     "test:fuzz": "forge test -vvv --gas-report --match-path \"test/fuzz/**/*.sol\"",

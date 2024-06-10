@@ -7,32 +7,33 @@ import { StdCheats, StdAssertions } from "forge-std/Test.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
-import { PendleLevSwapperMorphoWeETH } from "borrow-staked/swapper/LevSwapper/morpho/implementations/PendleLevSwapperMorphoWeETH.sol";
+import { ERC4626GenericLevSwapper } from "borrow-staked/swapper/LevSwapper/ERC4626GenericLevSwapper.sol";
 import "../MainnetConstants.s.sol";
 import { IMorpho } from "morpho-blue/interfaces/IMorpho.sol";
-import "borrow-staked/mock/MockCoreBorrow.sol";
+import "borrow/interfaces/ICoreBorrow.sol";
+import "@openzeppelin/contracts/interfaces/IERC4626.sol";
 
-contract SwapperLevMorphoPTWeETH is Script, MainnetConstants, StdCheats, StdAssertions {
-    MockCoreBorrow coreBorrow;
+contract ERC4626SwapperLevMorphoGenericERC4626 is Script, MainnetConstants, StdCheats, StdAssertions {
+    ICoreBorrow coreBorrow;
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
         vm.startBroadcast(deployerPrivateKey);
 
-        coreBorrow = MockCoreBorrow(CORE_BORROW);
-        // If you want to modify one of the entry in the price feed
+        coreBorrow = ICoreBorrow(CORE_BORROW);
         // coreBorrow = new MockCoreBorrow();
         // coreBorrow.toggleGuardian(deployer);
 
-        PendleLevSwapperMorphoWeETH swapperMorphoPTWeETH = new PendleLevSwapperMorphoWeETH(
-            ICoreBorrow(coreBorrow),
+        ERC4626GenericLevSwapper swapperGenericERC4626 = new ERC4626GenericLevSwapper(
+            ICoreBorrow(CORE_BORROW),
             IUniswapV3Router(UNI_V3_ROUTER),
             ONE_INCH,
             IAngleRouterSidechain(ANGLE_ROUTER),
             IMorpho(MORPHO_BLUE)
         );
-        console.log("Successfully deployed swapper Morpho PT-weETH Pendle: ", address(swapperMorphoPTWeETH));
+
+        console.log("Successfully deployed generic ERC4626 swapper: ", address(swapperGenericERC4626));
 
         vm.stopBroadcast();
     }
