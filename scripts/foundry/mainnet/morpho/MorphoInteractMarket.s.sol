@@ -83,6 +83,13 @@ contract MorphoInteractMarket is Script, MainnetConstants, StdCheats, StdAsserti
         //     // IMorpho(MORPHO_BLUE).repay(params, 50 ether, 0, deployer, emptyData);
         // }
 
+        {
+            params.collateralToken = EZETH;
+            params.lltv = LLTV_77;
+            params.oracle = 0xd5116061F4a1FFac23E9c6c9f6B4AF28b9AF7676;
+            _getBalances(params, 0xB4F78a5adC242f67dFe3391cEa55Dc882BcaAd7C);
+        }
+
         // {
         //     address oracle = 0x76052A2A28fDCB8124f4686C63C68355b142de3B;
         //     params.collateralToken = RE7ETH;
@@ -162,26 +169,26 @@ contract MorphoInteractMarket is Script, MainnetConstants, StdCheats, StdAsserti
         //     BaseFeedPTPendle(priceFeed).setMaxImpliedRate(1000 ether);
         //     (, pricePT, , , ) = BaseFeedPTPendle(priceFeed).latestRoundData();
         // }
-        // ERC4626
-        // Rehypothecated morpho vaults
-        {
-            IERC4626(GTUSDCPRIME).convertToAssets(1 ether);
-            params.loanToken = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
-            params.collateralToken = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
-            params.oracle = 0x48F7E36EB6B826B2dF4B2E630B62Cd25e89E40e2;
-            params.irm = 0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC;
-            params.lltv = 860000000000000000;
-            // MetaMorphoVault(GTUSDCPRIME).submitCap(params, 0 ether);
-            // MetaMorphoVault(GTUSDCPRIME).submitMarketRemoval(params);
-            MarketConfig memory config = MetaMorphoVault(GTUSDCPRIME).config(
-                bytes32(0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc)
-            );
-            uint256[] memory newWithdrawQueue = new uint256[](1);
-            newWithdrawQueue[0] = 0;
-            // newWithdrawQueue[1] = 1;
-            MetaMorphoVault(GTUSDCPRIME).updateWithdrawQueue(newWithdrawQueue);
-            IERC4626(GTUSDCPRIME).convertToAssets(1 ether);
-        }
+        // // ERC4626
+        // // Rehypothecated morpho vaults
+        // {
+        //     IERC4626(GTUSDCPRIME).convertToAssets(1 ether);
+        //     params.loanToken = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+        //     params.collateralToken = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
+        //     params.oracle = 0x48F7E36EB6B826B2dF4B2E630B62Cd25e89E40e2;
+        //     params.irm = 0x870aC11D48B15DB9a138Cf899d20F13F79Ba00BC;
+        //     params.lltv = 860000000000000000;
+        //     // MetaMorphoVault(GTUSDCPRIME).submitCap(params, 0 ether);
+        //     // MetaMorphoVault(GTUSDCPRIME).submitMarketRemoval(params);
+        //     MarketConfig memory config = MetaMorphoVault(GTUSDCPRIME).config(
+        //         bytes32(0xb323495f7e4148be5643a4ea4a8221eef163e4bccfdedc2a6f4696baacbc86cc)
+        //     );
+        //     uint256[] memory newWithdrawQueue = new uint256[](1);
+        //     newWithdrawQueue[0] = 0;
+        //     // newWithdrawQueue[1] = 1;
+        //     MetaMorphoVault(GTUSDCPRIME).updateWithdrawQueue(newWithdrawQueue);
+        //     IERC4626(GTUSDCPRIME).convertToAssets(1 ether);
+        // }
 
         vm.stopBroadcast();
     }
