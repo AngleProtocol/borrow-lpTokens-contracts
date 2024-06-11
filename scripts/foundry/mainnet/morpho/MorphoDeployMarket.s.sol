@@ -16,7 +16,7 @@ import { IOracle as IMorphoOracle } from "morpho-blue/interfaces/IOracle.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import { MorphoFeedPTweETH } from "borrow/oracle/morpho/mainnet/MorphoFeedPTweETH.sol";
-import { MorphoFeedPTweETHDec24 } from "borrow/oracle/morpho/mainnet/MorphoFeedPTweETHDec24.sol";
+// import { MorphoFeedPTweETHDec24 } from "borrow/oracle/morpho/mainnet/MorphoFeedPTweETHDec24.sol";
 import { IAccessControlManager } from "borrow/interfaces/IAccessControlManager.sol";
 import "borrow-staked/mock/MockCoreBorrow.sol";
 import "borrow-staked/interfaces/external/morpho/IMorphoChainlinkOracleV2Factory.sol";
@@ -43,23 +43,23 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
         address oracle;
         bytes32 salt;
 
-        // PT weETH market
-        address priceFeed = address(
-            new MorphoFeedPTweETHDec24(IAccessControlManager(address(coreBorrow)), _MAX_IMPLIED_RATE, _TWAP_DURATION)
-        );
-        oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
-            address(0),
-            1,
-            address(priceFeed),
-            address(WEETH_USD_ORACLE),
-            IERC20Metadata(PTWeETH).decimals(),
-            address(0),
-            1,
-            address(0),
-            address(0),
-            IERC20Metadata(USDA).decimals(),
-            salt
-        );
+        // // PT weETH market
+        // address priceFeed = address(
+        //     new MorphoFeedPTweETHDec24(IAccessControlManager(address(coreBorrow)), _MAX_IMPLIED_RATE, _TWAP_DURATION)
+        // );
+        // oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
+        //     address(0),
+        //     1,
+        //     address(priceFeed),
+        //     address(WEETH_USD_ORACLE),
+        //     IERC20Metadata(PTWeETH).decimals(),
+        //     address(0),
+        //     1,
+        //     address(0),
+        //     address(0),
+        //     IERC20Metadata(USDA).decimals(),
+        //     salt
+        // );
 
         // // GTUSDCPrime market
         // oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
