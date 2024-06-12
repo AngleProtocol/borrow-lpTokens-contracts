@@ -5,8 +5,9 @@ import "forge-std/Script.sol";
 import "borrow/interfaces/IOracle.sol";
 import { IERC20, VaultParameters, VaultManagerListing } from "borrow-staked/vaultManager/VaultManagerListing.sol";
 import "./MainnetConstants.s.sol";
+import "../UtilsUpgradable.s.sol";
 
-contract DeployVaultManagerMainnet is Script, MainnetConstants {
+contract DeployVaultManagerMainnet is Script, MainnetConstants, UtilsUpgradable {
     VaultManagerListing public constant VAULT_MANAGER_IMPL =
         VaultManagerListing(0xCe43220f72A7060F34BC242630D6B96434105Ae4);
     // TODO to be changed at deployment depending on the vaultManager
@@ -66,6 +67,7 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
 
         vaultManagerConvex = VaultManagerListing(
             deployUpgradeable(
+                PROXY_ADMIN,
                 address(VAULT_MANAGER_IMPL),
                 abi.encodeWithSelector(
                     VAULT_MANAGER_IMPL.initialize.selector,
@@ -88,6 +90,7 @@ contract DeployVaultManagerMainnet is Script, MainnetConstants {
 
         vaultManagerStakeDAO = VaultManagerListing(
             deployUpgradeable(
+                PROXY_ADMIN,
                 address(VAULT_MANAGER_IMPL),
                 abi.encodeWithSelector(
                     VAULT_MANAGER_IMPL.initialize.selector,

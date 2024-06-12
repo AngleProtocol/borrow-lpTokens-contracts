@@ -5,8 +5,9 @@ import "forge-std/Script.sol";
 import "borrow/interfaces/IOracle.sol";
 import { IERC20, VaultParameters, VaultManagerListing } from "borrow-staked/vaultManager/VaultManagerListing.sol";
 import "./ArbitrumConstants.s.sol";
+import "../UtilsUpgradable.s.sol";
 
-contract DeployVaultManagerArbitrum is Script, ArbitrumConstants {
+contract DeployVaultManagerArbitrum is Script, ArbitrumConstants, UtilsUpgradable {
     VaultManagerListing public constant VAULT_MANAGER_IMPL =
         VaultManagerListing(0x8928d0C942CA48Ea86F458857de61b92D6f5A564);
     // TODO to be changed at deployment depending on the vaultManager
@@ -67,6 +68,7 @@ contract DeployVaultManagerArbitrum is Script, ArbitrumConstants {
 
         vaultManagerConvex = VaultManagerListing(
             deployUpgradeable(
+                PROXY_ADMIN,
                 address(VAULT_MANAGER_IMPL),
                 abi.encodeWithSelector(
                     VAULT_MANAGER_IMPL.initialize.selector,
@@ -89,6 +91,7 @@ contract DeployVaultManagerArbitrum is Script, ArbitrumConstants {
 
         vaultManagerStakeDAO = VaultManagerListing(
             deployUpgradeable(
+                PROXY_ADMIN,
                 address(VAULT_MANAGER_IMPL),
                 abi.encodeWithSelector(
                     VAULT_MANAGER_IMPL.initialize.selector,

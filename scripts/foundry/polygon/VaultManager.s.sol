@@ -5,8 +5,9 @@ import "forge-std/Script.sol";
 import "borrow/interfaces/IOracle.sol";
 import { IERC20, VaultParameters, VaultManagerListing } from "borrow-staked/vaultManager/VaultManagerListing.sol";
 import "./PolygonConstants.s.sol";
+import "../UtilsUpgradable.s.sol";
 
-contract DeployVaultManager is Script, PolygonConstants {
+contract DeployVaultManager is Script, PolygonConstants, UtilsUpgradable {
     // TODO to be changed at deployment depending on the vaultManager
     VaultManagerListing public constant VAULT_MANAGER_IMPL =
         VaultManagerListing(0x102Bff534D7E3b522d1C6b5E60e6416B929179Fa);
@@ -53,6 +54,7 @@ contract DeployVaultManager is Script, PolygonConstants {
 
         vaultManager = VaultManagerListing(
             deployUpgradeable(
+                PROXY_ADMIN,
                 address(VAULT_MANAGER_IMPL),
                 abi.encodeWithSelector(
                     VAULT_MANAGER_IMPL.initialize.selector,
