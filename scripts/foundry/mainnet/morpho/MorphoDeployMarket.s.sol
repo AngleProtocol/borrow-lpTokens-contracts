@@ -72,31 +72,31 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
             IMorpho(MORPHO_BLUE).createMarket(params);
         }
 
-        // {
-        //     address priceFeed = address(0xF3FC589215F18D40FCfAbAf860e3a9ed9E8Cfc0C);
-        //     oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
-        //         address(0),
-        //         1,
-        //         address(priceFeed),
-        //         address(EZETH_ETH_ORACLE),
-        //         IERC20Metadata(PTEzETHDec24).decimals(),
-        //         address(0),
-        //         1,
-        //         address(0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419),
-        //         address(0),
-        //         IERC20Metadata(USDA).decimals(),
-        //         salt
-        //     );
+        {
+            address priceFeed = address(0xF3FC589215F18D40FCfAbAf860e3a9ed9E8Cfc0C);
+            oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
+                address(0),
+                1,
+                address(priceFeed),
+                address(ETH_USD_ORACLE),
+                IERC20Metadata(PTEzETHDec24).decimals(),
+                address(0),
+                1,
+                address(0),
+                address(0),
+                IERC20Metadata(USDA).decimals(),
+                salt
+            );
 
-        //     uint256 price = IMorphoOracle(oracle).price();
-        //     assertApproxEqRel(price, 3350 * 10 ** 36, 100 ** 36);
-        //     params.collateralToken = PTEzETHDec24;
-        //     params.lltv = LLTV_86;
-        //     params.irm = IRM_MODEL;
-        //     params.oracle = oracle;
-        //     params.loanToken = USDA;
-        //     IMorpho(MORPHO_BLUE).createMarket(params);
-        // }
+            uint256 price = IMorphoOracle(oracle).price();
+            assertApproxEqRel(price, 3350 * 10 ** 36, 100 ** 36);
+            params.collateralToken = PTEzETHDec24;
+            params.lltv = LLTV_86;
+            params.irm = IRM_MODEL;
+            params.oracle = oracle;
+            params.loanToken = USDA;
+            IMorpho(MORPHO_BLUE).createMarket(params);
+        }
 
         // {
         // // GTUSDCPrime market

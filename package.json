@@ -14,6 +14,7 @@
     "impersonate": "cast rpc anvil_impersonateAccount",
     "script:fork": "FOUNDRY_PROFILE=dev forge script --skip test --fork-url fork --broadcast -vvvv",
     "script:impersonate": "FOUNDRY_PROFILE=dev forge script --skip test --fork-url fork --broadcast -vvvv --gas-price 0 --priority-gas-price 0 --unlocked --sender ",
+    "impersonate:setBalance": "cast rpc anvil_setBalance 0x0c2553e4b9dfa9f83b1a6d3eab96c4baab42d430 1000000000000000000",
     "test:unit": "forge test -vvv --gas-report --match-path \"test/unit/**/*.sol\"",
     "test:invariant": "forge test -vvv --gas-report --match-path \"test/invariant/**/*.sol\"",
     "test:fuzz": "forge test -vvv --gas-report --match-path \"test/fuzz/**/*.sol\"",
