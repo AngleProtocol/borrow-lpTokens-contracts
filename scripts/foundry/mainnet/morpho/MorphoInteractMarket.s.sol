@@ -22,6 +22,7 @@ import "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import "../MainnetConstants.s.sol";
 import { MathLib, WAD } from "morpho-blue/libraries/MathLib.sol";
 import { SharesMathLib } from "morpho-blue/libraries/SharesMathLib.sol";
+import { UtilsLib } from "morpho-blue/libraries/UtilsLib.sol";
 
 struct MarketConfig {
     /// @notice The maximum amount of assets that can be allocated to the market.
@@ -42,6 +43,13 @@ interface MetaMorphoVault {
     function submitMarketRemoval(MarketParams memory marketParams) external;
 
     function config(bytes32 id) external returns (MarketConfig memory);
+}
+
+struct MarketReduced {
+    uint256 totalSupplyAssets;
+    uint256 totalSupplyShares;
+    uint256 totalBorrowAssets;
+    uint256 totalBorrowShares;
 }
 
 contract MorphoInteractMarket is Script, MainnetConstants, StdCheats, StdAssertions {
@@ -129,46 +137,65 @@ contract MorphoInteractMarket is Script, MainnetConstants, StdCheats, StdAsserti
         //     _getBalances(params, deployer);
         // }
 
-        {
-            address oracle = 0x5441731eED05A8208e795086a5dF41416DD34104;
-            params.collateralToken = PTWeETH;
-            params.lltv = LLTV_86;
-            params.oracle = oracle;
+        // {
+        //     address oracle = 0x5441731eED05A8208e795086a5dF41416DD34104;
+        //     params.collateralToken = PTWeETH;
+        //     params.lltv = LLTV_86;
+        //     params.oracle = oracle;
 
-            _getBalances(params, 0x36dfe6EDdef7d32497e15cdF826D6Cf4ee9293aF);
+        //     _getBalances(params, 0x36dfe6EDdef7d32497e15cdF826D6Cf4ee9293aF);
 
-            uint256 seizedAssets = 5259191786070926568;
-            uint256 liquidationIncentiveFactor = 1043841336116910226;
-            uint256 collateralPrice = 2856129235735415775130229134080000000000;
-            uint256 ORACLE_PRICE_SCALE = 1000000000000000000000000000000000000;
-            Market memory market = IMorpho(MORPHO_BLUE).market(params.id());
-            uint256 seizedAssetsQuoted = seizedAssets.mulDivUp(collateralPrice, ORACLE_PRICE_SCALE);
+        //     uint256 seizedAssets = 4838661537579587905;
+        //     // uint256 liquidationIncentiveFactor = 1043841336116910226;
+        //     uint256 collateralPrice = 3033381360515936091937613849700000000000;
+        //     uint256 ORACLE_PRICE_SCALE = 1000000000000000000000000000000000000;
+        //     uint256 LIQUIDATION_CURSOR = 0.3e18;
+        //     uint256 MAX_LIQUIDATION_INCENTIVE_FACTOR = 1.15e18;
+        //     uint256 borrowShares = 13826871403438882335074967310;
 
-            console.log("seizedAssetsQuoted: ", seizedAssetsQuoted);
+        //     MarketReduced memory market;
+        //     (
+        //         market.totalSupplyAssets,
+        //         market.totalSupplyShares,
+        //         market.totalBorrowAssets,
+        //         market.totalBorrowShares
+        //     ) = IMorpho(MORPHO_BLUE).expectedMarketBalances(params);
 
-            uint256 repaidShares = seizedAssetsQuoted.wDivUp(liquidationIncentiveFactor).toSharesUp(
-                market.totalBorrowAssets,
-                market.totalBorrowShares
-            );
+        //     // The liquidation incentive factor is min(maxLiquidationIncentiveFactor, 1/(1 - cursor*(1 - lltv))).
+        //     uint256 liquidationIncentiveFactor = UtilsLib.min(
+        //         MAX_LIQUIDATION_INCENTIVE_FACTOR,
+        //         WAD.wDivDown(WAD - LIQUIDATION_CURSOR.wMulDown(WAD - params.lltv))
+        //     );
 
-            console.log("repaidShares: ", repaidShares);
+        //     console.log("liquidationIncentiveFactor: ", liquidationIncentiveFactor);
 
-            uint256 repaidAssets = repaidShares.toAssetsUp(market.totalBorrowAssets, market.totalBorrowShares);
-            console.log("repaidAssets: ", repaidAssets);
+        //     uint256 seizedAssetsQuoted = seizedAssets.mulDivUp(collateralPrice, ORACLE_PRICE_SCALE);
 
-            console.log("totalBorrowShares: ", market.totalBorrowShares);
-            console.log("totalBorrowAssets: ", market.totalBorrowAssets);
+        //     console.log("seizedAssetsQuoted: ", seizedAssetsQuoted);
 
-            // position[id][borrower].borrowShares -= repaidShares.toUint128();
-            // market[id].totalBorrowShares -= repaidShares.toUint128();
-            // market[id].totalBorrowAssets = UtilsLib
-            //     .zeroFloorSub(market[id].totalBorrowAssets, repaidAssets)
-            //     .toUint128();
+        //     uint256 repaidShares = seizedAssetsQuoted.wDivUp(liquidationIncentiveFactor).toSharesUp(
+        //         market.totalBorrowAssets,
+        //         market.totalBorrowShares
+        //     );
 
-            // position[id][borrower].collateral -= seizedAssets.toUint128();
+        //     console.log("repaidShares: ", repaidShares);
 
-            // _repay(params, 50 ether, deployer);
-        }
+        //     uint256 repaidAssets = repaidShares.toAssetsUp(market.totalBorrowAssets, market.totalBorrowShares);
+        //     console.log("repaidAssets: ", repaidAssets);
+
+        //     console.log("totalBorrowShares: ", market.totalBorrowShares);
+        //     console.log("totalBorrowAssets: ", market.totalBorrowAssets);
+
+        // position[id][borrower].borrowShares -= repaidShares.toUint128();
+        // market[id].totalBorrowShares -= repaidShares.toUint128();
+        // market[id].totalBorrowAssets = UtilsLib
+        //     .zeroFloorSub(market[id].totalBorrowAssets, repaidAssets)
+        //     .toUint128();
+
+        //     // position[id][borrower].collateral -= seizedAssets.toUint128();
+
+        //     // _repay(params, 50 ether, deployer);
+        // }
 
         // {
         //     params.collateralToken = PTUSDe;
@@ -198,17 +225,17 @@ contract MorphoInteractMarket is Script, MainnetConstants, StdCheats, StdAsserti
         // }
 
         // PT markets
-        // {
-        //     IMorphoOracle oracle = IMorphoOracle(0x5441731eED05A8208e795086a5dF41416DD34104);
-        //     address priceFeed = 0xC9dfD5c18F12a3BA6293001700810602efe0c45B;
-        //     // To force liquidation update some storage
-        //     (, int256 pricePT, , , ) = BaseFeedPTPendle(priceFeed).latestRoundData();
-        //     console.log(oracle.price());
-        //     // PT manipulation
-        //     BaseFeedPTPendle(priceFeed).setMaxImpliedRate(1000 ether);
-        //     (, pricePT, , , ) = BaseFeedPTPendle(priceFeed).latestRoundData();
-        //     console.log(oracle.price());
-        // }
+        {
+            IMorphoOracle oracle = IMorphoOracle(0x5441731eED05A8208e795086a5dF41416DD34104);
+            address priceFeed = 0xC9dfD5c18F12a3BA6293001700810602efe0c45B;
+            // To force liquidation update some storage
+            (, int256 pricePT, , , ) = BaseFeedPTPendle(priceFeed).latestRoundData();
+            console.log(oracle.price());
+            // PT manipulation
+            BaseFeedPTPendle(priceFeed).setMaxImpliedRate(1000 ether);
+            (, pricePT, , , ) = BaseFeedPTPendle(priceFeed).latestRoundData();
+            console.log(oracle.price());
+        }
         // // ERC4626
         // // Rehypothecated morpho vaults
         // {
