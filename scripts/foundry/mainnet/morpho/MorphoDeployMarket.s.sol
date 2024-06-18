@@ -47,12 +47,12 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
             // address priceFeed = address(
             //     new MorphoFeedPTweETHDec24(IAccessControlManager(address(coreBorrow)), _MAX_IMPLIED_RATE, _TWAP_DURATION)
             // );
-            address priceFeed = address(0x7d01be85335a0Cc827D985D691666498A34121a4);
+            address priceFeed = address(0x31dA7F6Cfc470abcc5388b6Ab5EB29df39cE0e26);
             oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
                 address(0),
                 1,
                 address(priceFeed),
-                address(WEETH_USD_ORACLE),
+                address(CHAINLINK_ETH_USD_ORACLE),
                 IERC20Metadata(PTWeETHDec24).decimals(),
                 address(0),
                 1,
@@ -63,7 +63,8 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
             );
 
             uint256 price = IMorphoOracle(oracle).price();
-            assertApproxEqRel(price, 3350 * 10 ** 36, 100 ** 36);
+            // Because with the max implied rate there is a discount compared to the on chain price (3250)
+            assertApproxEqRel(price, 3050 * 10 ** 36, 100 ** 36);
             params.collateralToken = PTWeETHDec24;
             params.lltv = LLTV_86;
             params.irm = IRM_MODEL;
@@ -73,12 +74,12 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
         }
 
         {
-            address priceFeed = address(0xF3FC589215F18D40FCfAbAf860e3a9ed9E8Cfc0C);
+            address priceFeed = address(0x86F5CEC63eDF19209c460853B0b509C12918dB19);
             oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
                 address(0),
                 1,
                 address(priceFeed),
-                address(ETH_USD_ORACLE),
+                address(CHAINLINK_ETH_USD_ORACLE),
                 IERC20Metadata(PTEzETHDec24).decimals(),
                 address(0),
                 1,
@@ -89,7 +90,7 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
             );
 
             uint256 price = IMorphoOracle(oracle).price();
-            assertApproxEqRel(price, 3350 * 10 ** 36, 100 ** 36);
+            assertApproxEqRel(price, 3050 * 10 ** 36, 100 ** 36);
             params.collateralToken = PTEzETHDec24;
             params.lltv = LLTV_86;
             params.irm = IRM_MODEL;
