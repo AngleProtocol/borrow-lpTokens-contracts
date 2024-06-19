@@ -6,8 +6,9 @@ import { console } from "forge-std/console.sol";
 import { Convex2PoolStaker } from "borrow-staked/staker/curve/implementations/arbitrum/pools/Convex2PoolStaker.sol";
 import { StakeDAO2PoolStaker } from "borrow-staked/staker/curve/implementations/arbitrum/pools/StakeDAO2PoolStaker.sol";
 import "./ArbitrumConstants.s.sol";
+import "../UtilsUpgradable.s.sol";
 
-contract DeployStakerArbitrum is Script, ArbitrumConstants {
+contract DeployStakerArbitrum is Script, ArbitrumConstants, UtilsUpgradable {
     function run() external {
         uint256 deployerPrivateKey = vm.deriveKey(vm.envString("MNEMONIC_ARBITRUM"), 0);
         vm.rememberKey(deployerPrivateKey);
@@ -17,6 +18,7 @@ contract DeployStakerArbitrum is Script, ArbitrumConstants {
         Convex2PoolStaker stakerConvexImplementation = new Convex2PoolStaker();
         Convex2PoolStaker stakerConvex = Convex2PoolStaker(
             deployUpgradeable(
+                PROXY_ADMIN,
                 address(stakerConvexImplementation),
                 abi.encodeWithSelector(stakerConvexImplementation.initialize.selector, CORE_BORROW)
             )
@@ -31,6 +33,7 @@ contract DeployStakerArbitrum is Script, ArbitrumConstants {
         StakeDAO2PoolStaker stakerStakeDAOImplementation = new StakeDAO2PoolStaker();
         StakeDAO2PoolStaker stakerCurve = StakeDAO2PoolStaker(
             deployUpgradeable(
+                PROXY_ADMIN,
                 address(stakerStakeDAOImplementation),
                 abi.encodeWithSelector(stakerStakeDAOImplementation.initialize.selector, CORE_BORROW)
             )

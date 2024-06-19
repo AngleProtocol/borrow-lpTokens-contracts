@@ -7,7 +7,7 @@ import { StdCheats, StdAssertions } from "forge-std/Test.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
 import "borrow/interfaces/IAngleRouterSidechain.sol";
 import "borrow/interfaces/external/uniswap/IUniswapRouter.sol";
-import { SwapType, BaseLevSwapper, PendleLevSwapperMorphoWeETH, PendleLevSwapperMorpho, Swapper } from "borrow-staked/swapper/LevSwapper/morpho/implementations/PendleLevSwapperMorphoWeETH.sol";
+import { SwapType, BaseLevSwapper, PendleLevSwapperMorpho, Swapper } from "borrow-staked/swapper/LevSwapper/morpho/implementations/PendleLevSwapperMorphoWeETH.sol";
 import "../MainnetConstants.s.sol";
 import { MarketParams } from "morpho-blue/libraries/MarketParamsLib.sol";
 import { IIrm } from "morpho-blue/interfaces/IIRM.sol";
@@ -42,24 +42,64 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
         address oracle;
         bytes32 salt;
 
-        // PT weETH market
-        address priceFeed = address(
-            new MorphoFeedPTweETH(IAccessControlManager(address(coreBorrow)), _MAX_IMPLIED_RATE, _TWAP_DURATION)
-        );
-        oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
-            address(0),
-            1,
-            address(priceFeed),
-            address(WEETH_USD_ORACLE),
-            IERC20Metadata(PTWeETH).decimals(),
-            address(0),
-            1,
-            address(0),
-            address(0),
-            IERC20Metadata(USDA).decimals(),
-            salt
-        );
+        {
+            // PT weETH market
+            // address priceFeed = address(
+            //     new MorphoFeedPTweETHDec24(IAccessControlManager(address(coreBorrow)), _MAX_IMPLIED_RATE, _TWAP_DURATION)
+            // );
+            address priceFeed = address(0x31dA7F6Cfc470abcc5388b6Ab5EB29df39cE0e26);
+            oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
+                address(0),
+                1,
+                address(priceFeed),
+                address(CHAINLINK_ETH_USD_ORACLE),
+                IERC20Metadata(PTWeETHDec24).decimals(),
+                address(0),
+                1,
+                address(0),
+                address(0),
+                IERC20Metadata(USDA).decimals(),
+                salt
+            );
 
+            uint256 price = IMorphoOracle(oracle).price();
+            // Because with the max implied rate there is a discount compared to the on chain price (3250)
+            assertApproxEqRel(price, 3050 * 10 ** 36, 100 ** 36);
+            params.collateralToken = PTWeETHDec24;
+            params.lltv = LLTV_86;
+            params.irm = IRM_MODEL;
+            params.oracle = oracle;
+            params.loanToken = USDA;
+            IMorpho(MORPHO_BLUE).createMarket(params);
+        }
+
+        {
+            address priceFeed = address(0x86F5CEC63eDF19209c460853B0b509C12918dB19);
+            oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
+                address(0),
+                1,
+                address(priceFeed),
+                address(CHAINLINK_ETH_USD_ORACLE),
+                IERC20Metadata(PTEzETHDec24).decimals(),
+                address(0),
+                1,
+                address(0),
+                address(0),
+                IERC20Metadata(USDA).decimals(),
+                salt
+            );
+
+            uint256 price = IMorphoOracle(oracle).price();
+            assertApproxEqRel(price, 3050 * 10 ** 36, 100 ** 36);
+            params.collateralToken = PTEzETHDec24;
+            params.lltv = LLTV_86;
+            params.irm = IRM_MODEL;
+            params.oracle = oracle;
+            params.loanToken = USDA;
+            IMorpho(MORPHO_BLUE).createMarket(params);
+        }
+
+        // {
         // // GTUSDCPrime market
         // oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
         //     address(GTUSDCPRIME),
@@ -74,15 +114,16 @@ contract MorphoDeployMarket is Script, MainnetConstants, StdCheats, StdAssertion
         //     18,
         //     salt
         // );
+        // uint256 price = IMorphoOracle(oracle).price();
+        // assertApproxEqRel(price, 1 * 10 ** 36, 100 ** 36);
+        // params.collateralToken = GTUSDCPRIME;
+        // params.lltv = LLTV_86;
+        // params.irm = IRM_MODEL;
+        // params.oracle = oracle;
+        // params.loanToken = USDA;
+        // IMorpho(MORPHO_BLUE).createMarket(params);
+        // }
 
-        uint256 price = IMorphoOracle(oracle).price();
-        assertApproxEqRel(price, 3350 * 10 ** 36, 100 ** 36);
-        params.collateralToken = PTWeETH;
-        params.lltv = LLTV_86;
-        params.irm = IRM_MODEL;
-        params.oracle = oracle;
-        params.loanToken = USDA;
-        IMorpho(MORPHO_BLUE).createMarket(params);
         vm.stopBroadcast();
     }
 }

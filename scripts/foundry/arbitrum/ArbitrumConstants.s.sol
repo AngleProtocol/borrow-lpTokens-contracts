@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import { ProxyAdmin } from "borrow-staked/external/ProxyAdmin.sol";
-import { TransparentUpgradeableProxy } from "borrow-staked/external/TransparentUpgradeableProxy.sol";
-
 contract ArbitrumConstants {
     address public constant GOVERNOR = 0xAA2DaCCAb539649D1839772C625108674154df0B;
     address public constant GUARDIAN = 0x55F01DDaE74b60e3c255BD2f619FEbdFce560a9C;
@@ -21,8 +18,4 @@ contract ArbitrumConstants {
 
     uint256 public constant BASE_TOKENS = 1e18;
     uint64 public constant BASE_PARAMS = 1e9;
-
-    function deployUpgradeable(address implementation, bytes memory data) public returns (address) {
-        return address(new TransparentUpgradeableProxy(implementation, PROXY_ADMIN, data));
-    }
 }

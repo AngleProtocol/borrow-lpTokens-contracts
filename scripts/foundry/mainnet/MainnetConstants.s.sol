@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.17;
 
-import { ProxyAdmin } from "borrow-staked/external/ProxyAdmin.sol";
-import { TransparentUpgradeableProxy } from "borrow-staked/external/TransparentUpgradeableProxy.sol";
-
 contract MainnetConstants {
     address public constant GOVERNOR = 0xdC4e6DFe07EFCa50a197DF15D9200883eF4Eb1c8;
     address public constant GUARDIAN = 0x0C2553e4B9dFA9f83b1A6D3EAB96c4bAaB42d430;
@@ -22,10 +19,11 @@ contract MainnetConstants {
     uint256 public constant BASE_TOKENS = 10 ** 18;
     uint64 public constant BASE_PARAMS = 10 ** 9;
 
-    // TODO remove
     address constant USDA = 0x0000206329b97DB379d5E1Bf586BbDB969C63274;
     address constant EZETH = 0xbf5495Efe5DB9ce00f80364C8B423567e58d2110;
     address constant PTWeETH = 0xc69Ad9baB1dEE23F4605a82b3354F8E40d1E5966;
+    address constant PTWeETHDec24 = 0x6ee2b5E19ECBa773a352E5B21415Dc419A700d1d;
+    address constant PTEzETHDec24 = 0xf7906F274c174A52d444175729E3fa98f9bde285;
     address constant PTUSDe = 0xa0021EF8970104c2d008F38D92f115ad56a9B8e1;
     address constant RSETH = 0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7;
     address constant GTETHPRIME = 0x2371e134e3455e0593363cBF89d3b6cf53740618;
@@ -35,8 +33,7 @@ contract MainnetConstants {
 
     address constant EZETH_ETH_ORACLE = 0xF4a3e183F59D2599ee3DF213ff78b1B3b1923696;
     address constant RSETH_ETH_ORACLE = 0xA736eAe8805dDeFFba40cAB8c99bCB309dEaBd9B;
-    // TODO: this one needs to be updated and changed
-    address constant PTWEETH_WEETH_ORACLE = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136;
+    address constant PTWEETH_WEETH_ORACLE = 0xE8b74600CF80e3B38e2B186c981325FF7Ede161B;
     address constant WEETH_USD_ORACLE = 0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136;
 
     address constant CHAINLINK_ETH_USD_ORACLE = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
@@ -57,8 +54,4 @@ contract MainnetConstants {
 
     uint256 constant BASE_DEPOSIT_ETH_AMOUNT = 0.01 ether;
     uint256 constant BASE_DEPOSIT_USD_AMOUNT = 5 ether;
-
-    function deployUpgradeable(address implementation, bytes memory data) public returns (address) {
-        return address(new TransparentUpgradeableProxy(implementation, PROXY_ADMIN, data));
-    }
 }

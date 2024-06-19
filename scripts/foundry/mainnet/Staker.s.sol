@@ -6,8 +6,9 @@ import { console } from "forge-std/console.sol";
 import { Convex3CRVStaker } from "borrow-staked/staker/curve/implementations/mainnet/pools/Convex3CRVStaker.sol";
 import { StakeDAO3CRVStaker } from "borrow-staked/staker/curve/implementations/mainnet/pools/StakeDAO3CRVStaker.sol";
 import "./MainnetConstants.s.sol";
+import "../UtilsUpgradable.s.sol";
 
-contract DeployStakerMainnet is Script, MainnetConstants {
+contract DeployStakerMainnet is Script, MainnetConstants, UtilsUpgradable {
     function run() external {
         uint256 deployerPrivateKey = vm.deriveKey(vm.envString("MNEMONIC_MAINNET"), 0);
         vm.rememberKey(deployerPrivateKey);
@@ -17,6 +18,7 @@ contract DeployStakerMainnet is Script, MainnetConstants {
         Convex3CRVStaker stakerConvexImplementation = new Convex3CRVStaker();
         Convex3CRVStaker stakerConvex = Convex3CRVStaker(
             deployUpgradeable(
+                PROXY_ADMIN,
                 address(stakerConvexImplementation),
                 abi.encodeWithSelector(stakerConvexImplementation.initialize.selector, CORE_BORROW)
             )
@@ -31,6 +33,7 @@ contract DeployStakerMainnet is Script, MainnetConstants {
         StakeDAO3CRVStaker stakerStakeDAOImplementation = new StakeDAO3CRVStaker();
         StakeDAO3CRVStaker stakerCurve = StakeDAO3CRVStaker(
             deployUpgradeable(
+                PROXY_ADMIN,
                 address(stakerStakeDAOImplementation),
                 abi.encodeWithSelector(stakerStakeDAOImplementation.initialize.selector, CORE_BORROW)
             )

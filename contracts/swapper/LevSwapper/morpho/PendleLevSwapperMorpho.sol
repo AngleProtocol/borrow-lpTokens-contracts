@@ -7,9 +7,9 @@ import "borrow-staked/interfaces/external/pendle/IStandardizedYield.sol";
 import "borrow-staked/interfaces/external/pendle/IPYieldTokenV2.sol";
 import "borrow-staked/interfaces/external/pendle/IPRouter.sol";
 
-/// @title SanTokenLevSwapper
+/// @title PendleLevSwapperMorpho
 /// @author Angle Labs, Inc.
-/// @dev Leverage Swapper on SanTokens
+/// @dev Leverage Swapper on Pendle PTs
 abstract contract PendleLevSwapperMorpho is BaseLevSwapperMorpho {
     using SafeERC20 for IERC20;
 
