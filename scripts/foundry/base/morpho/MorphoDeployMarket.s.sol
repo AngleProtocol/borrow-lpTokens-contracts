@@ -5,6 +5,7 @@ import "forge-std/Script.sol";
 import { console } from "forge-std/console.sol";
 import { StdCheats, StdAssertions } from "forge-std/Test.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
+import { PythAggregatorV3 } from "borrow/external/pyth/PythAggregatorV3.sol";
 import "../BaseConstants.s.sol";
 import { MarketParams } from "morpho-blue/libraries/MarketParamsLib.sol";
 import { IMorpho } from "morpho-blue/interfaces/IMorpho.sol";
@@ -69,34 +70,37 @@ contract MorphoDeployBaseMarket is Script, CommonUtils, BaseConstants, StdCheats
             initMarket(params, BASE_DEPOSIT_ETH_AMOUNT);
         }
 
-        // {
-        //     address collateral = weETH;
-        //     oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
-        //         address(0),
-        //         1,
-        //         address(WEETH_ETH_ORACLE),
-        //         address(ETH_USD_ORACLE),
-        //         IERC20Metadata(collateral).decimals(),
-        //         address(0),
-        //         1,
-        //         address(0),
-        //         address(0),
-        //         IERC20Metadata(USDA).decimals(),
-        //         salt
-        //     );
+        {
+            address collateral = weETH;
 
-        //     uint256 price = IMorphoOracle(oracle).price();
-        //     // Because with the max implied rate there is a discount compared to the on chain price (3250)
-        //     assertApproxEqAbs(price, 3670 * 10 ** 36, 50 * 10 ** 36);
-        //     params.collateralToken = collateral;
-        //     params.lltv = LLTV_86;
-        //     params.irm = IRM_MODEL;
-        //     params.oracle = oracle;
-        //     params.loanToken = USDA;
-        //     IMorpho(MORPHO_BLUE).createMarket(params);
+            // deploy the Pyth wrapper
+            PythAggregatorV3 pythFeed = new PythAggregatorV3(PYTH_ROUTER, WEETH_USD_PYTH_ID);
+            oracle = IMorphoChainlinkOracleV2Factory(MORPHO_ORACLE_FACTORY).createMorphoChainlinkOracleV2(
+                address(0),
+                1,
+                address(pythFeed),
+                address(0),
+                IERC20Metadata(collateral).decimals(),
+                address(0),
+                1,
+                address(0),
+                address(0),
+                IERC20Metadata(USDA).decimals(),
+                salt
+            );
 
-        //     initMarket(params, BASE_DEPOSIT_ETH_AMOUNT);
-        // }
+            uint256 price = IMorphoOracle(oracle).price();
+            // Because with the max implied rate there is a discount compared to the on chain price (3250)
+            assertApproxEqAbs(price, 3670 * 10 ** 36, 50 * 10 ** 36);
+            params.collateralToken = collateral;
+            params.lltv = LLTV_86;
+            params.irm = IRM_MODEL;
+            params.oracle = oracle;
+            params.loanToken = USDA;
+            IMorpho(MORPHO_BLUE).createMarket(params);
+
+            initMarket(params, BASE_DEPOSIT_ETH_AMOUNT);
+        }
 
         {
             address collateral = ezETH;
