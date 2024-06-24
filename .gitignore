@@ -18,6 +18,7 @@ typechain
 slither-audit.txt
 slither
 slither.db.json
+broadcast
 
 # Test output
 coverage
