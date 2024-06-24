@@ -35,7 +35,7 @@
     "url": "https://github.com/AngleProtocol/boilerplate/issues"
   },
   "devDependencies": {
-    "@angleprotocol/sdk": "1.0.100",
+    "@angleprotocol/sdk": "v2.11.10",
     "@chainlink/contracts": "0.2.1",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.1",
