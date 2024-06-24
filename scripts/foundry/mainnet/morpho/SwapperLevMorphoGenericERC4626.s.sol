@@ -9,7 +9,6 @@ import { ERC4626GenericLevSwapper } from "borrow-staked/swapper/LevSwapper/ERC46
 import "../MainnetConstants.s.sol";
 import { IMorpho } from "morpho-blue/interfaces/IMorpho.sol";
 import "borrow/interfaces/ICoreBorrow.sol";
-import { CommonUtils } from "utils/src/CommonUtils.sol";
 
 contract ERC4626SwapperLevMorphoGenericERC4626 is Script, MainnetConstants, StdCheats, StdAssertions {
     ICoreBorrow coreBorrow;
